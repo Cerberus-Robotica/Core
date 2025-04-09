@@ -1,0 +1,23 @@
+# ninja log v6
+578	647	1744033044092159581	hades	b18e70d1c6500e86
+1	380	1744033043515143191	CMakeFiles/hades.dir/src/team/leader.cpp.o	c18c491c2e49cf18
+1	559	1744033043515143191	CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o	bbf1c763d5518a8e
+1	578	1744033043515143191	CMakeFiles/hades.dir/src/main.cpp.o	a06442ef529db80d
+1	818	1743998071600434720	CMakeFiles/hades.dir/src/c_trajectory/C_trajectory.cpp.o	57ec7faa6eb84143
+1	208	1743998071600434720	CMakeFiles/hades.dir/src/c_trajectory/geometry/circle.cpp.o	c7256ebe26b491aa
+1	425	1743998071600434720	CMakeFiles/hades.dir/src/c_trajectory/geometry/Vetop.cpp.o	af648ab1ba7a4e18
+2	27	1744001588674392893	build.ninja	93e1728cdda65baf
+2	12	1743998071600434720	CMakeFiles/hades.dir/src/team/actions/roles.cpp.o	cefbe6688b133234
+2	248	1743998071600434720	CMakeFiles/hades.dir/src/c_trajectory/geometry/rectangle.cpp.o	bb7f501a979f0a82
+5	15	1744023030068297023	CMakeFiles/hades.dir/src/team/robot.cpp.o	80243419de362c3a
+2	372	1744033043516143220	CMakeFiles/hades.dir/src/include/handlers.cpp.o	c0aab5422ad36edf
+1	337	1744033143724837804	CMakeFiles/hades.dir/src/team/leader.cpp.o	c18c491c2e49cf18
+1	362	1744033143724837804	CMakeFiles/hades.dir/src/include/handlers.cpp.o	c0aab5422ad36edf
+1	507	1744033143724837804	CMakeFiles/hades.dir/src/main.cpp.o	a06442ef529db80d
+1	537	1744033143724837804	CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o	bbf1c763d5518a8e
+537	624	1744033144260851450	hades	b18e70d1c6500e86
+1	482	1744033699199036998	CMakeFiles/hades.dir/src/main.cpp.o	a06442ef529db80d
+1	496	1744033699199036998	CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o	bbf1c763d5518a8e
+497	568	1744033699696045176	hades	b18e70d1c6500e86
+0	443	1744033787429455949	CMakeFiles/hades.dir/src/main.cpp.o	a06442ef529db80d
+443	510	1744033787872462916	hades	b18e70d1c6500e86

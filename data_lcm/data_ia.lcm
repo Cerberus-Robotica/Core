@@ -1,0 +1,25 @@
+package data;
+
+struct robot
+{
+    int16_t id;
+    boolean spinner;
+    boolean kick;
+    float vel_tang;
+    float vel_normal;
+    float vel_ang;
+    float kick_speed_x;
+    float kick_speed_z;
+    boolean wheel_speed;
+    float wheel_fr; //wheel front right;
+    float wheel_fl; //wheel front left;
+    float wheel_bl; //wheel back left;
+    float wheel_br; //wheel back right;
+}
+
+struct ia
+{
+    int64_t timestamp;
+    int16_t robots_size;
+    robot robots[robots_size];
+}

@@ -1,0 +1,46 @@
+package data;
+
+struct detection_robots
+{
+	int16_t robot_id;
+	float position_x;	//mm
+	float position_y;	//mm
+	float orientation;	//rad
+}
+
+struct detection_balls
+{
+	float position_x;	//mm
+	float position_y;	//mm
+}
+
+//main struct
+struct vision
+{
+    int64_t timestamp;
+    int16_t robots_yellow_size;
+    int16_t robots_blue_size;
+    detection_robots robots_yellow[robots_yellow_size];
+    detection_robots robots_blue[robots_blue_size];
+    detection_balls balls;
+	detection_geometry field;
+}
+
+
+struct detection_geometry
+{
+    int32_t field_length;         // mm
+    int32_t field_width;          // mm
+    int32_t goal_width;           // mm
+    int32_t goal_depth;           // mm
+    int32_t boundary_width;       // mm
+    int32_t center_circle_radius; // mm
+    int32_t defense_area_width;   // mm (equivalente a penalty_area_width)
+    int32_t defense_area_height;  // mm (equivalente a penalty_area_depth)
+    int32_t line_thickness;       // mm
+    int32_t goal_center_to_penalty_mark; // mm
+    int32_t goal_height;          // mm
+    float ball_radius;            // mm
+    float max_robot_radius;       // mm
+}
+
