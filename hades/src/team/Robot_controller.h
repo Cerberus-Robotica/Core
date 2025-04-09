@@ -9,6 +9,7 @@
 
 
 #include "robot.h"
+#include "team_info.h"
 
 class Robot_controller {
 
@@ -33,14 +34,17 @@ public:
     float dribbler = 0;
 
     //strategy status
-    int role = 1;  //role; -1 unsigned
+    team_info* team;  //role; -1 unsigned
     int state = 0;  //estado
-    int *play;
+    robot allies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
+                        robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
+    robot enemies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
+                        robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
 
     //on-field detection
     bool detected = true;
     int offline_counter = 0;
-    int max_offline_counter = 10000;
+    int max_offline_counter = 1;
     bool terminate = false;
 
     //extreme params
@@ -64,7 +68,8 @@ public:
         id = new_id;
     }
 
-    void start(int* play_ads);
+    void start(team_info* team_ads);
+    void stop();
     void loop();
 
 

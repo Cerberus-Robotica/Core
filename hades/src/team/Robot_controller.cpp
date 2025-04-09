@@ -10,42 +10,35 @@
 #include "../include/handlers.hpp"
 #include <chrono>
 
-void Robot_controller::start(int* play_ads) {
-    play = play_ads;
+void Robot_controller::start(team_info* team_ads) {
+    team = team_ads;
+    terminate = false;
     std::thread t(&Robot_controller::loop, this);
     t.detach();
 }
 
+void Robot_controller::stop() {
+    team->active_robots[id] = false;
+    terminate = true;
+}
+
 void Robot_controller::loop() {
-    while (true) {
+    while (not terminate) {
         recive_vision();
-        std::cout << id << std::endl;
-        std::cout << target_vel[0] << target_vel[1] << std::endl;
-        std::cout << han.new_vision.field.field_length<< std::endl;
-        std::cout << han.new_vision.balls.position_x << ", " << han.new_vision.balls.position_y << std::endl;
-        std::cout << pos[0] << ", " << pos[1] << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        //std::cout << id << std::endl;
+        //std::cout << team->play << std::endl;
+        //std::cout << target_vel[0] << target_vel[1] << std::endl;
+        //std::cout << han.new_vision.field.field_length<< std::endl;
+        //std::cout << han.new_vision.balls.position_x << ", " << han.new_vision.balls.position_y << std::endl;
+        //std::cout << pos[0] << ", " << pos[1] << std::endl;
         check_connection();
-        if (terminate) {
-            break;
-        }
         role_table();
 
     }
 
 }
 
-void Robot_controller::check_connection() {
-    if (!detected) {
-        offline_counter++;
-    } else {
-        offline_counter = 0;
-    }
 
-    if (offline_counter >= max_offline_counter) {
-        terminate = true;
-    }
-}
 
 
 std::vector<std::vector<double>> Robot_controller::find_trajectory(float goal[2]) {
@@ -81,10 +74,10 @@ void Robot_controller::move_to(float goal[2]) {
 
 void Robot_controller::role_table() {
 
-    if (role == 0) {
+    if (team->roles[id] == 0) {
 
     }
-    else if (role == 1) {
+    else if (team->roles[id] == 1) {
         stricker_role();
     }
 }
@@ -110,9 +103,69 @@ void Robot_controller::stricker_role() {
     }
 }
 
+
+
+
+
+
+
+void Robot_controller::check_connection() {
+    if (!detected) {
+        offline_counter++;
+    } else {
+        offline_counter = 0;
+    }
+
+    if (offline_counter >= max_offline_counter) {
+        stop();
+    }
+}
+
+
 void Robot_controller::recive_vision() {
-    if (size(han.new_vision.robots_blue) > id) {
-        pos[0] = han.new_vision.robots_blue[id].position_x;
-        pos[1] = han.new_vision.robots_blue[id].position_y;
+    detected = false;
+    for (auto blue_robot : han.new_vision.robots_blue) {
+        if (team->color == 0) {
+            int rb_id = blue_robot.robot_id;
+            if (rb_id == id) {
+                pos[0] = blue_robot.position_x;
+                pos[1] = blue_robot.position_y;
+                yaw = blue_robot.orientation;
+                detected = true;
+                continue;
+            }
+            allies[rb_id].pos[0] = blue_robot.position_x;
+            allies[rb_id].pos[1] = blue_robot.position_y;
+            allies[rb_id].yaw = blue_robot.orientation;
+        }
+        else {
+            int rb_id = blue_robot.robot_id;
+            enemies[rb_id].pos[0] = blue_robot.position_x;
+            enemies[rb_id].pos[1] = blue_robot.position_y;
+            enemies[rb_id].yaw = blue_robot.orientation;
+        }
+    }
+
+
+    for (auto yellow_robot : han.new_vision.robots_yellow) {
+        if (team->color == 1) {
+            int rb_id = yellow_robot.robot_id;
+            if (rb_id == id) {
+                pos[0] = yellow_robot.position_x;
+                pos[1] = yellow_robot.position_y;
+                yaw = yellow_robot.orientation;
+                detected = true;
+                continue;
+            }
+            allies[rb_id].pos[0] = yellow_robot.position_x;
+            allies[rb_id].pos[1] = yellow_robot.position_y;
+            allies[rb_id].yaw = yellow_robot.orientation;
+        }
+        else {
+            int rb_id = yellow_robot.robot_id;
+            enemies[rb_id].pos[0] = yellow_robot.position_x;
+            enemies[rb_id].pos[1] = yellow_robot.position_y;
+            enemies[rb_id].yaw = yellow_robot.orientation;
+        }
     }
 }

@@ -27,6 +27,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/robot.cpp
         src/team/robot.h
         src/include/handlers.cpp
+        src/team/team_info.cpp
+        src/team/team_info.h
 )
 
 target_include_directories(${PROJECT_NAME}

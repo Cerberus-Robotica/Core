@@ -6,12 +6,11 @@
 #define LEADER_H
 #include "Robot_controller.h"
 #include <vector>
+#include "team_info.h"
 
 class leader {
 public:
-    int active_robots[16];
-    int play = -1;
-    int game_state = -1;
+    team_info team;
 
 
     Robot_controller robots[16] = {
@@ -20,6 +19,11 @@ public:
         Robot_controller(8), Robot_controller(9), Robot_controller(10), Robot_controller(11),
         Robot_controller(12), Robot_controller(13), Robot_controller(14), Robot_controller(15)
     };
+
+    robot allies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
+                    robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
+    robot enemies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
+                        robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
 
     void start();
     void stop();
