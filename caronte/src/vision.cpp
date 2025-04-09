@@ -12,22 +12,27 @@ void recebe_dados_vision() {
     lcm::LCM lcm;
 
     SSL_WrapperPacket vision;
+    
+    data::detection_robots new_robot;
+
+    std::unordered_set<int> yellow_ids;
+    std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos
+
+    SSL_GeometryData geometry;
+    SSL_GeometryFieldSize field;
+    SSL_DetectionFrame detection;
+    
+    std::cout << "Conectando a visao..." << std::endl;
     while(true){
 
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);       
-        //int blue_current_size = 0;
-        //int yellow_current_size = 0;
-        //my_data.robots_blue.clear();
-        //my_data.robots_yellow.clear();
-        std::cout << "Conectando a visao..." << std::endl;
+        
+        
         for(int i = 0; i < 4 ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             
             int bytes_received_vision = recvfrom(sock_vision, buffer_vision, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
-            //std::cout << "Conectado a visao!!!" << std::endl;
-            //std::cout << "Recebi dados da visao: " << bytes_received_vision << std::endl;
-            //vision.ParseFromArray(buffer_vision, bytes_received_vision);
-            //SSL_DetectionFrame detection = vision.detection();
+
             if (bytes_received_vision > 0) {
                 // Parse dos dados recebidos (Vision)
                 vision.ParseFromArray(buffer_vision, bytes_received_vision);
@@ -35,22 +40,16 @@ void recebe_dados_vision() {
                 
                 if(vision.has_detection()){
                     my_vision_data.timestamp = vision.detection().frame_number();
-                    SSL_DetectionFrame detection = vision.detection();
+                    detection = vision.detection();
 
                     if (detection.robots_blue_size() > 0) {
-                        std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos
-                    	blue_ids.clear();
-                        // Preencher o conjunto com os IDs já presentes em my_data.robots_blue
-                        //for (const auto& robot : my_vision_data.robots_blue) {
-                        //    blue_ids.insert(robot.robot_id);
-                        //}
                     
                         for (int i = 0; i < detection.robots_blue_size(); i++) {
                             int id = detection.robots_blue(i).robot_id();
                     
-                            // Se o ID já estiver presente, não adiciona de novo
+                            // Caso o ID seja encontrado em .find(), ele retorna um iterador que aponta para o id atual, caso contrário, retorna blue_ids.end()
                             if (blue_ids.find(id) == blue_ids.end()) {
-                                data::detection_robots new_robot;
+                                
                                 new_robot.robot_id = id;
                                 new_robot.position_x = detection.robots_blue(i).x();
                                 new_robot.position_y = detection.robots_blue(i).y();
@@ -66,17 +65,12 @@ void recebe_dados_vision() {
                     
                     // Para os robôs amarelos, repita o mesmo processo
                     if (detection.robots_yellow_size() > 0) {
-                        std::unordered_set<int> yellow_ids;
-                    	yellow_ids.clear();
-                        //for (const auto& robot : my_vision_data.robots_yellow) {
-                        //    yellow_ids.insert(robot.robot_id);
-                        //}
                     
                         for (int i = 0; i < detection.robots_yellow_size(); i++) {
                             int id = detection.robots_yellow(i).robot_id();
                     
                             if (yellow_ids.find(id) == yellow_ids.end()) {
-                                data::detection_robots new_robot;
+                                
                                 new_robot.robot_id = id;
                                 new_robot.position_x = detection.robots_yellow(i).x();
                                 new_robot.position_y = detection.robots_yellow(i).y();
@@ -98,10 +92,9 @@ void recebe_dados_vision() {
                 }
 
                 if (vision.has_geometry()) {
-                    
-                    SSL_GeometryData geometry = vision.geometry();
-                    SSL_GeometryFieldSize field = geometry.field();
-                    
+                    geometry = vision.geometry();
+                    field = geometry.field();
+
                     my_vision_data.field.field_length = field.field_length();
                     my_vision_data.field.field_width = field.field_width();
                     my_vision_data.field.goal_width = field.goal_width();
@@ -119,13 +112,32 @@ void recebe_dados_vision() {
             }
         }
 
+    for(int i = 0; i < my_vision_data.robots_blue_size; i++){
+        std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
+        std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
+        std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
+        std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
+    }
+
+    for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
+        std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
+        std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
+        std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
+        std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+    }
+
+    std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
+    std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
+    std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
+    std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
+    std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
+
+    // Publica os dados no tópico "vision"
+    lcm.publish("vision", &my_vision_data);
+
+    yellow_ids.clear();
+	blue_ids.clear();
 	my_vision_data.robots_blue.clear();
 	my_vision_data.robots_yellow.clear();
-        std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
-        std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
-        std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
-        std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
-        std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
-        lcm.publish("vision", &my_vision_data);
     }  
 }

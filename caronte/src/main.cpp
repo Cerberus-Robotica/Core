@@ -23,7 +23,6 @@ int main(int argc, char ** argv)
 
     std::thread t1(recebe_dados_GC);
     std::thread t2(recebe_dados_vision);
-    
     std::thread lcm_thread([&lcm]() {
         while (true) {
             lcm.handle();
