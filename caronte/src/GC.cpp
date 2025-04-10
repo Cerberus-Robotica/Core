@@ -3,23 +3,20 @@
 #include <iostream>
 
 data::game_controller my_gc_data;
-//int sock_GC;
-//char buffer_GC[BUFFER_SIZE];
 
 void recebe_dados_GC() {
 
     lcm::LCM lcm;
 
     Referee referee;
-
+    std::cout << "Conectando ao GC..." << std::endl;
     while(true){
         
         // Recebendo os dados do socket GC
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);
-        std::cout << "Conectando ao GC..." << std::endl;
+
         int bytes_received_GC = recvfrom(sock_GC, buffer_GC, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
-        std::cout << "Conectado ao GC!!!" << std::endl;
         
         if (bytes_received_GC > 0) {
             // Parse dos dados recebidos (GC)
@@ -58,7 +55,7 @@ void recebe_dados_GC() {
         }
         //system("clear"); 
         std::cout << "Timestamp: " << referee.packet_timestamp()/1000000 << std::endl;
-        std::cout << "GOls azuis: " << my_gc_data.blue.score << std::endl;
+        std::cout << "GOls azuis: " << my_gc_data.blue.score << "\n" << std::endl;
         lcm.publish("GC", &my_gc_data);
     }  
 }
