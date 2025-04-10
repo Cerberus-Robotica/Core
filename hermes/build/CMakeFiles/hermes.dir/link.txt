@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/hermes.dir/src/main.cpp.o CMakeFiles/hermes.dir/grSim_Commands.pb.cc.o CMakeFiles/hermes.dir/grSim_Packet.pb.cc.o CMakeFiles/hermes.dir/grSim_Replacement.pb.cc.o CMakeFiles/hermes.dir/grSim_Robotstatus.pb.cc.o -o hermes  -Wl,-rpath,/usr/local/lib /usr/lib/x86_64-linux-gnu/libprotobuf.so /usr/local/lib/liblcm.so.1.5.1 

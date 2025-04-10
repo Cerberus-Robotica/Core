@@ -48,7 +48,7 @@ public:
     bool terminate = false;
 
     //extreme params
-    float vxy_max = 1;
+    float vxy_max = 0.5;
     float vxy_min = 0.5;
     float vyaw_max = 1;
     float vyaw_min = 0.5;
@@ -60,7 +60,7 @@ public:
     float dribbler_min = 0.5;
 
     //field info
-    float ball_pos[2] = {500, 500};
+    float ball_pos[2] = {0, 0};
     float ball_speed[2] = {0, 0};
 
 
@@ -81,7 +81,9 @@ private:
     std::vector<double> motion_planner(std::vector<std::vector<double>> trajectory);
     std::vector<double> motion_control(std::vector<double> v_vet);
 
+
     void recive_vision();
+    void publish();
 
     void role_table();
     void stricker_role();

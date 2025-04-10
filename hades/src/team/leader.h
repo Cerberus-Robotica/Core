@@ -32,7 +32,7 @@ private:
     void loop();
     void recive_vision();
     void add_robot(int id);
-
+    void imprimir_ativos();
 
 
 };

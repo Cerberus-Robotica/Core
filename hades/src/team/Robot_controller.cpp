@@ -24,16 +24,13 @@ void Robot_controller::stop() {
 
 void Robot_controller::loop() {
     while (not terminate) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         recive_vision();
-        //std::cout << id << std::endl;
-        //std::cout << team->play << std::endl;
-        //std::cout << target_vel[0] << target_vel[1] << std::endl;
-        //std::cout << han.new_vision.field.field_length<< std::endl;
-        //std::cout << han.new_vision.balls.position_x << ", " << han.new_vision.balls.position_y << std::endl;
-        //std::cout << pos[0] << ", " << pos[1] << std::endl;
-        check_connection();
-        role_table();
 
+        check_connection();
+        team->roles[id] = 1;
+        role_table();
+        publish();
     }
 
 }
@@ -44,23 +41,26 @@ void Robot_controller::loop() {
 std::vector<std::vector<double>> Robot_controller::find_trajectory(float goal[2]) {
     C_trajectory pf(false, false, 0, 1000, 300, 0);
     std::vector<double> start = {pos[0], pos[1]};
-    std::vector<double> double_goal = {double(goal[0]), double(goal[1])};
+    std::vector<double> double_goal = {static_cast<double>(goal[0]), static_cast<double>(goal[1])};
 
     std::vector<circle> obs_circular = {};
     std::vector<rectangle> obs_rectangular = {};
-
     auto trajectory = pf.path_find(start, double_goal, obs_circular, obs_rectangular);
-
     return trajectory;
 }
 
 std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<double>> trajectory) {
-    std::vector<double> pos = {pos[0], pos[1]};
-    std::vector<double> v_vet = subtract(trajectory[1], pos);
+    std::vector<double> vect_pos = {pos[0], pos[1]};
+    std::vector<double> v_vet = subtract(trajectory[1], vect_pos);
+    double db_vmax = static_cast<double>(vxy_max);
+    v_vet = normalize(db_vmax, v_vet);
     return v_vet;
 }
 
 std::vector<double> Robot_controller::motion_control(std::vector<double> v_vet) {
+    float ang = yaw;
+    v_vet[0] = v_vet[0]*cos(ang) + v_vet[1]*sin(ang);
+    v_vet[1] = -v_vet[0]*sin(ang) + v_vet[1]*cos(ang);
     return v_vet;
 }
 
@@ -73,7 +73,7 @@ void Robot_controller::move_to(float goal[2]) {
 }
 
 void Robot_controller::role_table() {
-
+    //TODO roles
     if (team->roles[id] == 0) {
 
     }
@@ -85,8 +85,9 @@ void Robot_controller::role_table() {
 
 
 void Robot_controller::stricker_role() {
+    //TODO melhorar stricker_role
     if (state == 0) {
-        if (sqrt(pow(pos[0] - ball_pos[0], 2) + pow(pos[1] - ball_pos[1], 2)) < radius*1.1) {
+        if (sqrt(pow(pos[0] - ball_pos[0], 2) + pow(pos[1] - ball_pos[1], 2)) < radius*1.5) {
             target_vel[0] = 0;
             target_vel[1] = 0;
             state = 1;
@@ -123,7 +124,6 @@ void Robot_controller::check_connection() {
 
 
 void Robot_controller::recive_vision() {
-    std::cout << size(han.new_vision.robots_blue) << std::endl;
     detected = false;
     for (auto blue_robot : han.new_vision.robots_blue) {
         if (team->color == 0) {
@@ -169,4 +169,21 @@ void Robot_controller::recive_vision() {
             enemies[rb_id].yaw = yellow_robot.orientation;
         }
     }
+    ball_pos[0] = han.new_vision.balls.position_x;
+    ball_pos[1] = han.new_vision.balls.position_y;
+}
+
+
+void Robot_controller::publish() {
+    system("clear");
+    //std::cout << pos[0] << ", " << pos[1] << std::endl;
+    //std::cout << id << std::endl;
+
+    han.new_ia.robots[id].vel_normal = target_vel[1];
+    han.new_ia.robots[id].vel_tang = target_vel[0];
+    han.new_ia.robots[id].vel_ang = target_vyaw;
+    han.lc->publish("IA", &han.new_ia);
+    han.new_tartarus.estrategia = 2;
+    han.lc->publish("tartarus", &han.new_tartarus);
+
 }

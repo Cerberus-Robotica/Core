@@ -22,14 +22,7 @@ void leader::loop() {
 
         recive_vision();
 
-        std::cout << std::endl << "[";
-        for (int i = 0; i < 16 ; i++) {
-            if (team.active_robots[i] == 1) {
-                std::cout << i << ", ";
-            }
-        }
-        std::cout << "]" << std::endl;
-
+        //imprimir_ativos();
         for (int i = 0; i < 16; i++) {
             //se robo for detectado e nao estava no vetor active_robots
             //add_robot(i);
@@ -80,8 +73,21 @@ void leader::recive_vision() {
 }
 
 void leader::add_robot(int id) {
+    if (id >= sizeof(team.active_robots)) {
+        return;
+    }
     if (team.active_robots[id] == 0) {
         team.active_robots[id] = 1;
         robots[id].start(&team);
     }
+}
+
+void leader::imprimir_ativos() {
+    std::cout << std::endl << "[";
+    for (int i = 0; i < 16 ; i++) {
+        if (team.active_robots[i] == 1) {
+            std::cout << i << ", ";
+        }
+    }
+    std::cout << "]" << std::endl;
 }

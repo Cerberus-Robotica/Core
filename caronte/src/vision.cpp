@@ -2,6 +2,7 @@
 #include "include/socket_connect.hpp"
 #include <iostream>
 #include <unordered_set>
+#include <thread>
 
 data::vision my_vision_data;
 //int sock_vision;
@@ -133,6 +134,7 @@ void recebe_dados_vision() {
     std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
 
     // Publica os dados no tópico "vision"
+    std::this_thread::sleep_for(std::chrono::milliseconds(16));
     lcm.publish("vision", &my_vision_data);
 
     yellow_ids.clear();
