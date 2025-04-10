@@ -123,6 +123,7 @@ void Robot_controller::check_connection() {
 
 
 void Robot_controller::recive_vision() {
+    std::cout << size(han.new_vision.robots_blue) << std::endl;
     detected = false;
     for (auto blue_robot : han.new_vision.robots_blue) {
         if (team->color == 0) {

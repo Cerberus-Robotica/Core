@@ -29,4 +29,6 @@ class handlers {
         data::vision new_vision;
     };
 
+extern handlers han;
+
 #endif

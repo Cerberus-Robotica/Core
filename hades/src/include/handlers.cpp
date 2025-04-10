@@ -1,7 +1,8 @@
 #include <lcm/lcm-cpp.hpp>
 #include <thread>
-#include "include/handlers.hpp"
+#include "handlers.hpp"
 
+handlers han;
 
 void handlers::handle_GC(const lcm::ReceiveBuffer* rbuf,
     const std::string& chan,
@@ -48,15 +49,16 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
     robots_ia.kick_speed_z = 0;
 
     robots_ia.wheel_speed = true;
-    robots_ia.wheel_fr = -50;
+    robots_ia.wheel_fr = 0;
     robots_ia.wheel_fl = 0;
-    robots_ia.wheel_bl = -50;
+    robots_ia.wheel_bl = 0;
     robots_ia.wheel_br = 0;
 
     this->new_ia.robots.push_back(robots_ia);
     }
 
     this->new_vision.field.field_length = msg_vision->field.field_length;
+    this->new_vision = *msg_vision;
 
     lc->publish("IA", &this->new_ia);
 }
