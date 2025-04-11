@@ -14,6 +14,7 @@ public:
     float yaw = 0;
     float vel[2] = {0, 0};
     float vyaw = 0;
+    bool detected = false;
 
     robot(int id) {
         this->id = id;

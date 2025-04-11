@@ -15,7 +15,7 @@ class Robot_controller {
 
 public:
     int id = -1; //id; -1 unsigned
-    float radius = 90;
+    float radius = 220;
 
     //observed status
     float pos[2] = {0, 0};
