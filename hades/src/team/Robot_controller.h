@@ -55,7 +55,7 @@ public:
     double vxy_min = 0.2;
     double vyaw_max = 1;
     double vyaw_min = 0.5;
-    double kicker_x_max = 1;
+    double kicker_x_max = 3;
     double kicker_x_min = 0.5;
     double kicker_z_max = 1;
     double kicker_z_min = 0.5;
@@ -92,6 +92,7 @@ private:
 
 
     void turn_to(double goal[2]);
+    void kick();
 
     void recive_vision();
     void publish();

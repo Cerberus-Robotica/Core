@@ -12,6 +12,7 @@
 
 
 void Robot_controller::start(team_info* team_ads) {
+    han.new_ia.robots[id].kick_speed_x = 3;
     team = team_ads;
     terminate = false;
     std::thread t(&Robot_controller::loop, this);
@@ -43,7 +44,7 @@ void Robot_controller::loop() {
         delta_time = delta.count();
         if (delta_time != 0) {
             double frequency = cycles/delta_time;
-            if (frequency < 500) {
+            if (frequency < 50) {
                 std::cout << id << std::endl;
                 std::cout << "Frequencia: " << frequency << std::endl;
                 std::cout << delta_time << std::endl;
@@ -64,6 +65,10 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
 
     std::vector<circle> obs_circular = {};
     std::vector<rectangle> obs_rectangular = {};
+
+    rectangle r = field.their_defense_area;
+    obs_rectangular.push_back(r);
+
     if (avoid_ball) {
         circle c({ball_pos[0], ball_pos[1]}, radius);
         obs_circular.push_back(c);
@@ -138,6 +143,19 @@ void Robot_controller::turn_to(double goal[2]) {
     }
 }
 
+void Robot_controller::kick() {
+    if (sqrt(ball_speed[0]*ball_speed[0] + ball_speed[1]*ball_speed[1]) >= vxy_min) {
+        kicker_x = 0;
+        state += 1;
+    }
+
+    std::vector<double> v_vet = {ball_pos[0] - pos[0], ball_pos[1] - pos[1]};
+    v_vet = normalize(vxy_min,v_vet);
+    target_vel[0] = v_vet[0]*cos(-yaw) - v_vet[1]*sin(-yaw);
+    target_vel[1] = v_vet[0]*sin(-yaw) + v_vet[1]*cos(-yaw);
+    kicker_x = 1000;
+
+}
 
 void Robot_controller::role_table() {
     //TODO roles
@@ -153,13 +171,13 @@ void Robot_controller::role_table() {
 
 void Robot_controller::stricker_role() {
     //TODO melhorar stricker_role
-
+    //std::cout << state << std::endl;
     if (state == 0) {
 
-        double goal[2] = {(field.their_goal[0][1] - field.their_goal[0][0])/2, (field.their_goal[1][1] - field.their_goal[1][0])/2};
-        auto traj = find_trajectory(ball_pos, goal);
-        std::vector<double> kick_pos = field.kicking_position(traj[0], traj[1], radius);
+        double goal[2] = {(field.their_goal[0][1] + field.their_goal[0][0])/2, (field.their_goal[1][1] + field.their_goal[1][0])/2};
+        auto traj = find_trajectory(ball_pos, goal, false);
 
+        std::vector<double> kick_pos = field.kicking_position(traj[0], traj[1], radius);
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};;
         move_to(db_kick_pos);
         if (sqrt(pow(pos[0] - db_kick_pos[0], 2) + pow(pos[1] - db_kick_pos[1], 2)) < radius/2) {
@@ -173,9 +191,18 @@ void Robot_controller::stricker_role() {
     } else if (state == 1) {
         target_vel[0] = 0;
         target_vel[1] = 0;
-        if (sqrt(pow(pos[0] - ball_pos[0], 2) + pow(pos[1] - ball_pos[1], 2)) > radius*1.3) {
+        if (sqrt(pow(pos[0] - ball_pos[0], 2) + pow(pos[1] - ball_pos[1], 2)) > 2*radius) {
             state = 0;
+            return;
         }
+        turn_to(ball_pos);
+        if (target_vyaw == 0) {
+            state += 1;
+        }
+    } else if (state == 2) {
+        kick();
+    } else if (state == 3) {
+        state = 0;
     }
 }
 
@@ -265,6 +292,9 @@ void Robot_controller::recive_vision() {
             enemies[rb_id].detected = true;
         }
     }
+    ball_speed[0] = (han.new_vision.balls.position_x - ball_pos[0])/delta_time;
+    ball_speed[1] = (han.new_vision.balls.position_y - ball_pos[1])/delta_time;
+
     ball_pos[0] = han.new_vision.balls.position_x;
     ball_pos[1] = han.new_vision.balls.position_y;
 }
@@ -280,6 +310,11 @@ void Robot_controller::publish() {
     han.new_ia.robots[id].vel_normal = target_vel[1];
     han.new_ia.robots[id].vel_tang = target_vel[0];
     han.new_ia.robots[id].vel_ang = static_cast<float>(target_vyaw);
+    if (kicker_x) {
+        han.new_ia.robots[id].kick_speed_x = kicker_x_max;
+    } else {
+        han.new_ia.robots[id].kick_speed_x = 0;
+    }
     han.lc->publish("IA", &han.new_ia);
     han.new_tartarus.estrategia = 2;
     han.lc->publish("tartarus", &han.new_tartarus);
