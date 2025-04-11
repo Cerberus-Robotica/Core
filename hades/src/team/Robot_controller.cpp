@@ -34,20 +34,11 @@ void Robot_controller::loop() {
         check_connection();
         team->roles[id] = 1;
         role_table();
-
-        target_vyaw = 2;
         publish();
-
-        double yaw_curr = yaw;
-        if (yaw_curr != yaw_prev) {
-            cycles++;
-            yaw_prev = yaw_curr;
-        }
-
 
 
         auto t1 = std::chrono::steady_clock::now();
-
+        cycles++;
         std::chrono::duration<double> delta = t1 - t0;
         delta_time = delta.count();
         if (delta_time != 0) {
@@ -66,13 +57,17 @@ void Robot_controller::loop() {
 
 
 
-std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[2], double goal[2]) {
+std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[2], double goal[2], bool avoid_ball = true) {
     C_trajectory pf(false, false, 0, 1000, 50, 0);
     std::vector<double> double_start = {start[0], start[1]};
     std::vector<double> double_goal = {static_cast<double>(goal[0]), static_cast<double>(goal[1])};
 
     std::vector<circle> obs_circular = {};
     std::vector<rectangle> obs_rectangular = {};
+    if (avoid_ball) {
+        circle c({ball_pos[0], ball_pos[1]}, radius);
+        obs_circular.push_back(c);
+    }
 
     for (int i = 0; i < 16 ; i++) {
         if (!allies[i].detected) {
@@ -113,8 +108,9 @@ std::vector<double> Robot_controller::motion_control(std::vector<double> v_vet) 
     return v_vet;
 }
 
-void Robot_controller::move_to(double goal[2]) {
-    auto trajectory = find_trajectory(pos, goal);
+void Robot_controller::move_to(double goal[2], bool avoid_ball = true) {
+
+    auto trajectory = find_trajectory(pos, goal, avoid_ball);
     auto v_vet = motion_planner(trajectory);
     v_vet = motion_control(v_vet);
     target_vel[0] = v_vet[0];
@@ -157,23 +153,22 @@ void Robot_controller::role_table() {
 
 void Robot_controller::stricker_role() {
     //TODO melhorar stricker_role
-    turn_to(ball_pos);
-    return;
+
     if (state == 0) {
 
         double goal[2] = {(field.their_goal[0][1] - field.their_goal[0][0])/2, (field.their_goal[1][1] - field.their_goal[1][0])/2};
         auto traj = find_trajectory(ball_pos, goal);
-        std::vector<double> kick_pos = field.kicking_position(traj[0], traj[1], radius*1.2);
+        std::vector<double> kick_pos = field.kicking_position(traj[0], traj[1], radius);
 
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};;
         move_to(db_kick_pos);
-        if (sqrt(pow(pos[0] - db_kick_pos[0], 2) + pow(pos[1] - db_kick_pos[1], 2)) < radius*1.3) {
+        if (sqrt(pow(pos[0] - db_kick_pos[0], 2) + pow(pos[1] - db_kick_pos[1], 2)) < radius/2) {
             target_vel[0] = 0;
             target_vel[1] = 0;
             state = 1;
             return;
         }
-        move_to(ball_pos);
+        turn_to(ball_pos);
 
     } else if (state == 1) {
         target_vel[0] = 0;
@@ -284,7 +279,7 @@ void Robot_controller::publish() {
     //std::cout << target_vel[0] << " " << target_vel[1] << std::endl;
     han.new_ia.robots[id].vel_normal = target_vel[1];
     han.new_ia.robots[id].vel_tang = target_vel[0];
-    han.new_ia.robots[id].vel_ang = target_vyaw;
+    han.new_ia.robots[id].vel_ang = static_cast<float>(target_vyaw);
     han.lc->publish("IA", &han.new_ia);
     han.new_tartarus.estrategia = 2;
     han.lc->publish("tartarus", &han.new_tartarus);

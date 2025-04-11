@@ -63,7 +63,7 @@ public:
     double dribbler_min = 0.5;
 
     double static_position_tolarance = radius/2;
-    double static_angle_tolarance = 0.05;
+    double static_angle_tolarance = 0.005;
 
     //field info
     world field;
@@ -85,10 +85,11 @@ private:
     void check_connection();
     void dynamic_calculations();
 
-    void move_to(double goal[2]);
-    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2]);
+    void move_to(double goal[2], bool avoid_ball);
+    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2], bool avoid_ball);
     std::vector<double> motion_planner(std::vector<std::vector<double>> trajectory);
     std::vector<double> motion_control(std::vector<double> v_vet);
+
 
     void turn_to(double goal[2]);
 
