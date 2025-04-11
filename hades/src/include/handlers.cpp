@@ -74,7 +74,7 @@ void handlers::handle_tartarus(const lcm::ReceiveBuffer* rbuf,
     this->new_tartarus.processo = 1;
     this->new_tartarus.estrategia = 1;
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
     lc->publish("tartarus", &this->new_tartarus);
 }
