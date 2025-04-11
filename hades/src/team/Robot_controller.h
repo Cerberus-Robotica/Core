@@ -10,28 +10,29 @@
 
 #include "robot.h"
 #include "team_info.h"
+#include "geometry/world.h"
 
 class Robot_controller {
 
 public:
     int id = -1; //id; -1 unsigned
-    float radius = 220;
+    double radius = 220;
 
     //observed status
-    float pos[2] = {0, 0};
-    float yaw = 0;
-    float vel[2] = {0, 0};
-    float vyaw = 0;
+    double pos[2] = {0, 0};
+    double yaw = 0;
+    double vel[2] = {0, 0};
+    double vyaw = 0;
 
     //target movimentation
-    float target_yaw = 0;
-    float target_vel[2] = {0, 0};
-    float target_vyaw = 0;
+    double target_yaw = 0;
+    double target_vel[2] = {0, 0};
+    double target_vyaw = 0;
 
     //actuators activation
-    float kicker_x = 0;
-    float kicker_z = 0;
-    float dribbler = 0;
+    double kicker_x = 0;
+    double kicker_z = 0;
+    double dribbler = 0;
 
     //strategy status
     team_info* team;  //role; -1 unsigned
@@ -40,6 +41,8 @@ public:
                         robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
     robot enemies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
                         robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
+    double delta_time = 0;
+
 
     //on-field detection
     bool detected = true;
@@ -48,20 +51,24 @@ public:
     bool terminate = false;
 
     //extreme params
-    float vxy_max = 0.5;
-    float vxy_min = 0.5;
-    float vyaw_max = 1;
-    float vyaw_min = 0.5;
-    float kicker_x_max = 1;
-    float kicker_x_min = 0.5;
-    float kicker_z_max = 1;
-    float kicker_z_min = 0.5;
-    float dribbler_max = 1;
-    float dribbler_min = 0.5;
+    double vxy_max = 1;
+    double vxy_min = 0.2;
+    double vyaw_max = 1;
+    double vyaw_min = 0.5;
+    double kicker_x_max = 1;
+    double kicker_x_min = 0.5;
+    double kicker_z_max = 1;
+    double kicker_z_min = 0.5;
+    double dribbler_max = 1;
+    double dribbler_min = 0.5;
+
+    double static_position_tolarance = radius/2;
+    double static_angle_tolarance = 0.05;
 
     //field info
-    float ball_pos[2] = {0, 0};
-    float ball_speed[2] = {0, 0};
+    world field;
+    double ball_pos[2] = {0, 0};
+    double ball_speed[2] = {0, 0};
 
 
     Robot_controller(int new_id){
@@ -76,11 +83,14 @@ public:
 
 private:
     void check_connection();
-    void move_to(float goal[2]);
-    std::vector<std::vector<double>> find_trajectory(float goal[2]);
+    void dynamic_calculations();
+
+    void move_to(double goal[2]);
+    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2]);
     std::vector<double> motion_planner(std::vector<std::vector<double>> trajectory);
     std::vector<double> motion_control(std::vector<double> v_vet);
 
+    void turn_to(double goal[2]);
 
     void recive_vision();
     void publish();

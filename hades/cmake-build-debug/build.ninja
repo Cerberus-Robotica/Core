@@ -98,13 +98,6 @@ build CMakeFiles/hades.dir/src/c_trajectory/geometry/rectangle.cpp.o: CXX_COMPIL
   OBJECT_DIR = CMakeFiles/hades.dir
   OBJECT_FILE_DIR = CMakeFiles/hades.dir/src/c_trajectory/geometry
 
-build CMakeFiles/hades.dir/src/team/actions/roles.cpp.o: CXX_COMPILER__hades_unscanned_Debug /home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/src/team/actions/roles.cpp || cmake_object_order_depends_target_hades
-  DEP_FILE = CMakeFiles/hades.dir/src/team/actions/roles.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -I/home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/src/include -I/home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/../data_lcm/data
-  OBJECT_DIR = CMakeFiles/hades.dir
-  OBJECT_FILE_DIR = CMakeFiles/hades.dir/src/team/actions
-
 build CMakeFiles/hades.dir/src/team/robot.cpp.o: CXX_COMPILER__hades_unscanned_Debug /home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/src/team/robot.cpp || cmake_object_order_depends_target_hades
   DEP_FILE = CMakeFiles/hades.dir/src/team/robot.cpp.o.d
   FLAGS = -g -fdiagnostics-color=always
@@ -126,6 +119,13 @@ build CMakeFiles/hades.dir/src/team/team_info.cpp.o: CXX_COMPILER__hades_unscann
   OBJECT_DIR = CMakeFiles/hades.dir
   OBJECT_FILE_DIR = CMakeFiles/hades.dir/src/team
 
+build CMakeFiles/hades.dir/src/team/geometry/world.cpp.o: CXX_COMPILER__hades_unscanned_Debug /home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/src/team/geometry/world.cpp || cmake_object_order_depends_target_hades
+  DEP_FILE = CMakeFiles/hades.dir/src/team/geometry/world.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -I/home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/src/include -I/home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/../data_lcm/data
+  OBJECT_DIR = CMakeFiles/hades.dir
+  OBJECT_FILE_DIR = CMakeFiles/hades.dir/src/team/geometry
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target hades
@@ -134,7 +134,7 @@ build CMakeFiles/hades.dir/src/team/team_info.cpp.o: CXX_COMPILER__hades_unscann
 #############################################
 # Link the executable hades
 
-build hades: CXX_EXECUTABLE_LINKER__hades_Debug CMakeFiles/hades.dir/src/main.cpp.o CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o CMakeFiles/hades.dir/src/team/leader.cpp.o CMakeFiles/hades.dir/src/c_trajectory/C_trajectory.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/Vetop.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/circle.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/rectangle.cpp.o CMakeFiles/hades.dir/src/team/actions/roles.cpp.o CMakeFiles/hades.dir/src/team/robot.cpp.o CMakeFiles/hades.dir/src/include/handlers.cpp.o CMakeFiles/hades.dir/src/team/team_info.cpp.o | /usr/local/lib/liblcm.so.1.5.1
+build hades: CXX_EXECUTABLE_LINKER__hades_Debug CMakeFiles/hades.dir/src/main.cpp.o CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o CMakeFiles/hades.dir/src/team/leader.cpp.o CMakeFiles/hades.dir/src/c_trajectory/C_trajectory.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/Vetop.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/circle.cpp.o CMakeFiles/hades.dir/src/c_trajectory/geometry/rectangle.cpp.o CMakeFiles/hades.dir/src/team/robot.cpp.o CMakeFiles/hades.dir/src/include/handlers.cpp.o CMakeFiles/hades.dir/src/team/team_info.cpp.o CMakeFiles/hades.dir/src/team/geometry/world.cpp.o | /usr/local/lib/liblcm.so.1.5.1
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/liblcm.so.1.5.1
   OBJECT_DIR = CMakeFiles/hades.dir

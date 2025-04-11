@@ -32,13 +32,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 41,
+				"line" : 42,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 34,
+				"line" : 35,
 				"parent" : 0
 			}
 		]
@@ -74,9 +74,9 @@
 				9,
 				11,
 				13,
-				14,
+				15,
 				16,
-				17
+				18
 			]
 		}
 	],
@@ -126,9 +126,9 @@
 				9,
 				11,
 				13,
-				14,
+				15,
 				16,
-				17
+				18
 			]
 		},
 		{
@@ -141,8 +141,9 @@
 				8,
 				10,
 				12,
-				15,
-				18
+				14,
+				17,
+				19
 			]
 		}
 	],
@@ -223,12 +224,6 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/team/actions/roles.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
 			"path" : "src/team/robot.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -252,6 +247,17 @@
 		{
 			"backtrace" : 1,
 			"path" : "src/team/team_info.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/team/geometry/world.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/team/geometry/world.h",
 			"sourceGroupIndex" : 1
 		}
 	],

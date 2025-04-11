@@ -10,10 +10,11 @@
 class robot {
 public:
     int id = -1;
-    float pos[2] = {0, 0};
-    float yaw = 0;
-    float vel[2] = {0, 0};
-    float vyaw = 0;
+    double old_pos[2] = {0, 0};
+    double pos[2] = {0, 0};
+    double yaw = 0;
+    double vel[2] = {0, 0};
+    double vyaw = 0;
     bool detected = false;
 
     robot(int id) {

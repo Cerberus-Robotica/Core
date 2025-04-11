@@ -23,12 +23,13 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/c_trajectory/geometry/circle.h
         src/c_trajectory/geometry/rectangle.cpp
         src/c_trajectory/geometry/rectangle.h
-        src/team/actions/roles.cpp
         src/team/robot.cpp
         src/team/robot.h
         src/include/handlers.cpp
         src/team/team_info.cpp
         src/team/team_info.h
+        src/team/geometry/world.cpp
+        src/team/geometry/world.h
 )
 
 target_include_directories(${PROJECT_NAME}
