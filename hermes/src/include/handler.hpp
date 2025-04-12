@@ -10,13 +10,14 @@ class handler {
     public:
         void handleIA(const lcm::ReceiveBuffer* rbuf,
                            const std::string& chan, 
-                           const data::ia * data_ia);
+                           const data::ia* data_ia);
     
         void handletartarus(const lcm::ReceiveBuffer* rbuf,
                            const std::string& chan, 
                            const data::tartarus * data_tartarus);
 
-        grSim_Commands commands;
+        data::ia data_ia_copy;
+        data::tartarus data_tartarus_copy;
     };
 
 extern handler han;

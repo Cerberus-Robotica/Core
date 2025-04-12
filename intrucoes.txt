@@ -8,10 +8,6 @@ Primeiro(Instalação):
 	Instalar LCM(c++):
 
 		~$ sudo apt install liblcm-dev
-
-	Instalar Serial(c++):
-
-		~$ sudo apt install libserial-dev
 		
 	Caso enfrente problemas na hora de buildar o software relacionado à biblioteca LCM, dê uma olhada em "Programação/Frameworks da SSL/Erros de software e biblioteca".
 

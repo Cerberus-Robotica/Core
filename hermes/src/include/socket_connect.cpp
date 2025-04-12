@@ -1,7 +1,8 @@
 #include "socket_connect.hpp"
 
-int sock_grsim;
+int sock_grsim = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);;
 struct sockaddr_in addr_grsim;
+
 
 void setupSocket_grsim() {
 
