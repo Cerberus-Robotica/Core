@@ -4,6 +4,8 @@ project(hermes)
 
 find_package(Protobuf REQUIRED)
 
+#find_package(serial REQUIRED)
+
 set(lcm_DIR "/home/cerberus/.local/lib/python3.10/site-packages/lib/lcm/cmake")
 #set(lcm_DIR "/usr/local/lib/lcm/cmake") #outra opção de diretorio
 
@@ -21,13 +23,22 @@ set(PROTO_FILES
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
 
 # Adicionar executável
-add_executable(${PROJECT_NAME} src/main.cpp ${PROTO_SRCS})
+add_executable(${PROJECT_NAME}
+                src/main.cpp
+                ${PROTO_SRCS}
+                src/include/socket_connect.cpp
+                src/include/handler.cpp
+                src/include/esp.cpp
+                src/include/send_to_grsim.cpp
+                )
 
 target_include_directories(${PROJECT_NAME}
                             PRIVATE 
                             ${Protobuf_INCLUDE_DIRS} 
                             ${LCM_INCLUDE_DIRS}
-                            ${CMAKE_SOURCE_DIR}/../data_lcm/data)  
+                            ${CMAKE_SOURCE_DIR}/../data_lcm/data
+                            src/include                         
+                            )  
 
 # Linkar bibliotecas
 target_link_libraries(${PROJECT_NAME} ${Protobuf_LIBRARIES} lcm)
