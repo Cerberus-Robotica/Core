@@ -33,9 +33,9 @@ Rodar o executável em python (com o terminal aberto na pasta principal):
 Rodar os executáveis (com o terminal aberto na pasta principal):
 
 	./hades/build/hades
- 
+
 	./hermes/build/hermes
- 
+
 	./caronte/build/caronte
 
 Ou dar dois clicks no executável nas pastas build/.
