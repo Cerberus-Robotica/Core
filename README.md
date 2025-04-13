@@ -32,9 +32,13 @@ Rodar o executável em python (com o terminal aberto na pasta principal):
 
 Rodar os executáveis (com o terminal aberto na pasta principal):
 
+Hades:
+
 	./hades/build/hades
+Hermes:
 
 	./hermes/build/hermes
+Caronte:
 
 	./caronte/build/caronte
 
