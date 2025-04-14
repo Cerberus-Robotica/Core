@@ -1,4 +1,4 @@
-# Install script for directory: /home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades
+# Install script for directory: /home/caiu/Desktop/ssl/Core/hades
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -57,6 +57,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "/home/caiu/Desktop/ssl/InterCom_Cerberus_V2_0/hades/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

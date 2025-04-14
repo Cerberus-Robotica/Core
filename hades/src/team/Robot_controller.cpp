@@ -29,14 +29,16 @@ void Robot_controller::loop() {
     int cycles = 0;
     double yaw_prev = yaw;
     while (not terminate) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (last_time_stamp == han.new_ia.timestamp) {
+            continue;
+        }
+
+        //std::this_thread::sleep_for(std::chrono::milliseconds(10));
         recive_vision();
 
         check_connection();
-        team->roles[id] = 1;
         role_table();
         publish();
-
 
         auto t1 = std::chrono::steady_clock::now();
         cycles++;
@@ -44,15 +46,13 @@ void Robot_controller::loop() {
         delta_time = delta.count();
         if (delta_time != 0) {
             double frequency = cycles/delta_time;
-            if (frequency < 50) {
+            if (frequency < 10) {
                 std::cout << id << std::endl;
                 std::cout << "Frequencia: " << frequency << std::endl;
                 std::cout << delta_time << std::endl;
             }
         }
-
     }
-
 }
 
 
@@ -66,8 +66,8 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
     std::vector<circle> obs_circular = {};
     std::vector<rectangle> obs_rectangular = {};
 
-    rectangle r = field.their_defense_area;
-    obs_rectangular.push_back(r);
+    //rectangle r = field.their_defense_area;
+    //obs_rectangular.push_back(r);
 
     if (avoid_ball) {
         circle c({ball_pos[0], ball_pos[1]}, radius);
@@ -157,10 +157,51 @@ void Robot_controller::kick() {
 
 }
 
+
+void Robot_controller::follow_trajectory(std::vector<std::vector<double>>& trajectory) {
+
+    int i = 0;
+    while (size(trajectory) > 0) {
+        double distance = sqrt(pow(trajectory[0][0] - pos[0], 2) + pow(trajectory[0][1] - pos[1], 2));
+        if (size(trajectory) == 1 && distance < static_position_tolarance) {
+            trajectory.erase(trajectory.begin());
+            break;
+        }
+
+        if (distance < dynamic_position_tolarance) {
+            trajectory.erase(trajectory.begin());
+            continue;
+        }
+        break;
+    }
+    if (size(trajectory) == 0) {
+        target_vel[0] = 0;
+        target_vel[1] = 0;
+        return;
+    }
+
+    double next_point[2] = {trajectory[0][0], trajectory[0][1]};
+    move_to(next_point);
+
+}
+
+
+
+
+
+
+
+
 void Robot_controller::role_table() {
     //TODO roles
     if (team->roles[id] == 0) {
-
+        if (size(current_trajectory) == 0) {
+            int resolution = 120;
+            for (int i = 0; i < resolution; i++) {
+                current_trajectory.push_back({1000*sin(2*i*M_PI/resolution + id*2*M_PI/16), 1000*cos(2*i*M_PI/resolution + id*2*M_PI/16)});
+            }
+        }
+        follow_trajectory(current_trajectory);
     }
     else if (team->roles[id] == 1) {
         stricker_role();
@@ -191,11 +232,11 @@ void Robot_controller::stricker_role() {
     } else if (state == 1) {
         target_vel[0] = 0;
         target_vel[1] = 0;
+        turn_to(ball_pos);
         if (sqrt(pow(pos[0] - ball_pos[0], 2) + pow(pos[1] - ball_pos[1], 2)) > 2*radius) {
             state = 0;
             return;
         }
-        turn_to(ball_pos);
         if (target_vyaw == 0) {
             state += 1;
         }
@@ -294,9 +335,11 @@ void Robot_controller::recive_vision() {
     }
     ball_speed[0] = (han.new_vision.balls.position_x - ball_pos[0])/delta_time;
     ball_speed[1] = (han.new_vision.balls.position_y - ball_pos[1])/delta_time;
-
+    //std::cout << "ball_speed: " << sqrt(ball_speed[0]*ball_speed[0] + ball_speed[1]*ball_speed[1]) << std::endl;
     ball_pos[0] = han.new_vision.balls.position_x;
     ball_pos[1] = han.new_vision.balls.position_y;
+
+    last_time_stamp = han.new_vision.timestamp;
 }
 
 
@@ -307,6 +350,7 @@ void Robot_controller::publish() {
     //std::cout << pos[0] << ", " << pos[1] << std::endl;
     //std::cout << id << std::endl;
     //std::cout << target_vel[0] << " " << target_vel[1] << std::endl;
+    han.new_ia.robots[id].id = id;
     han.new_ia.robots[id].vel_normal = target_vel[1];
     han.new_ia.robots[id].vel_tang = target_vel[0];
     han.new_ia.robots[id].vel_ang = static_cast<float>(target_vyaw);

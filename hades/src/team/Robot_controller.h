@@ -15,6 +15,20 @@
 class Robot_controller {
 
 public:
+
+
+    Robot_controller(int new_id){
+        id = new_id;
+    }
+
+    void start(team_info* team_ads);
+    void stop();
+    void loop();
+
+
+
+private:
+
     int id = -1; //id; -1 unsigned
     double radius = 220;
 
@@ -42,12 +56,14 @@ public:
     robot enemies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
                         robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
     double delta_time = 0;
+    std::vector<std::vector<double>> current_trajectory = {};
+
 
 
     //on-field detection
     bool detected = true;
     int offline_counter = 0;
-    int max_offline_counter = 1;
+    int max_offline_counter = 1000;
     bool terminate = false;
 
     //extreme params
@@ -63,25 +79,16 @@ public:
     double dribbler_min = 0.5;
 
     double static_position_tolarance = radius/2;
+    double dynamic_position_tolarance = radius;
     double static_angle_tolarance = 0.005;
 
     //field info
     world field;
+    int64_t last_time_stamp = 0;
     double ball_pos[2] = {0, 0};
     double ball_speed[2] = {0, 0};
 
 
-    Robot_controller(int new_id){
-        id = new_id;
-    }
-
-    void start(team_info* team_ads);
-    void stop();
-    void loop();
-
-
-
-private:
     void check_connection();
     void dynamic_calculations();
 
@@ -93,6 +100,7 @@ private:
 
     void turn_to(double goal[2]);
     void kick();
+    void follow_trajectory(std::vector<std::vector<double>>& trajectory);
 
     void recive_vision();
     void publish();
