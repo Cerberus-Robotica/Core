@@ -19,7 +19,7 @@ class handlers:
     def handler_tartarus(self, channel, data_tartarus):
         han.msg_tartarus = tartarus.decode(data_tartarus)
         han.msg_tartarus.ssl_vision = False
-        han.msg_tartarus.team_blue = True                   #alterar o time
+        han.msg_tartarus.team_blue = True              #alterar o time
         
         time.sleep(0.03)
         lc.publish("tartarus", han.msg_tartarus.encode())
