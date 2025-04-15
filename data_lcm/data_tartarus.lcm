@@ -5,4 +5,5 @@ struct tartarus
 	int16_t estrategia; //diz a estrategia atual dos robos
 	int16_t processo; //diz o processo atual do Hades(IA)
 	boolean ssl_vision; //alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
+	boolean team_blue;
 }

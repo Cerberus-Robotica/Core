@@ -10,7 +10,7 @@ void handlers::handle_GC(const lcm::ReceiveBuffer* rbuf,
 
     //std::cout << "Received message on channel \"" << chan << "\"" << std::endl;
 
-    this->new_GC.team_blue = msg_GC->team_blue;
+    this->new_GC = *msg_GC;
 }
 
 
@@ -68,9 +68,7 @@ void handlers::handle_tartarus(const lcm::ReceiveBuffer* rbuf,
           const data::tartarus* msg_tartarus) {
     //std::cout << "Received message on channel \"" << chan << "\"" << std::endl;
 
-    this->new_tartarus.estrategia = msg_tartarus->estrategia;
-    this->new_tartarus.processo = msg_tartarus->processo;
-    this->new_tartarus.ssl_vision = msg_tartarus->ssl_vision;
+    this->new_tartarus = *msg_tartarus;
     this->new_tartarus.processo = 1;
     this->new_tartarus.estrategia = 1;
 

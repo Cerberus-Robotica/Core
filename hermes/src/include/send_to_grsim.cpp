@@ -26,7 +26,7 @@ void grsim_sender::send_to_grsim()
             
         }
         commands.set_timestamp(han.data_ia_copy.timestamp); 
-        commands.set_isteamyellow(false); 
+        commands.set_isteamyellow(han.data_tartarus_copy.team_blue); 
 
         packet_grsim.mutable_commands()->CopyFrom(commands);
         std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;

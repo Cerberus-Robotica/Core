@@ -11,22 +11,20 @@ class handlers:
         self.msg_ia = ia()
 
     def handler_GC(self, channel, data_GC):
-        #print(f"Received message on channel \"{channel}\"")
         han.msg_GC = game_controller.decode(data_GC)
 
     def handler_vision(self, channel, data_vision):
-        #print(f"Received message on channel \"{channel}\"")
         han.msg_vision = vision.decode(data_vision)
 
     def handler_tartarus(self, channel, data_tartarus):
-        #print(f"Received message on channel \"{channel}\"")
         han.msg_tartarus = tartarus.decode(data_tartarus)
         han.msg_tartarus.ssl_vision = False
+        han.msg_tartarus.team_blue = True                   #alterar o time
+        
         time.sleep(0.03)
         lc.publish("tartarus", han.msg_tartarus.encode())
 
     def handler_ia(self, channel, data_ia):
-        #print(f"Received message on channel \"{channel}\"")
         han.msg_ia = ia.decode(data_ia)
         #lc.publish("IA", han.msg_ia.encode())
 
@@ -53,6 +51,7 @@ try:
         print(f"    processo    = {han.msg_tartarus.processo}")
         print(f"    estrategia    = {han.msg_tartarus.estrategia}")
         print(f"    ssl_vision    = {han.msg_tartarus.ssl_vision}")
+        print(f"    team_blue    = {han.msg_tartarus.team_blue}")
         lc.handle()
 except KeyboardInterrupt:
     print("Shutting down...")

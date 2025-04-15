@@ -35,3 +35,7 @@ Finalmente(rodar):
 		Ou dar dois clicks no executável nas pastas build/.
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
+
+Antes de subir os arquivos novos/atualizados para o github/core, exclua os diretórios de build.
+
+	~$ cd caronte && rm -rf build && cd ../hades && rm -rf build && cd ../hermes && rm -rf build && cd ..

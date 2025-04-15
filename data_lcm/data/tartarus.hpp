@@ -28,6 +28,11 @@ class tartarus
          */
         int8_t     ssl_vision;
 
+        /**
+         * alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
+         */
+        int8_t     team_blue;
+
     public:
         /**
          * Encode a message into binary form.
@@ -133,6 +138,9 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -149,6 +157,9 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -158,12 +169,13 @@ int tartarus::_getEncodedSizeNoHash() const
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x65af63a09dba56ffLL;
+    uint64_t hash = 0x580abcd43c077e7dLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

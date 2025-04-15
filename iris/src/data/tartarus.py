@@ -9,11 +9,11 @@ import struct
 
 class tartarus(object):
 
-    __slots__ = ["estrategia", "processo", "ssl_vision"]
+    __slots__ = ["estrategia", "processo", "ssl_vision", "team_blue"]
 
-    __typenames__ = ["int16_t", "int16_t", "boolean"]
+    __typenames__ = ["int16_t", "int16_t", "boolean", "boolean"]
 
-    __dimensions__ = [None, None, None]
+    __dimensions__ = [None, None, None, None]
 
     def __init__(self):
         self.estrategia = 0
@@ -30,6 +30,12 @@ class tartarus(object):
         LCM Type: boolean
         """
 
+        self.team_blue = False
+        """
+        alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
+        LCM Type: boolean
+        """
+
 
     def encode(self):
         buf = BytesIO()
@@ -38,7 +44,7 @@ class tartarus(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">hhb", self.estrategia, self.processo, self.ssl_vision))
+        buf.write(struct.pack(">hhbb", self.estrategia, self.processo, self.ssl_vision, self.team_blue))
 
     @staticmethod
     def decode(data: bytes):
@@ -55,12 +61,13 @@ class tartarus(object):
         self = tartarus()
         self.estrategia, self.processo = struct.unpack(">hh", buf.read(4))
         self.ssl_vision = bool(struct.unpack('b', buf.read(1))[0])
+        self.team_blue = bool(struct.unpack('b', buf.read(1))[0])
         return self
 
     @staticmethod
     def _get_hash_recursive(parents):
         if tartarus in parents: return 0
-        tmphash = (0x65af63a09dba56ff) & 0xffffffffffffffff
+        tmphash = (0x580abcd43c077e7d) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _packed_fingerprint = None
