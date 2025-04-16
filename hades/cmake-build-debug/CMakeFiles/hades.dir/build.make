@@ -223,6 +223,48 @@ CMakeFiles/hades.dir/src/team/geometry/world.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hades.dir/src/team/geometry/world.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/world.cpp -o CMakeFiles/hades.dir/src/team/geometry/world.cpp.s
 
+CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: CMakeFiles/hades.dir/flags.make
+CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp
+CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: CMakeFiles/hades.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o -MF CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o.d -o CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o -c /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp
+
+CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp > CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.i
+
+CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp -o CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.s
+
+CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o: CMakeFiles/hades.dir/flags.make
+CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o: /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_goal_keeper.cpp
+CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o: CMakeFiles/hades.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o -MF CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o.d -o CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o -c /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_goal_keeper.cpp
+
+CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_goal_keeper.cpp > CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.i
+
+CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_goal_keeper.cpp -o CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.s
+
+CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o: CMakeFiles/hades.dir/flags.make
+CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o: /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_debug.cpp
+CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o: CMakeFiles/hades.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o -MF CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o.d -o CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o -c /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_debug.cpp
+
+CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_debug.cpp > CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.i
+
+CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_debug.cpp -o CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.s
+
 # Object files for target hades
 hades_OBJECTS = \
 "CMakeFiles/hades.dir/src/main.cpp.o" \
@@ -235,7 +277,10 @@ hades_OBJECTS = \
 "CMakeFiles/hades.dir/src/team/robot.cpp.o" \
 "CMakeFiles/hades.dir/src/include/handlers.cpp.o" \
 "CMakeFiles/hades.dir/src/team/team_info.cpp.o" \
-"CMakeFiles/hades.dir/src/team/geometry/world.cpp.o"
+"CMakeFiles/hades.dir/src/team/geometry/world.cpp.o" \
+"CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o" \
+"CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o" \
+"CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o"
 
 # External object files for target hades
 hades_EXTERNAL_OBJECTS =
@@ -251,10 +296,13 @@ hades: CMakeFiles/hades.dir/src/team/robot.cpp.o
 hades: CMakeFiles/hades.dir/src/include/handlers.cpp.o
 hades: CMakeFiles/hades.dir/src/team/team_info.cpp.o
 hades: CMakeFiles/hades.dir/src/team/geometry/world.cpp.o
+hades: CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o
+hades: CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o
+hades: CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o
 hades: CMakeFiles/hades.dir/build.make
 hades: /usr/local/lib/liblcm.so.1.5.1
 hades: CMakeFiles/hades.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable hades"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/caiu/Desktop/ssl/Core/hades/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable hades"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hades.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

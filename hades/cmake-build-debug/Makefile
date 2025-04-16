@@ -345,6 +345,78 @@ src/team/leader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/leader.cpp.s
 .PHONY : src/team/leader.cpp.s
 
+src/team/plays/play_attack.o: src/team/plays/play_attack.cpp.o
+.PHONY : src/team/plays/play_attack.o
+
+# target to build an object file
+src/team/plays/play_attack.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o
+.PHONY : src/team/plays/play_attack.cpp.o
+
+src/team/plays/play_attack.i: src/team/plays/play_attack.cpp.i
+.PHONY : src/team/plays/play_attack.i
+
+# target to preprocess a source file
+src/team/plays/play_attack.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.i
+.PHONY : src/team/plays/play_attack.cpp.i
+
+src/team/plays/play_attack.s: src/team/plays/play_attack.cpp.s
+.PHONY : src/team/plays/play_attack.s
+
+# target to generate assembly for a file
+src/team/plays/play_attack.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.s
+.PHONY : src/team/plays/play_attack.cpp.s
+
+src/team/plays/play_debug.o: src/team/plays/play_debug.cpp.o
+.PHONY : src/team/plays/play_debug.o
+
+# target to build an object file
+src/team/plays/play_debug.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o
+.PHONY : src/team/plays/play_debug.cpp.o
+
+src/team/plays/play_debug.i: src/team/plays/play_debug.cpp.i
+.PHONY : src/team/plays/play_debug.i
+
+# target to preprocess a source file
+src/team/plays/play_debug.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.i
+.PHONY : src/team/plays/play_debug.cpp.i
+
+src/team/plays/play_debug.s: src/team/plays/play_debug.cpp.s
+.PHONY : src/team/plays/play_debug.s
+
+# target to generate assembly for a file
+src/team/plays/play_debug.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.s
+.PHONY : src/team/plays/play_debug.cpp.s
+
+src/team/plays/play_goal_keeper.o: src/team/plays/play_goal_keeper.cpp.o
+.PHONY : src/team/plays/play_goal_keeper.o
+
+# target to build an object file
+src/team/plays/play_goal_keeper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o
+.PHONY : src/team/plays/play_goal_keeper.cpp.o
+
+src/team/plays/play_goal_keeper.i: src/team/plays/play_goal_keeper.cpp.i
+.PHONY : src/team/plays/play_goal_keeper.i
+
+# target to preprocess a source file
+src/team/plays/play_goal_keeper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.i
+.PHONY : src/team/plays/play_goal_keeper.cpp.i
+
+src/team/plays/play_goal_keeper.s: src/team/plays/play_goal_keeper.cpp.s
+.PHONY : src/team/plays/play_goal_keeper.s
+
+# target to generate assembly for a file
+src/team/plays/play_goal_keeper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.s
+.PHONY : src/team/plays/play_goal_keeper.cpp.s
+
 src/team/robot.o: src/team/robot.cpp.o
 .PHONY : src/team/robot.o
 
@@ -429,6 +501,15 @@ help:
 	@echo "... src/team/leader.o"
 	@echo "... src/team/leader.i"
 	@echo "... src/team/leader.s"
+	@echo "... src/team/plays/play_attack.o"
+	@echo "... src/team/plays/play_attack.i"
+	@echo "... src/team/plays/play_attack.s"
+	@echo "... src/team/plays/play_debug.o"
+	@echo "... src/team/plays/play_debug.i"
+	@echo "... src/team/plays/play_debug.s"
+	@echo "... src/team/plays/play_goal_keeper.o"
+	@echo "... src/team/plays/play_goal_keeper.i"
+	@echo "... src/team/plays/play_goal_keeper.s"
 	@echo "... src/team/robot.o"
 	@echo "... src/team/robot.i"
 	@echo "... src/team/robot.s"

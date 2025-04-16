@@ -17,6 +17,9 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/caiu/Desktop/ssl/Core/hades/src/team/Robot_controller.cpp" "CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/Robot_controller.cpp.o.d"
   "/home/caiu/Desktop/ssl/Core/hades/src/team/geometry/world.cpp" "CMakeFiles/hades.dir/src/team/geometry/world.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/geometry/world.cpp.o.d"
   "/home/caiu/Desktop/ssl/Core/hades/src/team/leader.cpp" "CMakeFiles/hades.dir/src/team/leader.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/leader.cpp.o.d"
+  "/home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp" "CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o.d"
+  "/home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_debug.cpp" "CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/plays/play_debug.cpp.o.d"
+  "/home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_goal_keeper.cpp" "CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/plays/play_goal_keeper.cpp.o.d"
   "/home/caiu/Desktop/ssl/Core/hades/src/team/robot.cpp" "CMakeFiles/hades.dir/src/team/robot.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/robot.cpp.o.d"
   "/home/caiu/Desktop/ssl/Core/hades/src/team/team_info.cpp" "CMakeFiles/hades.dir/src/team/team_info.cpp.o" "gcc" "CMakeFiles/hades.dir/src/team/team_info.cpp.o.d"
   )

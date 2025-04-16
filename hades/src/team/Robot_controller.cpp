@@ -11,16 +11,19 @@
 #include <chrono>
 
 
-void Robot_controller::start(team_info* team_ads) {
+void Robot_controller::start(team_info* team) {
     han.new_ia.robots[id].kick_speed_x = 3;
-    team = team_ads;
+    this->team = team;
     terminate = false;
+    std::cout << "iniciado " << id << std::endl;
+    team->roles[id] = -1;
     std::thread t(&Robot_controller::loop, this);
     t.detach();
 }
 
 void Robot_controller::stop() {
     team->active_robots[id] = false;
+    team->roles[id] = -1;
     terminate = true;
 }
 
@@ -35,7 +38,7 @@ void Robot_controller::loop() {
 
         //std::this_thread::sleep_for(std::chrono::milliseconds(10));
         recive_vision();
-
+        std::cout << id << ", " << team->roles[id] << std::endl;
         check_connection();
         role_table();
         publish();
@@ -61,7 +64,7 @@ void Robot_controller::loop() {
 std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[2], double goal[2], bool avoid_ball = true) {
     C_trajectory pf(false, false, 0, 1000, 50, 0);
     std::vector<double> double_start = {start[0], start[1]};
-    std::vector<double> double_goal = {static_cast<double>(goal[0]), static_cast<double>(goal[1])};
+    std::vector<double> double_goal = {goal[0], goal[1]};
 
     std::vector<circle> obs_circular = {};
     std::vector<rectangle> obs_rectangular = {};
@@ -194,7 +197,22 @@ void Robot_controller::follow_trajectory(std::vector<std::vector<double>>& traje
 
 void Robot_controller::role_table() {
     //TODO roles
+
+    if (team->roles[id] == -1) {
+        target_vel[0] = 0;
+        target_vel[1] = 0;
+        target_vyaw = 0;
+    }
+
     if (team->roles[id] == 0) {
+        target_vel[0] = 0;
+        target_vel[1] = 0;
+        target_vyaw = 0;
+    }
+    else if (team->roles[id] == 1) {
+        stricker_role();
+    }
+    if (team->roles[id] == 990) {
         if (size(current_trajectory) == 0) {
             int resolution = 120;
             for (int i = 0; i < resolution; i++) {
@@ -203,8 +221,11 @@ void Robot_controller::role_table() {
         }
         follow_trajectory(current_trajectory);
     }
-    else if (team->roles[id] == 1) {
-        stricker_role();
+    if (team->roles[id] == 991) {
+        if (size(current_trajectory) == 0) {
+            current_trajectory = {{2000, 2000}, {2000, -2000}, {-2000, -2000}, {-2000, 2000}};
+        }
+        follow_trajectory(current_trajectory);
     }
 }
 
@@ -272,7 +293,7 @@ void Robot_controller::recive_vision() {
             int rb_id = blue_robot.robot_id;
             if (rb_id == id) {
                 vel[0] = (pos[0] - blue_robot.position_x)/delta_time;
-                vel[1] = (pos[1] - blue_robot.position_x)/delta_time;
+                vel[1] = (pos[1] - blue_robot.position_y)/delta_time;
                 pos[0] = blue_robot.position_x;
                 pos[1] = blue_robot.position_y;
                 yaw = blue_robot.orientation;
@@ -306,7 +327,7 @@ void Robot_controller::recive_vision() {
             int rb_id = yellow_robot.robot_id;
             if (rb_id == id) {
                 vel[0] = (pos[0] - yellow_robot.position_x)/delta_time;
-                vel[1] = (pos[1] - yellow_robot.position_x)/delta_time;
+                vel[1] = (pos[1] - yellow_robot.position_y)/delta_time;
                 pos[0] = yellow_robot.position_x;
                 pos[1] = yellow_robot.position_y;
                 yaw = yellow_robot.orientation;

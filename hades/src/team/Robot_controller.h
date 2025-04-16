@@ -7,7 +7,6 @@
 #include <vector>
 #include <lcm/lcm-cpp.hpp>
 
-
 #include "robot.h"
 #include "team_info.h"
 #include "geometry/world.h"
@@ -50,6 +49,7 @@ private:
 
     //strategy status
     team_info* team;  //role; -1 unsigned
+
     int state = 0;  //estado
     robot allies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
                         robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
@@ -78,8 +78,8 @@ private:
     double dribbler_max = 1;
     double dribbler_min = 0.5;
 
-    double static_position_tolarance = radius/2;
-    double dynamic_position_tolarance = radius;
+    double static_position_tolarance = radius/4;
+    double dynamic_position_tolarance = radius/2;
     double static_angle_tolarance = 0.005;
 
     //field info

@@ -30,6 +30,12 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/team_info.h
         src/team/geometry/world.cpp
         src/team/geometry/world.h
+        src/team/plays/play_attack.cpp
+        src/team/plays/play_attack.h
+        src/team/plays/play_goal_keeper.cpp
+        src/team/plays/play_goal_keeper.h
+        src/team/plays/play_debug.cpp
+        src/team/plays/play_debug.h
 )
 
 target_include_directories(${PROJECT_NAME}

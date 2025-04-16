@@ -5,6 +5,7 @@
 #include "leader.h"
 #include <iostream>
 #include <thread>
+#include <algorithm>
 #include "../include/handlers.hpp"
 #include "team_info.h"
 
@@ -19,9 +20,8 @@ void leader::loop() {
     //}
     while (true) {
 
-
         recive_vision();
-
+        select_plays();
         //imprimir_ativos();
         for (int i = 0; i < 16; i++) {
             //se robo for detectado e nao estava no vetor active_robots
@@ -42,12 +42,14 @@ void leader::recive_vision() {
             allies[rb_id].pos[0] = blue_robot.position_x;
             allies[rb_id].pos[1] = blue_robot.position_y;
             allies[rb_id].yaw = blue_robot.orientation;
+            allies[rb_id].detected = true;
         }
         else {
             int rb_id = blue_robot.robot_id;
             enemies[rb_id].pos[0] = blue_robot.position_x;
             enemies[rb_id].pos[1] = blue_robot.position_y;
             enemies[rb_id].yaw = blue_robot.orientation;
+            enemies[rb_id].detected = true;
         }
     }
 
@@ -70,6 +72,8 @@ void leader::recive_vision() {
             enemies[rb_id].yaw = yellow_robot.orientation;
         }
     }
+    ball_pos[0] = han.new_vision.balls.position_x;
+    ball_pos[1] = han.new_vision.balls.position_y;
 }
 
 void leader::add_robot(int id) {
@@ -81,6 +85,75 @@ void leader::add_robot(int id) {
         robots[id].start(&team);
     }
 }
+
+void leader::select_plays() {
+    int num_active = 0;
+    int plays_score[4] = {0, 0, 0, 0};
+    int plays[4] = {0, 1, 2, 99};
+    int num_plays = 4;
+
+    for (int id : team.active_robots) {
+        if (id) {
+            num_active++;
+        }
+    }
+
+    plays_score[0] = goal_keeper.score(field, allies, enemies, ball_pos, team);
+    plays_score[1] = attack.score(field, allies, enemies, ball_pos, team);
+    plays_score[2] = -2;
+    plays_score[3] = debug.score(team, allies);
+
+    //std::cout << plays_score[0] << ", " << plays_score[1] << ", " << plays_score[2] << std::endl;
+
+
+    for (int i = 0; i < num_plays - 1; i++) {
+        // Flag para detectar se houve troca
+        bool swapped = false;
+
+        for (int j = 0; j < num_plays - i - 1; j++) {
+            // Se o elemento atual é maior que o próximo, troca
+            if (plays_score[j] < plays_score[j + 1]) {
+                std::swap(plays_score[j], plays_score[j + 1]);
+                std::swap(plays[j], plays[j + 1]);
+                swapped = true;
+            }
+        }
+        if (!swapped)
+            break;
+    }
+    int robot_id = 0;
+
+
+    std::vector<int> roles;
+    roles.reserve(16);
+    for (int i = 0; i < 16; i++) {
+        roles.push_back(-1);
+    }
+
+    for (int play : plays) {
+
+        if (play == 0) {
+            roles = goal_keeper.role_assing(team.active_robots, ball_pos, team, allies, enemies, roles);
+        }
+
+        if (play == 1) {
+            roles = attack.role_assing(team.active_robots, ball_pos, team, allies, enemies, roles);
+        }
+
+        if (play == 99) {
+            roles = debug.role_assing(team.active_robots, team, allies, roles);
+        }
+
+    }
+    for (int i = 0 ; i < 16 ; i++) {
+        team.roles[i] = roles[i];
+    }
+}
+
+
+
+
+
 
 void leader::imprimir_ativos() {
     std::cout << std::endl << "[";

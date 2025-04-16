@@ -9,6 +9,11 @@
 
 class team_info {
 public:
+    int goal_keeper_id = 0;
+    int left_side = false;
+
+    bool debug = true;
+
     int play = -1;
     int color = 0; // 0.blue 1.yellow
     int game_state = -1;
