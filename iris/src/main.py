@@ -19,14 +19,20 @@ class handlers:
     def handler_tartarus(self, channel, data_tartarus):
         han.msg_tartarus = tartarus.decode(data_tartarus)
         han.msg_tartarus.ssl_vision = False
-        han.msg_tartarus.team_blue = True              #alterar o time
-        
-        time.sleep(0.03)
+
+        # caso o GC esteja configurado
+        if(han.msg_GC.blue.name == "Cerberus"):
+            han.msg_tartarus.team_blue = True 
+        elif(han.msg_GC.yellow.name == "Cerberus"):
+            han.msg_tartarus.team_blue = False
+        # caso o GC não esteja configurado
+        else:
+            han.msg_tartarus.team_blue = True
+        time.sleep(0.01)
         lc.publish("tartarus", han.msg_tartarus.encode())
 
     def handler_ia(self, channel, data_ia):
         han.msg_ia = ia.decode(data_ia)
-        #lc.publish("IA", han.msg_ia.encode())
 
 han = handlers()
 lc = lcm.LCM()
@@ -48,8 +54,8 @@ try:
         print(f"    Gols time amarelo {han.msg_GC.yellow.score} ")
         print(f"    Gols time azul   {han.msg_GC.blue.score} ")
         print(f"    Field length: {han.msg_vision.field.field_length}\n")
-        print(f"    processo    = {han.msg_tartarus.processo}")
-        print(f"    estrategia    = {han.msg_tartarus.estrategia}")
+        print(f"    processo    = {han.msg_ia.processo}")
+        print(f"    estrategia    = {han.msg_ia.estrategia}")
         print(f"    ssl_vision    = {han.msg_tartarus.ssl_vision}")
         print(f"    team_blue    = {han.msg_tartarus.team_blue}")
         lc.handle()

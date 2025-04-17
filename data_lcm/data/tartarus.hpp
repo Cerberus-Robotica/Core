@@ -16,16 +16,6 @@ namespace data
 class tartarus
 {
     public:
-        int16_t    estrategia;
-
-        /**
-         * diz a estrategia atual dos robos
-         */
-        int16_t    processo;
-
-        /**
-         * diz o processo atual do Hades(IA)
-         */
         int8_t     ssl_vision;
 
         /**
@@ -129,12 +119,6 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
 {
     int pos = 0, tlen;
 
-    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->estrategia, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->processo, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -148,12 +132,6 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
 {
     int pos = 0, tlen;
 
-    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->estrategia, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->processo, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -166,8 +144,6 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
 int tartarus::_getEncodedSizeNoHash() const
 {
     int enc_size = 0;
-    enc_size += __int16_t_encoded_array_size(NULL, 1);
-    enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
     return enc_size;
@@ -175,7 +151,7 @@ int tartarus::_getEncodedSizeNoHash() const
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x580abcd43c077e7dLL;
+    uint64_t hash = 0xd0f2998d93e9865fLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

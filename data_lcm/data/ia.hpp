@@ -20,6 +20,16 @@ class ia
     public:
         int64_t    timestamp;
 
+        int16_t    estrategia;
+
+        /**
+         * diz a estrategia atual dos robos
+         */
+        int16_t    processo;
+
+        /**
+         * diz o processo atual do Hades(IA)
+         */
         int16_t    robots_size;
 
         /**
@@ -126,6 +136,12 @@ int ia::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __int64_t_encode_array(buf, offset + pos, maxlen - pos, &this->timestamp, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->estrategia, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->processo, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->robots_size, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -142,6 +158,12 @@ int ia::_decodeNoHash(const void *buf, int offset, int maxlen)
     int pos = 0, tlen;
 
     tlen = __int64_t_decode_array(buf, offset + pos, maxlen - pos, &this->timestamp, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->estrategia, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->processo, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->robots_size, 1);
@@ -165,6 +187,8 @@ int ia::_getEncodedSizeNoHash() const
     int enc_size = 0;
     enc_size += __int64_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
     for (int a0 = 0; a0 < this->robots_size; a0++) {
         enc_size += this->robots[a0]._getEncodedSizeNoHash();
     }
@@ -179,7 +203,7 @@ uint64_t ia::_computeHash(const __lcm_hash_ptr *p)
             return 0;
     const __lcm_hash_ptr cp = { p, ia::getHash };
 
-    uint64_t hash = 0x3fc5c13113e7f067LL +
+    uint64_t hash = 0xd7cad144fbd63f1aLL +
          data::robot::_computeHash(&cp);
 
     return (hash<<1) + ((hash>>63)&1);

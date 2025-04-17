@@ -56,6 +56,8 @@ void recebe_dados_GC() {
         //system("clear"); 
         std::cout << "Timestamp: " << referee.packet_timestamp()/1000000 << std::endl;
         std::cout << "GOls azuis: " << my_gc_data.blue.score << "\n" << std::endl;
+        std::cout << "time azul: " << my_gc_data.blue.name << std::endl;
+        std::cout << "time amarelo: " << my_gc_data.yellow.name << std::endl;
         lcm.publish("GC", &my_gc_data);
     }  
 }

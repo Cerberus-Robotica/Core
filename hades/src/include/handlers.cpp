@@ -56,10 +56,9 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
         this->new_ia.robots.push_back(robots_ia);
     }
 
-    this->new_vision.field.field_length = msg_vision->field.field_length;
     this->new_vision = *msg_vision;
 
-    lc->publish("IA", &this->new_ia);
+    //lc->publish("IA", &this->new_ia);
 }
 
 
@@ -69,10 +68,6 @@ void handlers::handle_tartarus(const lcm::ReceiveBuffer* rbuf,
     //std::cout << "Received message on channel \"" << chan << "\"" << std::endl;
 
     this->new_tartarus = *msg_tartarus;
-    this->new_tartarus.processo = 1;
-    this->new_tartarus.estrategia = 1;
 
-    //std::this_thread::sleep_for(std::chrono::milliseconds(30));
-
-    lc->publish("tartarus", &this->new_tartarus);
+    //lc->publish("tartarus", &this->new_tartarus);
 }

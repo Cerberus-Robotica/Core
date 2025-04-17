@@ -380,8 +380,8 @@ void Robot_controller::publish() {
     } else {
         han.new_ia.robots[id].kick_speed_x = 0;
     }
+    han.new_ia.estrategia = 2;
     han.lc->publish("IA", &han.new_ia);
-    han.new_tartarus.estrategia = 2;
-    han.lc->publish("tartarus", &han.new_tartarus);
+    //han.lc->publish("tartarus", &han.new_tartarus);
 
 }

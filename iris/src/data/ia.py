@@ -11,17 +11,29 @@ import data
 
 class ia(object):
 
-    __slots__ = ["timestamp", "robots_size", "robots"]
+    __slots__ = ["timestamp", "estrategia", "processo", "robots_size", "robots"]
 
-    __typenames__ = ["int64_t", "int16_t", "data.robot"]
+    __typenames__ = ["int64_t", "int16_t", "int16_t", "int16_t", "data.robot"]
 
-    __dimensions__ = [None, None, ["robots_size"]]
+    __dimensions__ = [None, None, None, None, ["robots_size"]]
 
     def __init__(self):
         self.timestamp = 0
         """ LCM Type: int64_t """
-        self.robots_size = 0
+        self.estrategia = 0
         """ LCM Type: int16_t """
+        self.processo = 0
+        """
+        diz a estrategia atual dos robos
+        LCM Type: int16_t
+        """
+
+        self.robots_size = 0
+        """
+        diz o processo atual do Hades(IA)
+        LCM Type: int16_t
+        """
+
         self.robots = []
         """ LCM Type: data.robot[robots_size] """
 
@@ -32,7 +44,7 @@ class ia(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">qh", self.timestamp, self.robots_size))
+        buf.write(struct.pack(">qhhh", self.timestamp, self.estrategia, self.processo, self.robots_size))
         for i0 in range(self.robots_size):
             assert self.robots[i0]._get_packed_fingerprint() == data.robot._get_packed_fingerprint()
             self.robots[i0]._encode_one(buf)
@@ -50,7 +62,7 @@ class ia(object):
     @staticmethod
     def _decode_one(buf):
         self = ia()
-        self.timestamp, self.robots_size = struct.unpack(">qh", buf.read(10))
+        self.timestamp, self.estrategia, self.processo, self.robots_size = struct.unpack(">qhhh", buf.read(14))
         self.robots = []
         for i0 in range(self.robots_size):
             self.robots.append(data.robot._decode_one(buf))
@@ -60,7 +72,7 @@ class ia(object):
     def _get_hash_recursive(parents):
         if ia in parents: return 0
         newparents = parents + [ia]
-        tmphash = (0x3fc5c13113e7f067+ data.robot._get_hash_recursive(newparents)) & 0xffffffffffffffff
+        tmphash = (0xd7cad144fbd63f1a+ data.robot._get_hash_recursive(newparents)) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _packed_fingerprint = None
