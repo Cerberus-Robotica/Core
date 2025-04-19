@@ -72,5 +72,5 @@ Game-Controller:
 
 LCM spy:
 
-	~$ lcm-spy
+	lcm-spy
 
