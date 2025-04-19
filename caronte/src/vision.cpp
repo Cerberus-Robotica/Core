@@ -5,9 +5,8 @@
 #include <thread>
 
 data::vision my_vision_data;
-//int sock_vision;
-//char buffer_vision[BUFFER_SIZE];
 
+//thread para receber os dados da visão e publicar no tópico "vision", pelo lcm
 void recebe_dados_vision() {
 
     lcm::LCM lcm;
@@ -17,7 +16,7 @@ void recebe_dados_vision() {
     data::detection_robots new_robot;
 
     std::unordered_set<int> yellow_ids;
-    std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos
+    std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos, de robôs
 
     SSL_GeometryData geometry;
     SSL_GeometryFieldSize field;
@@ -134,7 +133,7 @@ void recebe_dados_vision() {
     std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
 
     // Publica os dados no tópico "vision"
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(16));
     lcm.publish("vision", &my_vision_data);
 
     yellow_ids.clear();

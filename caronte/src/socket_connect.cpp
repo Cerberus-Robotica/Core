@@ -46,7 +46,7 @@ void setupVisionSocket() {
     memset(&addr_vision, 0, sizeof(addr_vision));
     addr_vision.sin_family = AF_INET;
     addr_vision.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr_vision.sin_port = htons(MCAST_PORT_VISION);
+    addr_vision.sin_port = htons(MCAST_PORT_VISION_GRSIM);
 
     bind(sock_vision, (struct sockaddr*)&addr_vision, sizeof(addr_vision));
 

@@ -16,6 +16,7 @@ int main(int argc, char ** argv)
     Handler handler;
     handler.lc = &lcm;
 
+    //configura o lcm para receber do tópico "tartarus" pelo endereço especificado
     lcm.subscribe("tartarus", &Handler::handle_tartarus, &handler);
 
     setupGCSocket();
@@ -23,7 +24,7 @@ int main(int argc, char ** argv)
 
     std::thread t1(recebe_dados_GC);
     std::thread t2(recebe_dados_vision);
-    std::thread lcm_thread([&lcm]() {
+    std::thread lcm_thread([&lcm]() { //cria um thread da biblioteca do C para o lcm esperar pelas mensagens
         while (true) {
             lcm.handle();
         }

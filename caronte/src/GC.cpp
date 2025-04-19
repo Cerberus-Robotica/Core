@@ -4,6 +4,7 @@
 
 data::game_controller my_gc_data;
 
+// thread que recebe os dados do Game Controller e publica os dados no tópico "GC", pelo do lcm
 void recebe_dados_GC() {
 
     lcm::LCM lcm;
@@ -12,10 +13,9 @@ void recebe_dados_GC() {
     std::cout << "Conectando ao GC..." << std::endl;
     while(true){
         
-        // Recebendo os dados do socket GC
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);
-
+            // Recebendo os dados do socket GC
         int bytes_received_GC = recvfrom(sock_GC, buffer_GC, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
         
         if (bytes_received_GC > 0) {
@@ -54,10 +54,10 @@ void recebe_dados_GC() {
             my_gc_data.yellow.goalkeeper_id = referee.yellow().goalkeeper();
         }
         //system("clear"); 
-        std::cout << "Timestamp: " << referee.packet_timestamp()/1000000 << std::endl;
-        std::cout << "GOls azuis: " << my_gc_data.blue.score << "\n" << std::endl;
-        std::cout << "time azul: " << my_gc_data.blue.name << std::endl;
-        std::cout << "time amarelo: " << my_gc_data.yellow.name << std::endl;
+        //std::cout << "Timestamp: " << referee.packet_timestamp()/1000000 << std::endl;
+        //std::cout << "GOls azuis: " << my_gc_data.blue.score << "\n" << std::endl;
+        //std::cout << "time azul: " << my_gc_data.blue.name << std::endl;
+        //std::cout << "time amarelo: " << my_gc_data.yellow.name << std::endl;
         lcm.publish("GC", &my_gc_data);
     }  
 }
