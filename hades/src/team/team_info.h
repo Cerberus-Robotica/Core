@@ -12,7 +12,7 @@ public:
     int goal_keeper_id = 0;
     int left_side = false;
 
-    bool debug = false;
+    bool debug = true;
 
     int play = -1;
     int color = 1; // 0.blue 1.yellow

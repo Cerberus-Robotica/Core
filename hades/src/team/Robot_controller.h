@@ -65,9 +65,10 @@ private:
 
 
     //extreme params
-    double vxy_max = 1;
+    double vxy_max = 3;
     double vxy_min = 0.2;
-    double vyaw_max = 1000;
+    double a_xy_max = 3;
+    double vyaw_max = 10;
     double vyaw_min = 0.5;
     double kicker_x_max = 3;
     double kicker_x_min = 0.5;
@@ -77,8 +78,8 @@ private:
     double dribbler_min = 0.5;
 
     //angle and position tolerance
-    double static_position_tolarance = radius/4;
-    double dynamic_position_tolarance = radius/2;
+    double static_position_tolarance = radius/8;
+    double dynamic_position_tolarance = radius/16;
     double static_angle_tolarance = 0.005;
 
     //PID control
@@ -92,6 +93,11 @@ private:
     double KI_mov = 0;
     double KD_mov = 0;
     double I_mov = 0;
+
+    //flags
+    bool positioned = true;
+    bool alligned = true;
+
 
     //field info
     world_model world;

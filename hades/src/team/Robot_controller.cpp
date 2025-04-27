@@ -39,13 +39,16 @@ void Robot_controller::loop() {
         receive_vision();
         //std::cout << id << ", " << team->roles[id] << std::endl;
         check_connection();
-        turn_to(world.ball_pos);
-        //role_table();
+        role_table();
         publish();
         cycles++;
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
         delta_time = delta.count();
+        if (delta_time == 0 or delta_time < 0) {
+            std::cout << "??" << std::endl;
+            delta_time = 1/60;
+        }
         if (delta_time != 0) {
             continue;
             double frequency = cycles/delta_time;
@@ -61,6 +64,7 @@ void Robot_controller::loop() {
             }
         }
     }
+    std::cout << "Encerrado " << id << std::endl;
 }
 
 
@@ -104,18 +108,120 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
 
 
 std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<double>> trajectory) {
-    std::vector<double> vect_pos = {pos[0], pos[1]};
-    std::vector<double> v_vet = subtract(trajectory[1], vect_pos);
-    return v_vet;
+    std::vector<double> delta = {trajectory[1][0] - pos[0], trajectory[1][1] - pos[1]};
+    double dist = norm(delta) / 1000.0; // metros
+    std::vector<double> direction = normalize(1, delta);
+
+    double curve_safe_speed = vxy_min;
+    double v_target_magnitude = vxy_max;
+    if (trajectory.size() > 2) {
+        std::vector<double> p0 = {pos[0], pos[1]};
+        std::vector<double> p1 = {trajectory[1][0], trajectory[1][1]};
+        std::vector<double> p2 = {trajectory[2][0], trajectory[2][1]};
+
+        std::vector<double> v1 = {p1[0] - p0[0], p1[1] - p0[1]};
+        std::vector<double> v2 = {p2[0] - p1[0], p2[1] - p1[1]};
+
+        double dot_product = v1[0] * v2[0] + v1[1] * v2[1];
+        double norm_v1 = sqrt(v1[0]*v1[0] + v1[1]*v1[1]);
+        double norm_v2 = sqrt(v2[0]*v2[0] + v2[1]*v2[1]);
+        double angle_between = acos(std::clamp(dot_product / (norm_v1 * norm_v2 + 1e-6), -1.0, 1.0));
+
+
+
+        curve_safe_speed = vxy_max * sin(angle_between/12);
+        std::cout << "curve_safe_speed: " << curve_safe_speed << std::endl;
+        if (angle_between < 91 * M_PI / 180.0) {        //TODO rever essa condicao
+            std::cout << "AAAAAAAAAAAAAAAA" << std::endl;
+            curve_safe_speed = vxy_min;
+        }
+
+        double current_speed = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
+
+    }
+    double brake_distance = (vxy_max*vxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * a_xy_max);
+    brake_distance = std::max(brake_distance, 0.0); // proteção
+    if (dist <= brake_distance) {
+        // Já tá na hora de começar a desacelerar para velocidade da curva
+        v_target_magnitude = curve_safe_speed;
+    } else {
+        // Pode manter vxy_max por enquanto
+        v_target_magnitude = vxy_max;
+    }
+
+    // Define o vetor de velocidade desejada
+    std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
+    std::cout << v_target_magnitude << std::endl;
+    // Corrige para alcançar a velocidade-alvo
+    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
+    std::vector<double> acceleration = {
+        std::clamp(error[0] / delta_time, -a_xy_max, a_xy_max),
+        std::clamp(error[1] / delta_time, -a_xy_max, a_xy_max)
+    };
+
+        std::cout << "ASDWASD" << std::endl;
+        //std::cout << delta_time << std::endl;
+        //std::cout << vel[0] << ", " << vel[1] << std::endl;
+        //std::cout << sqrt(pow(vel[0] + acceleration[0]*delta_time, 2) + pow(vel[1] + acceleration[1]*delta_time, 2)) << std::endl;
+    std::cout << acceleration[0] << ", " << acceleration[1] << std::endl;
+    return {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
 }
 
+
+
+/*
+ *std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<double>> trajectory) {
+    std::vector<double> vect_pos = {pos[0], pos[1]};
+    std::vector<double> delta = subtract(trajectory[1], vect_pos);
+
+    auto dist = norm(delta)/1000;
+    auto direction = normalize(1, delta);
+    double v_safe = sqrt(2*a_xy_max*dist);
+
+    std::vector<double> v_target = {v_safe*direction[0], v_safe*direction[1]};
+
+    if (v_safe > vxy_max) v_target = {vxy_max*direction[0], vxy_max*direction[1]};
+
+    double dot = vel[0]*direction[0] + vel[1]*direction[1];
+    double norm_vel = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
+    double vel_parallel = dot; // como direction é normalizado
+
+    double vel_lateral = sqrt(std::max(0.0, norm_vel*norm_vel - vel_parallel*vel_parallel));
+
+    // Quanto de aceleração lateral precisa para corrigir
+    double a_lateral = vel_lateral / delta_time;
+
+    // Se a aceleração lateral for maior que o permitido
+    if (a_lateral > a_xy_max) {
+        // Precisa reduzir velocidade para garantir curva segura
+        double max_vel_lateral = a_xy_max * delta_time;
+        double new_norm_vel = sqrt(vel_parallel*vel_parallel + max_vel_lateral*max_vel_lateral);
+
+        // Aponta para a direção desejada, com nova magnitude
+        v_target = {new_norm_vel * direction[0], new_norm_vel * direction[1]};
+    }
+
+
+    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
+
+    std::vector<double> acceleration = {0, 0};
+    acceleration[0] = std::clamp(error[0]/delta_time, -a_xy_max, a_xy_max);
+    acceleration[1] = std::clamp(error[1]/delta_time, -a_xy_max, a_xy_max);
+
+    std::vector<double> v_vet = {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
+    std::cout << "ASDWASDW" << std::endl;
+    std::cout << trajectory[1][0] << ", " << trajectory[1][1] << std::endl;
+    std::cout << vel[0] << ", " << vel[1] << std::endl;
+    std::cout << v_vet[0] << ", " << v_vet[1] << std::endl;
+    std::cout << delta_time << std::endl;
+    return v_vet;
+}
+*/
 std::vector<double> Robot_controller::motion_control(std::vector<double> v_vet) {
     const double ang = -yaw;
     double x = v_vet[0];
     double y = v_vet[1];
     v_vet = {x * cos(ang) - y * sin(ang), x * sin(ang) + y * cos(ang)};
-    double db_vmax = static_cast<double>(vxy_max);
-    v_vet = normalize(db_vmax, v_vet);
     return v_vet;
 }
 
@@ -125,11 +231,15 @@ void Robot_controller::move_to(double goal[2], bool avoid_ball = true) {
         target_vel[0] = 0;
         target_vel[1] = 0;
         target_vyaw = 0;
+        positioned = true;
         return;
     }
+    positioned = false;
+
     auto trajectory = find_trajectory(pos, goal, avoid_ball);
     auto v_vet = motion_planner(trajectory);
     v_vet = motion_control(v_vet);
+
     target_vel[0] = v_vet[0];
     target_vel[1] = v_vet[1];
 }
@@ -166,8 +276,10 @@ void Robot_controller::turn_to(double goal[2]) {
     double delta = find_angle_error(goal);
     if (fabs(delta) < static_angle_tolarance) {
         target_vyaw = 0;
+        alligned = true;
         return;
     }
+    alligned = false;
     target_vyaw = turn_control(delta);
 }
 
@@ -205,11 +317,19 @@ void Robot_controller::follow_trajectory(std::vector<std::vector<double>>& traje
     if (size(trajectory) == 0) {
         target_vel[0] = 0;
         target_vel[1] = 0;
+        positioned = true;
         return;
     }
 
     double next_point[2] = {trajectory[0][0], trajectory[0][1]};
-    move_to(next_point);
+    auto mid_trajectory = find_trajectory(pos, next_point, true);
+    mid_trajectory.insert(mid_trajectory.end(), trajectory.begin(), trajectory.end());
+    auto v_vet = motion_planner(mid_trajectory);
+    v_vet = motion_control(v_vet);
+
+    target_vel[0] = v_vet[0];
+    target_vel[1] = v_vet[1];
+    positioned = false;
 
 }
 
@@ -256,40 +376,24 @@ void Robot_controller::role_table() {
 void Robot_controller::stricker_role() {
     //TODO melhorar stricker_role
     //std::cout << state << std::endl;
+
+    double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
+    auto traj = find_trajectory(world.ball_pos, goal, false);
+    std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], radius);
+    double next_point[2] = {traj[1][0], traj[1][1]};
+
     if (state == 0) {
-
-        //double goal[2] = {(field.their_goal[0][1] + field.their_goal[0][0])/2, (field.their_goal[1][1] + field.their_goal[1][0])/2};
-
-        //TODO REMOVER
-        double goal[2] = {(world.our_goal[0][1] + world.our_goal[0][0])/2, (world.our_goal[1][1] + world.our_goal[1][0])/2};
-
-        auto traj = find_trajectory(world.ball_pos, goal, false);
-
-        std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], radius);
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};;
         move_to(db_kick_pos);
-        if (sqrt(pow(pos[0] - db_kick_pos[0], 2) + pow(pos[1] - db_kick_pos[1], 2)) < radius/2) {
-            target_vel[0] = 0;
-            target_vel[1] = 0;
+        turn_to(next_point);
+        if (positioned and alligned) {
             state = 1;
             return;
         }
-        turn_to(world.ball_pos);
 
     } else if (state == 1) {
-        target_vel[0] = 0;
-        target_vel[1] = 0;
-        turn_to(world.ball_pos);
-        if (sqrt(pow(pos[0] - world.ball_pos[0], 2) + pow(pos[1] - world.ball_pos[1], 2)) > 2*radius) {
-            state = 0;
-            return;
-        }
-        if (target_vyaw == 0) {
-            state += 1;
-        }
-    } else if (state == 2) {
         kick();
-    } else if (state == 3) {
+    } else if (state == 2) {
         state = 0;
     }
 }
@@ -383,8 +487,8 @@ void Robot_controller::receive_vision() {
                 double new_yaw = blue_robot.orientation;
                 if (new_yaw < 0) new_yaw += 2*M_PI;
                 if (delta_time > 0) {
-                    vel[0] = (pos[0] - blue_robot.position_x)/delta_time;
-                    vel[1] = (pos[1] - blue_robot.position_y)/delta_time;
+                    vel[0] = (blue_robot.position_x - pos[0])/(delta_time*1000);
+                    vel[1] = (blue_robot.position_y - pos[1])/(delta_time*1000);
                     vyaw = (yaw - new_yaw)/delta_time;
                 }
                 yaw = new_yaw;
@@ -393,8 +497,8 @@ void Robot_controller::receive_vision() {
                 detected = true;
                 continue;
             }
-            world.allies[rb_id].vel[0] = (blue_robot.position_x - world.allies[rb_id].pos[0])/delta_time;
-            world.allies[rb_id].vel[1] = (blue_robot.position_y - world.allies[rb_id].pos[1])/delta_time;
+            world.allies[rb_id].vel[0] = (blue_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000);
+            world.allies[rb_id].vel[1] = (blue_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000);
             world.allies[rb_id].pos[0] = blue_robot.position_x;
             world.allies[rb_id].pos[1] = blue_robot.position_y;
             world.allies[rb_id].yaw = blue_robot.orientation;
@@ -408,8 +512,8 @@ void Robot_controller::receive_vision() {
                     world.enemies.emplace_back(i);
                 }
             }
-            world.enemies[rb_id].vel[0] = (blue_robot.position_x - world.enemies[rb_id].pos[0])/delta_time;
-            world.enemies[rb_id].vel[1] = (blue_robot.position_y - world.enemies[rb_id].pos[1])/delta_time;
+            world.enemies[rb_id].vel[0] = (blue_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000);
+            world.enemies[rb_id].vel[1] = (blue_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000);
             world.enemies[rb_id].pos[0] = blue_robot.position_x;
             world.enemies[rb_id].pos[1] = blue_robot.position_y;
             world.enemies[rb_id].yaw = blue_robot.orientation;
@@ -431,8 +535,8 @@ void Robot_controller::receive_vision() {
                 double new_yaw = yellow_robot.orientation;
                 if (new_yaw < 0) new_yaw += 2*M_PI;
                 if (delta_time > 0) {
-                    vel[0] = (pos[0] - yellow_robot.position_x)/delta_time;
-                    vel[1] = (pos[1] - yellow_robot.position_y)/delta_time;
+                    vel[0] = (yellow_robot.position_x - pos[0])/(delta_time*1000);
+                    vel[1] = (yellow_robot.position_y - pos[1])/(delta_time*1000);
                     vyaw = (yaw - new_yaw)/delta_time;
                 }
                 yaw = new_yaw;
@@ -441,8 +545,8 @@ void Robot_controller::receive_vision() {
                 detected = true;
                 continue;
             }
-            world.allies[rb_id].vel[0] = (yellow_robot.position_x - world.allies[rb_id].pos[0])/delta_time;
-            world.allies[rb_id].vel[1] = (yellow_robot.position_y - world.allies[rb_id].pos[1])/delta_time;
+            world.allies[rb_id].vel[0] = (yellow_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000);
+            world.allies[rb_id].vel[1] = (yellow_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000);
             world.allies[rb_id].pos[0] = yellow_robot.position_x;
             world.allies[rb_id].pos[1] = yellow_robot.position_y;
             world.allies[rb_id].yaw = yellow_robot.orientation;
@@ -456,8 +560,8 @@ void Robot_controller::receive_vision() {
                     world.enemies.emplace_back(i);
                 }
             }
-            world.enemies[rb_id].vel[0] = (yellow_robot.position_x - world.enemies[rb_id].pos[0])/delta_time;
-            world.enemies[rb_id].vel[1] = (yellow_robot.position_y - world.enemies[rb_id].pos[1])/delta_time;
+            world.enemies[rb_id].vel[0] = (yellow_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000);
+            world.enemies[rb_id].vel[1] = (yellow_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000);
             world.enemies[rb_id].pos[0] = yellow_robot.position_x;
             world.enemies[rb_id].pos[1] = yellow_robot.position_y;
             world.enemies[rb_id].yaw = yellow_robot.orientation;
@@ -466,8 +570,8 @@ void Robot_controller::receive_vision() {
         }
     }
     if (delta_time != 0) {
-        world.ball_speed[0] = (han.new_vision.balls.position_x - world.ball_pos[0])/delta_time;
-        world.ball_speed[1] = (han.new_vision.balls.position_y - world.ball_pos[1])/delta_time;
+        world.ball_speed[0] = (han.new_vision.balls.position_x - world.ball_pos[0])/(delta_time*1000);
+        world.ball_speed[1] = (han.new_vision.balls.position_y - world.ball_pos[1])/(delta_time*1000);
     }
     world.ball_pos[0] = han.new_vision.balls.position_x;
     world.ball_pos[1] = han.new_vision.balls.position_y;

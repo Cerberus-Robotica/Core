@@ -35,7 +35,7 @@ std::vector<double> ortogonal_projection(std::vector<double>& u, std::vector<dou
     return {u[0]*mod, u[1]*mod};
 }
 
-std::vector<double> normalize(double& alpha, std::vector<double>& vet) {
+std::vector<double> normalize(double alpha, std::vector<double>& vet) {
     double norm_vet = norm(vet);
     if (norm_vet == 0) {
         return {0, 0};

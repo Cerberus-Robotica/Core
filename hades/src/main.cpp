@@ -22,7 +22,6 @@ int main() {
         }
     });
 
-    std::cout << "asd";
 
     leader ia;
     ia.start();
