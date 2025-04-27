@@ -9,7 +9,7 @@
 
 #include "robot.h"
 #include "team_info.h"
-#include "geometry/world.h"
+#include "geometry/world_model.h"
 
 class Robot_controller {
 
@@ -51,10 +51,7 @@ private:
     team_info* team;  //role; -1 unsigned
 
     int state = 0;  //estado
-    robot allies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
-                        robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
-    robot enemies[16] = {robot(0), robot(1), robot(2), robot(3), robot(4), robot(5), robot(6), robot(7), robot(8),
-                        robot(9), robot(10), robot(11), robot(12), robot(13), robot(14), robot(15)};
+
     double delta_time = 0;
     std::vector<std::vector<double>> current_trajectory = {};
 
@@ -63,13 +60,14 @@ private:
     //on-field detection
     bool detected = true;
     int offline_counter = 0;
-    int max_offline_counter = 1000;
+    int max_offline_counter = 100;
     bool terminate = false;
+
 
     //extreme params
     double vxy_max = 1;
     double vxy_min = 0.2;
-    double vyaw_max = 1;
+    double vyaw_max = 1000;
     double vyaw_min = 0.5;
     double kicker_x_max = 3;
     double kicker_x_min = 0.5;
@@ -78,15 +76,26 @@ private:
     double dribbler_max = 1;
     double dribbler_min = 0.5;
 
+    //angle and position tolerance
     double static_position_tolarance = radius/4;
     double dynamic_position_tolarance = radius/2;
     double static_angle_tolarance = 0.005;
 
+    //PID control
+    double KP_ang = 10;
+    double KI_ang = 0.0005;
+    double KD_ang = 5;
+    double I_ang = 0;
+    double last_delta = 0;
+
+    double KP_mov = 0;
+    double KI_mov = 0;
+    double KD_mov = 0;
+    double I_mov = 0;
+
     //field info
-    world field;
+    world_model world;
     int64_t last_time_stamp = 0;
-    double ball_pos[2] = {0, 0};
-    double ball_speed[2] = {0, 0};
 
 
     void check_connection();
@@ -99,14 +108,19 @@ private:
 
 
     void turn_to(double goal[2]);
+    double find_angle_error(double goal[2]);
+    double turn_control(double delta);
+
+
     void kick();
     void follow_trajectory(std::vector<std::vector<double>>& trajectory);
 
-    void recive_vision();
+    void receive_vision();
     void publish();
 
     void role_table();
     void stricker_role();
+    void goal_keeper_role();
 };
 
 

@@ -297,29 +297,29 @@ src/team/Robot_controller.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/Robot_controller.cpp.s
 .PHONY : src/team/Robot_controller.cpp.s
 
-src/team/geometry/world.o: src/team/geometry/world.cpp.o
-.PHONY : src/team/geometry/world.o
+src/team/geometry/world_model.o: src/team/geometry/world_model.cpp.o
+.PHONY : src/team/geometry/world_model.o
 
 # target to build an object file
-src/team/geometry/world.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world.cpp.o
-.PHONY : src/team/geometry/world.cpp.o
+src/team/geometry/world_model.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world_model.cpp.o
+.PHONY : src/team/geometry/world_model.cpp.o
 
-src/team/geometry/world.i: src/team/geometry/world.cpp.i
-.PHONY : src/team/geometry/world.i
+src/team/geometry/world_model.i: src/team/geometry/world_model.cpp.i
+.PHONY : src/team/geometry/world_model.i
 
 # target to preprocess a source file
-src/team/geometry/world.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world.cpp.i
-.PHONY : src/team/geometry/world.cpp.i
+src/team/geometry/world_model.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world_model.cpp.i
+.PHONY : src/team/geometry/world_model.cpp.i
 
-src/team/geometry/world.s: src/team/geometry/world.cpp.s
-.PHONY : src/team/geometry/world.s
+src/team/geometry/world_model.s: src/team/geometry/world_model.cpp.s
+.PHONY : src/team/geometry/world_model.s
 
 # target to generate assembly for a file
-src/team/geometry/world.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world.cpp.s
-.PHONY : src/team/geometry/world.cpp.s
+src/team/geometry/world_model.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hades.dir/build.make CMakeFiles/hades.dir/src/team/geometry/world_model.cpp.s
+.PHONY : src/team/geometry/world_model.cpp.s
 
 src/team/leader.o: src/team/leader.cpp.o
 .PHONY : src/team/leader.o
@@ -495,9 +495,9 @@ help:
 	@echo "... src/team/Robot_controller.o"
 	@echo "... src/team/Robot_controller.i"
 	@echo "... src/team/Robot_controller.s"
-	@echo "... src/team/geometry/world.o"
-	@echo "... src/team/geometry/world.i"
-	@echo "... src/team/geometry/world.s"
+	@echo "... src/team/geometry/world_model.o"
+	@echo "... src/team/geometry/world_model.i"
+	@echo "... src/team/geometry/world_model.s"
 	@echo "... src/team/leader.o"
 	@echo "... src/team/leader.i"
 	@echo "... src/team/leader.s"

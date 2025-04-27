@@ -28,8 +28,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/include/handlers.cpp
         src/team/team_info.cpp
         src/team/team_info.h
-        src/team/geometry/world.cpp
-        src/team/geometry/world.h
+        src/team/geometry/world_model.cpp
+        src/team/geometry/world_model.h
         src/team/plays/play_attack.cpp
         src/team/plays/play_attack.h
         src/team/plays/play_goal_keeper.cpp

@@ -47,11 +47,12 @@ CMakeFiles/hades.dir/src/team/geometry/world.cpp.o: \
  /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../../c_trajectory/geometry/rectangle.h \
  /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../../c_trajectory/geometry/Vetop.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
- /usr/include/c++/11/bits/deque.tcc /usr/include/c++/11/iostream \
- /usr/include/c++/11/ostream /usr/include/c++/11/ios \
- /usr/include/c++/11/iosfwd /usr/include/c++/11/bits/stringfwd.h \
- /usr/include/c++/11/bits/postypes.h /usr/include/c++/11/cwchar \
- /usr/include/wchar.h \
+ /usr/include/c++/11/bits/deque.tcc \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../team_info.h \
+ /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
+ /usr/include/c++/11/ios /usr/include/c++/11/iosfwd \
+ /usr/include/c++/11/bits/stringfwd.h /usr/include/c++/11/bits/postypes.h \
+ /usr/include/c++/11/cwchar /usr/include/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \

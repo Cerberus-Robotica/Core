@@ -19,8 +19,8 @@ void leader::loop() {
     //    add_robot(i);
     //}
     while (true) {
-
-        recive_vision();
+        receive_config();
+        receive_vision();
         select_plays();
         //imprimir_ativos();
         for (int i = 0; i < 16; i++) {
@@ -31,7 +31,7 @@ void leader::loop() {
 
 }
 
-void leader::recive_vision() {
+void leader::receive_vision() {
     for (auto blue_robot : han.new_vision.robots_blue) {
         if (team.color == 0) {
             int rb_id = blue_robot.robot_id;
@@ -76,6 +76,16 @@ void leader::recive_vision() {
     ball_pos[1] = han.new_vision.balls.position_y;
 }
 
+void leader::receive_config() {
+    if (han.new_tartarus.team_blue == 1) {
+        team.color = 0;
+    }
+    else {
+        team.color = 1;
+    }
+
+}
+
 void leader::add_robot(int id) {
     if (id >= sizeof(team.active_robots)) {
         return;
@@ -98,8 +108,8 @@ void leader::select_plays() {
         }
     }
 
-    plays_score[0] = goal_keeper.score(field, allies, enemies, ball_pos, team);
-    plays_score[1] = attack.score(field, allies, enemies, ball_pos, team);
+    plays_score[0] = goal_keeper.score(world, allies, enemies, ball_pos, team);
+    plays_score[1] = attack.score(world, allies, enemies, ball_pos, team);
     plays_score[2] = -2;
     plays_score[3] = debug.score(team, allies);
 

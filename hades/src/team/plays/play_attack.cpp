@@ -7,7 +7,7 @@
 #include <iostream>
 #include <math.h>
 
-int play_attack::score(world field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team) {
+int play_attack::score(world_model field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team) {
     int score = 0;
     if (ball_pos[0] > 0 && team.left_side) {
         score += 100;

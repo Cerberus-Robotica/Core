@@ -6,7 +6,7 @@
 #define LEADER_H
 #include "Robot_controller.h"
 #include <vector>
-#include "geometry/world.h"
+#include "geometry/world_model.h"
 #include "team_info.h"
 #include "plays/play_attack.h"
 #include "plays/play_goal_keeper.h"
@@ -34,7 +34,7 @@ public:
     play_attack attack;
     play_debug debug;
 
-    world field;
+    world_model world;
 
 
 
@@ -44,7 +44,8 @@ public:
 
 private:
     void loop();
-    void recive_vision();
+    void receive_vision();
+    void receive_config();
     void add_robot(int id);
     void imprimir_ativos();
     void select_plays();

@@ -261,12 +261,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/team/geometry/world.cpp",
+			"path" : "src/team/geometry/world_model.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/team/geometry/world.h",
+			"path" : "src/team/geometry/world_model.h",
 			"sourceGroupIndex" : 1
 		},
 		{

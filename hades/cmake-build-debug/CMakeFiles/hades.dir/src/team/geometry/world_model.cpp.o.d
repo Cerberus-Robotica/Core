@@ -1,8 +1,7 @@
-CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.cpp \
+CMakeFiles/hades.dir/src/team/geometry/world_model.cpp.o: \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/world_model.cpp \
  /usr/include/stdc-predef.h \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/play_attack.h \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../geometry/world_model.h \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/world_model.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -45,13 +44,12 @@ CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: \
  /usr/include/c++/11/bits/hash_bytes.h \
  /usr/include/c++/11/bits/range_access.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../geometry/../../c_trajectory/geometry/rectangle.h \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../geometry/../../c_trajectory/geometry/Vetop.h \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../../c_trajectory/geometry/rectangle.h \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../../c_trajectory/geometry/Vetop.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
  /usr/include/c++/11/bits/deque.tcc \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../geometry/../team_info.h \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../geometry/../robot.h \
- /home/caiu/Desktop/ssl/Core/hades/src/team/plays/../robot.h \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../team_info.h \
+ /home/caiu/Desktop/ssl/Core/hades/src/team/geometry/../robot.h \
  /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
  /usr/include/c++/11/ios /usr/include/c++/11/iosfwd \
  /usr/include/c++/11/bits/stringfwd.h /usr/include/c++/11/bits/postypes.h \
@@ -158,27 +156,5 @@ CMakeFiles/hades.dir/src/team/plays/play_attack.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc /usr/include/c++/11/math.h \
- /usr/include/c++/11/cmath /usr/include/math.h \
- /usr/include/x86_64-linux-gnu/bits/math-vector.h \
- /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
- /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
- /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
- /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
- /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/11/bits/specfun.h /usr/include/c++/11/limits \
- /usr/include/c++/11/tr1/gamma.tcc \
- /usr/include/c++/11/tr1/special_function_util.h \
- /usr/include/c++/11/tr1/bessel_function.tcc \
- /usr/include/c++/11/tr1/beta_function.tcc \
- /usr/include/c++/11/tr1/ell_integral.tcc \
- /usr/include/c++/11/tr1/exp_integral.tcc \
- /usr/include/c++/11/tr1/hypergeometric.tcc \
- /usr/include/c++/11/tr1/legendre_function.tcc \
- /usr/include/c++/11/tr1/modified_bessel_func.tcc \
- /usr/include/c++/11/tr1/poly_hermite.tcc \
- /usr/include/c++/11/tr1/poly_laguerre.tcc \
- /usr/include/c++/11/tr1/riemann_zeta.tcc
+ /usr/include/c++/11/bits/istream.tcc \
+ /home/caiu/Desktop/ssl/Core/hades/src/include/../c_trajectory/geometry/Vetop.h

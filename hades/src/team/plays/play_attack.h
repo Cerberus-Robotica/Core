@@ -4,12 +4,12 @@
 
 #ifndef PLAY_H
 #define PLAY_H
-#include "../geometry/world.h"
+#include "../geometry/world_model.h"
 #include "../robot.h"
 
 class play_attack {
 public:
-    int score(world field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team);
+    int score(world_model field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team);
     std::vector<int> role_assing(int active_robots[16], double ball_pos[2], team_info& team, robot allies[16], robot enemies[16], std::vector<int> roles);
 
 private:

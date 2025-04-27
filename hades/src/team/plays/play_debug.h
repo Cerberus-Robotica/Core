@@ -4,7 +4,7 @@
 
 #ifndef PLAY_DEBUG_H
 #define PLAY_DEBUG_H
-#include "../geometry/world.h"
+#include "../geometry/world_model.h"
 #include "../robot.h"
 
 

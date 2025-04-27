@@ -5,7 +5,7 @@
 #include "play_goal_keeper.h"
 #include <math.h>
 
-int play_goal_keeper::score(world field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team) {
+int play_goal_keeper::score(world_model field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team) {
     int score = 0;
     score += 99999;
 

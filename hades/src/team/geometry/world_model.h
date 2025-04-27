@@ -8,11 +8,18 @@
 
 #include "../../c_trajectory/geometry/rectangle.h"
 #include "../team_info.h"
+#include "../robot.h"
 
-
-class world {
+class world_model {
 public:
     double their_goal[2][2] = {{6000, 6000}, {1000, -1000}};
+    double our_goal[2][2] = {{-6000, -6000}, {1000, -1000}};
+    std::vector<robot> allies = {};
+    std::vector<robot> enemies = {};
+    double ball_pos[2] = {0, 0};
+    double ball_speed[2] = {0, 0};
+
+
     //std::vector<rectangle> field_limits = {};
     //rectangle their_defense_area = rectangle({4200, -1800}, {6000, 1800});
 
