@@ -33,6 +33,8 @@ private:
 
     //observed status
     double pos[2] = {0, 0};
+    std::deque<double> stored_speed_x = {};
+    std::deque<double> stored_speed_y = {};
     double yaw = 0;
     double vel[2] = {0, 0};
     double vyaw = 0;
@@ -65,9 +67,10 @@ private:
 
 
     //extreme params
-    double vxy_max = 3;
+    double vxy_max = 1.5;
     double vxy_min = 0.2;
-    double a_xy_max = 3;
+    double a_xy_max = 1;
+    double a_xy_brake = 12;
     double vyaw_max = 10;
     double vyaw_min = 0.5;
     double kicker_x_max = 3;
@@ -97,6 +100,7 @@ private:
     //flags
     bool positioned = true;
     bool alligned = true;
+    bool oriented = true;
 
 
     //field info

@@ -9,6 +9,7 @@
 #include <math.h>
 #include "../include/handlers.hpp"
 #include <chrono>
+#include <numeric>
 
 
 void Robot_controller::start(team_info* team) {
@@ -30,7 +31,6 @@ void Robot_controller::stop() {
 void Robot_controller::loop() {
     auto t0 = std::chrono::steady_clock::now();
     int cycles = 0;
-    double yaw_prev = yaw;
     while (not terminate) {
         if (last_time_stamp == han.new_ia.timestamp) {
             continue;
@@ -127,45 +127,56 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
         double norm_v2 = sqrt(v2[0]*v2[0] + v2[1]*v2[1]);
         double angle_between = acos(std::clamp(dot_product / (norm_v1 * norm_v2 + 1e-6), -1.0, 1.0));
 
+        double chord_length = sqrt(pow(p2[0] - p0[0], 2) + pow(p2[1] - p0[1], 2)); // mm
+        chord_length /= 1000.0; // Para metros
 
+        double radius = chord_length / (2.0 * sin(std::max(angle_between/2, 1e-3)));
+        radius = std::max(radius, 0.05);
+        curve_safe_speed = sqrt(a_xy_max * radius)/6;
+        curve_safe_speed = std::clamp(curve_safe_speed, vxy_min, vxy_max);
 
-        curve_safe_speed = vxy_max * sin(angle_between/12);
-        std::cout << "curve_safe_speed: " << curve_safe_speed << std::endl;
-        if (angle_between < 91 * M_PI / 180.0) {        //TODO rever essa condicao
-            std::cout << "AAAAAAAAAAAAAAAA" << std::endl;
+        if (angle_between > 70.0 * M_PI / 180.0) {
             curve_safe_speed = vxy_min;
         }
 
-        double current_speed = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
-
     }
-    double brake_distance = (vxy_max*vxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * a_xy_max);
-    brake_distance = std::max(brake_distance, 0.0); // proteção
+
+    double current_speed = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
+
+    double brake_distance = 12*(vxy_max*vxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * a_xy_brake);
+    brake_distance = std::max(brake_distance, 0.0);
+    std::cout << brake_distance << std::endl;
     if (dist <= brake_distance) {
-        // Já tá na hora de começar a desacelerar para velocidade da curva
         v_target_magnitude = curve_safe_speed;
     } else {
-        // Pode manter vxy_max por enquanto
         v_target_magnitude = vxy_max;
     }
 
-    // Define o vetor de velocidade desejada
+    v_target_magnitude = std::clamp(v_target_magnitude, -vxy_max, vxy_max);
     std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
-    std::cout << v_target_magnitude << std::endl;
-    // Corrige para alcançar a velocidade-alvo
-    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
-    std::vector<double> acceleration = {
-        std::clamp(error[0] / delta_time, -a_xy_max, a_xy_max),
-        std::clamp(error[1] / delta_time, -a_xy_max, a_xy_max)
-    };
 
-        std::cout << "ASDWASD" << std::endl;
-        //std::cout << delta_time << std::endl;
-        //std::cout << vel[0] << ", " << vel[1] << std::endl;
-        //std::cout << sqrt(pow(vel[0] + acceleration[0]*delta_time, 2) + pow(vel[1] + acceleration[1]*delta_time, 2)) << std::endl;
-    std::cout << acceleration[0] << ", " << acceleration[1] << std::endl;
-    return {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
+    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
+    std::vector<double> acceleration = {0, 0};
+
+    if (fabs(target_vel[0]) > fabs(vel[0])) {
+        acceleration[0] = std::clamp(error[0] / delta_time, -a_xy_max, a_xy_max);
+    } else {
+        acceleration[0] = std::clamp(error[0] / delta_time, -a_xy_brake, a_xy_brake);
+    }
+
+    if (fabs(target_vel[1]) > fabs(vel[1])) {
+        acceleration[1] = std::clamp(error[1] / delta_time, -a_xy_max, a_xy_max);
+    } else {
+        acceleration[1] = std::clamp(error[1] / delta_time, -a_xy_brake, a_xy_brake);
+    }
+
+    std::vector<double> vel_cmd = {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
+    if (norm(vel_cmd) > vxy_max) {
+        vel_cmd = normalize(vxy_max, vel_cmd);
+    }
+    return vel_cmd;
 }
+
 
 
 
@@ -276,10 +287,10 @@ void Robot_controller::turn_to(double goal[2]) {
     double delta = find_angle_error(goal);
     if (fabs(delta) < static_angle_tolarance) {
         target_vyaw = 0;
-        alligned = true;
+        oriented = true;
         return;
     }
-    alligned = false;
+    oriented = false;
     target_vyaw = turn_control(delta);
 }
 
@@ -323,7 +334,7 @@ void Robot_controller::follow_trajectory(std::vector<std::vector<double>>& traje
 
     double next_point[2] = {trajectory[0][0], trajectory[0][1]};
     auto mid_trajectory = find_trajectory(pos, next_point, true);
-    mid_trajectory.insert(mid_trajectory.end(), trajectory.begin(), trajectory.end());
+    mid_trajectory.insert(mid_trajectory.end(), trajectory.begin() + 1, trajectory.end());
     auto v_vet = motion_planner(mid_trajectory);
     v_vet = motion_control(v_vet);
 
@@ -365,7 +376,7 @@ void Robot_controller::role_table() {
     }
     if (team->roles[id] == 991) {
         if (size(current_trajectory) == 0) {
-            current_trajectory = {{2000, 2000}, {2000, -2000}, {-2000, -2000}, {-2000, 2000}};
+            current_trajectory = {{4000, 4000}, {4000, -4000}, {4000, 4000}, {-4000, 4000}};
         }
         follow_trajectory(current_trajectory);
     }
@@ -386,7 +397,7 @@ void Robot_controller::stricker_role() {
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};;
         move_to(db_kick_pos);
         turn_to(next_point);
-        if (positioned and alligned) {
+        if (positioned and oriented) {
             state = 1;
             return;
         }
@@ -535,9 +546,16 @@ void Robot_controller::receive_vision() {
                 double new_yaw = yellow_robot.orientation;
                 if (new_yaw < 0) new_yaw += 2*M_PI;
                 if (delta_time > 0) {
-                    vel[0] = (yellow_robot.position_x - pos[0])/(delta_time*1000);
-                    vel[1] = (yellow_robot.position_y - pos[1])/(delta_time*1000);
-                    vyaw = (yaw - new_yaw)/delta_time;
+                    stored_speed_x.push_back((yellow_robot.position_x - pos[0])/(delta_time*1000));
+                    stored_speed_y.push_back((yellow_robot.position_y - pos[1])/(delta_time*1000));
+                    if (size(stored_speed_x) > 10) {
+                        stored_speed_x.pop_front();
+                        stored_speed_y.pop_front();
+                    }
+                    vel[0] = std::accumulate(stored_speed_x.begin(), stored_speed_x.end(), 0.0)/10;
+                    vel[1] = std::accumulate(stored_speed_y.begin(), stored_speed_y.end(), 0.0)/10;
+                    //vel[0] = (yellow_robot.position_x - pos[0])/(delta_time*1000);
+                    //vel[1] = (yellow_robot.position_y - pos[1])/(delta_time*1000);
                 }
                 yaw = new_yaw;
                 pos[0] = yellow_robot.position_x;
