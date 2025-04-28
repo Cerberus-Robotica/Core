@@ -18,7 +18,7 @@ Caso enfrente problemas na hora de buildar o software relacionado à biblioteca 
 
 Segundo(construir o framework):
 
-Construa os três programas em C++ (com o terminal aberto na pasta InterCom_Cerberus_X.X.X):
+Construa os três programas em C++ (com o terminal aberto na pasta principal:
 
 	chmod +x install_core.sh && ./install_core.sh
 
