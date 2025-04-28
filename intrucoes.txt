@@ -16,9 +16,7 @@ Segundo(construir o framework):
 
 	Construa os três programas em C++ (com o terminal aberto na pasta InterCom_Cerberus_X.X.X):
 
-		 ~$ cd caronte && mkdir build && cd build/ && cmake .. && make -j4 && cd ../../hermes && mkdir build && cd build/ && cmake .. && make -j4 && cd ../../hades && mkdir build && cd build/ && cmake .. && make -j4 && cd ../..
-
-
+		 ~$ chmod +x install_core.sh && ./install_core.sh
 
 Finalmente(rodar):
 

@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME}
                 src/include/handler.cpp
                 src/include/esp.cpp
                 src/include/send_to_grsim.cpp
+                src/include/esp_connect.cpp
                 )
 
 target_include_directories(${PROJECT_NAME}
