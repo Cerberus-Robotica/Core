@@ -1,0 +1,136 @@
+QMainWindow {
+    background-color: #2D1040;  /* Cor de fundo escura */
+}
+
+/* Barra de menu principal */
+#mainMenu {
+    background-color: #3B3B3B;
+    color: white;
+    font: bold 14px "Segoe UI";
+    padding: 3px;
+}
+
+QMenuBar::item {
+    background-color: #6805F2;
+    margin: 3px;
+    border-radius: 4px;
+    padding: 4px 20px;
+}
+
+/* Estilização dos menus individuais */
+#optMenu, #optDiv, #optWid, #optConfig {
+    background-color: #3B3B3B;
+    color: white;
+    padding: 2px;
+    font: 13px "Segoe UI";
+}
+
+/* Itens dentro de qualquer QMenu (aplicado globalmente) */
+QMenu::item {
+    width: 120px;
+    background-color: #545454;
+    padding: 6px;
+    border-radius: 0px;
+}
+
+QMenu::item:selected {
+    background-color: #6805F2;
+    color: white;
+}
+
+/* Itens da barra de menu ao passar o mouse */
+QMenuBar::item:selected {
+    background-color:rgb(56, 22, 105);
+    border-radius: 4px;
+}
+
+/* Campo */
+QGraphicsView {
+    border: 2px solid #6805F2;
+    border-radius: 10px;
+}
+
+#fieldView {
+    background-color: #545454;
+}
+
+/* Terminal */
+#terminalBox {
+    border: 2px solid #6805F2;
+    border-radius: 8px;
+    background-color: #545454;
+}
+
+#statusLabel {
+    color: lightgreen;
+    font-weight: bold;
+}
+
+#logArea {
+    background-color: #101010;
+    color: #e0e0e0;
+    font-family: monospace;
+    padding: 5px;
+}
+
+#inputLine {
+    background-color: #1c1c1c;
+    color: white;
+    font-family: monospace;
+    padding: 5px;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+
+#terminalView QLabel {
+    color: #00FF00;
+    font-weight: bold;
+    font-size: 14px;
+    font-family: "Courier New", Courier, monospace;
+    padding-left: 5px;
+}
+
+#terminalView QTextEdit {
+    background-color: #2E2E2E;
+    color: #00FF00;
+    border: none;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+    padding: 4px;
+}
+
+#terminalView QLineEdit {
+    background-color: #2E2E2E;
+    color: #FFFFFF;
+    border: none;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+    padding: 4px;
+}
+
+#terminalView QPushButton {
+    background-color: #6805F2;
+    color: #FFFFFF;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+#terminalView QPushButton:hover {
+    background-color: #333;
+}
+
+#terminalView QPushButton:checked {
+    background-color: #400;
+    color: #FF5555;
+}
+
+/* IA Info */
+#infoView {
+    background-color: #545454;
+    margin: 0;
+}
+
+
