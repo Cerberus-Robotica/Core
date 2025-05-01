@@ -71,3 +71,13 @@ void handlers::handle_tartarus(const lcm::ReceiveBuffer* rbuf,
 
     //lc->publish("tartarus", &this->new_tartarus);
 }
+
+void handlers::handle_autoref(const lcm::ReceiveBuffer* rbuf,
+          const std::string& chan,
+          const data::autoref* msg_autoref) {
+    //std::cout << "Received message on channel \"" << chan << "\"" << std::endl;
+
+    this->new_autoref = *msg_autoref;
+
+    //lc->publish("autoref", &this->new_autoref);
+}

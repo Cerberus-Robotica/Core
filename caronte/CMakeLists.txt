@@ -20,6 +20,8 @@ set(PROTO_FILES
     ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_common.proto
     ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_engine.proto
     ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_game_event.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_wrapper_tracked.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_detection_tracked.proto
 )
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
@@ -30,6 +32,7 @@ add_executable(${PROJECT_NAME} src/main.cpp
                         src/vision.cpp
                         src/tartarus.cpp
                         src/socket_connect.cpp
+                        src/autoref.cpp
                         ${PROTO_SRCS}
                         )
 

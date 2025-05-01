@@ -24,10 +24,10 @@ void recebe_dados_GC() {
 
             if(referee.blue().name() == "Cerberus"){
                 my_gc_data.team_blue = true;
-                std::cout << "  Time azul " << std::endl;
+                //std::cout << "  Time azul " << std::endl;
             }else{
                 my_gc_data.team_blue = false;
-                std::cout << "  Time amarelo " << std::endl;
+                //std::cout << "  Time amarelo " << std::endl;
             }
 
             if(referee.has_designated_position()){

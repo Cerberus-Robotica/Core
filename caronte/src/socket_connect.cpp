@@ -1,10 +1,11 @@
 #include "include/socket_connect.hpp"
 
 
-int sock_GC, sock_vision;
-struct sockaddr_in addr_GC, addr_vision;
+int sock_GC, sock_vision, sock_TRACKED;
+struct sockaddr_in addr_GC, addr_vision, addr_TRACKED;
 char buffer_GC[BUFFER_SIZE];
 char buffer_vision[BUFFER_SIZE];
+char buffer_TRACKED[BUFFER_SIZE];
 
 void setupGCSocket() {
     int reuse = 1;
@@ -57,4 +58,31 @@ void setupVisionSocket() {
     mreq_vision.imr_interface.s_addr = htonl(INADDR_ANY);
 
     setsockopt(sock_vision, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq_vision, sizeof(mreq_vision));
+}
+
+void setupTrackedSocket() {
+    int reuse = 1;
+
+    sock_TRACKED = socket(AF_INET, SOCK_DGRAM, 0);
+    
+    setsockopt(sock_TRACKED, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse));
+
+    memset((char*)&addr_TRACKED, 0, sizeof(addr_TRACKED));
+    addr_TRACKED.sin_family = AF_INET;
+    addr_TRACKED.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr_TRACKED.sin_port = htons(MCAST_PORT_VISION_TRACKED);
+
+    if (bind(sock_TRACKED, (struct sockaddr*)&addr_TRACKED, sizeof(addr_TRACKED)) < 0) {
+        perror("Erro no bind do socket TRACKED");
+        exit(1);
+    }
+
+    struct ip_mreq mreq_tracked;
+    mreq_tracked.imr_multiaddr.s_addr = inet_addr(MCAST_GRP_VISION);
+    mreq_tracked.imr_interface.s_addr = htonl(INADDR_ANY);
+
+    if (setsockopt(sock_TRACKED, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq_tracked, sizeof(mreq_tracked)) < 0) {
+        perror("Erro ao entrar no grupo multicast TRACKED");
+        exit(1);
+    }
 }

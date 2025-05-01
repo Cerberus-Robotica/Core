@@ -112,25 +112,25 @@ void recebe_dados_vision() {
             }
         }
 
-    for(int i = 0; i < my_vision_data.robots_blue_size; i++){
-        std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
-        std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
-        std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
-        std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
-    }
-
-    for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
-        std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
-        std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
-        std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
-        std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
-    }
-
-    std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
-    std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
-    std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
-    std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
-    std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
+    //for(int i = 0; i < my_vision_data.robots_blue_size; i++){
+    //    std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
+    //    std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
+    //    std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
+    //    std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
+    //}
+//
+    //for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
+    //    std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
+    //    std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
+    //    std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
+    //    std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+    //}
+//
+    //std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
+    //std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
+    //std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
+    //std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
+    //std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
 
     // Publica os dados no tópico "vision"
     //std::this_thread::sleep_for(std::chrono::milliseconds(16));
