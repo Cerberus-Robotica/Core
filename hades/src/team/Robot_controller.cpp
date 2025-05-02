@@ -16,6 +16,7 @@ void Robot_controller::start(team_info* team) {
     han.new_ia.robots[id].kick_speed_x = 3;
     this->team = team;
     terminate = false;
+    offline_counter = 0;
     std::cout << "iniciado " << id << std::endl;
     team->roles[id] = -1;
     std::thread t(&Robot_controller::loop, this);
@@ -32,6 +33,7 @@ void Robot_controller::loop() {
     auto t0 = std::chrono::steady_clock::now();
     int cycles = 0;
     while (not terminate) {
+        //std::this_thread::sleep_for(std::chrono::milliseconds(200));
         if (last_time_stamp == han.new_ia.timestamp) {
             continue;
         }
@@ -70,7 +72,7 @@ void Robot_controller::loop() {
 
 
 
-std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[2], double goal[2], bool avoid_ball = true) {
+std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[2], double goal[2], bool avoid_ball = true, bool is_ball = false) {
     C_trajectory pf(false, false, 0, 1000, 50, 0);
     std::vector<double> double_start = {start[0], start[1]};
     std::vector<double> double_goal = {goal[0], goal[1]};
@@ -81,11 +83,13 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
     //rectangle r = field.their_defense_area;
     //obs_rectangular.push_back(r);
 
+    //add static ball to obstacles according to avoidance radius
     if (avoid_ball) {
-        circle c({world.ball_pos[0], world.ball_pos[1]}, radius);
+        circle c({world.ball_pos[0], world.ball_pos[1]}, world.ball_avoidance_radius);
         obs_circular.push_back(c);
     }
 
+    //add static allies to obstacles
     for (int i = 0; i < size(world.allies) ; i++) {
         if (!world.allies[i].detected) {
             continue;
@@ -93,6 +97,8 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
         circle c({world.allies[i].pos[0], world.allies[i].pos[1]}, radius);
         obs_circular.push_back(c);
     }
+
+    //add static enemies to obstacles
     for (int i = 0; i < size(world.enemies) ; i++) {
         if (!world.enemies[i].detected) {
             continue;
@@ -100,6 +106,12 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
         circle c({world.enemies[i].pos[0], world.enemies[i].pos[1]}, radius);
         obs_circular.push_back(c);
     }
+
+    if (team->roles[id] != 0 && !is_ball) {
+        rectangle r({world.our_defese_area[0][0], world.our_defese_area[0][1]}, {world.our_defese_area[1][0], world.our_defese_area[1][1]});
+        obs_rectangular.push_back(r);
+    }
+
 
     auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
     return trajectory;
@@ -132,7 +144,7 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
 
         double radius = chord_length / (2.0 * sin(std::max(angle_between/2, 1e-3)));
         radius = std::max(radius, 0.05);
-        curve_safe_speed = sqrt(a_xy_max * radius)/6;
+        curve_safe_speed = sqrt(a_xy_max * radius)/4;
         curve_safe_speed = std::clamp(curve_safe_speed, vxy_min, vxy_max);
 
         if (angle_between > 70.0 * M_PI / 180.0) {
@@ -143,9 +155,8 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
 
     double current_speed = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
 
-    double brake_distance = 12*(vxy_max*vxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * a_xy_brake);
+    double brake_distance = (vxy_max*vxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * a_xy_brake);
     brake_distance = std::max(brake_distance, 0.0);
-    std::cout << brake_distance << std::endl;
     if (dist <= brake_distance) {
         v_target_magnitude = curve_safe_speed;
     } else {
@@ -155,25 +166,27 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
     v_target_magnitude = std::clamp(v_target_magnitude, -vxy_max, vxy_max);
     std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
 
-    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
+    std::vector<double> error = {v_target[0] - last_target_vel[0], v_target[1] - last_target_vel[1]};
     std::vector<double> acceleration = {0, 0};
 
-    if (fabs(target_vel[0]) > fabs(vel[0])) {
+    if (fabs(v_target[0]) > fabs(last_target_vel[0])) {
         acceleration[0] = std::clamp(error[0] / delta_time, -a_xy_max, a_xy_max);
     } else {
         acceleration[0] = std::clamp(error[0] / delta_time, -a_xy_brake, a_xy_brake);
     }
 
-    if (fabs(target_vel[1]) > fabs(vel[1])) {
+    if (fabs(v_target[1]) > fabs(last_target_vel[1])) {
         acceleration[1] = std::clamp(error[1] / delta_time, -a_xy_max, a_xy_max);
     } else {
         acceleration[1] = std::clamp(error[1] / delta_time, -a_xy_brake, a_xy_brake);
     }
 
-    std::vector<double> vel_cmd = {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
+    std::vector<double> vel_cmd = {last_target_vel[0] + acceleration[0]*delta_time, last_target_vel[1] + acceleration[1]*delta_time};
     if (norm(vel_cmd) > vxy_max) {
         vel_cmd = normalize(vxy_max, vel_cmd);
     }
+    last_target_vel[0] = vel_cmd[0];
+    last_target_vel[1] = vel_cmd[1];
     return vel_cmd;
 }
 
@@ -388,8 +401,10 @@ void Robot_controller::stricker_role() {
     //TODO melhorar stricker_role
     //std::cout << state << std::endl;
 
-    double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
-    auto traj = find_trajectory(world.ball_pos, goal, false);
+    //double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
+    double goal[2] = {(world.our_goal[0][1] + world.our_goal[0][0])/2, (world.our_goal[1][1] + world.our_goal[1][0])/2};
+
+    auto traj = find_trajectory(world.ball_pos, goal, false, true);
     std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], radius);
     double next_point[2] = {traj[1][0], traj[1][1]};
 
@@ -453,10 +468,16 @@ void Robot_controller::goal_keeper_role() {
             y_meet = y_min;
         }
 
-        double meet[2] = {world.our_goal[0][0], y_meet};
+        double x_meet = world.our_goal[0][0] - radius*world.our_goal[0][0]/fabs(world.our_goal[0][0]);
 
 
-        move_to(meet);
+        double meet[2] = {x_meet, y_meet};
+
+        if (!world.ball_on_our_side()) {
+            meet[1] = 0;
+        }
+
+        move_to(meet, false);
         turn_to(world.ball_pos);
     }
 
@@ -596,7 +617,6 @@ void Robot_controller::receive_vision() {
 
     last_time_stamp = han.new_vision.timestamp;
 }
-
 
 
 

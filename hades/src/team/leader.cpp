@@ -77,10 +77,11 @@ void leader::receive_vision() {
 }
 
 void leader::receive_config() {
-    if (han.new_tartarus.team_blue == 1) {
+    int is_team_blue = int(han.new_tartarus.team_blue);
+    if (is_team_blue == 1) {
         team.color = 0;
     }
-    else {
+    else if (is_team_blue == 0) {
         team.color = 1;
     }
 

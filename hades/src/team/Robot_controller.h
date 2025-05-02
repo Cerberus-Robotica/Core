@@ -43,6 +43,7 @@ private:
     double target_yaw = 0;
     double target_vel[2] = {0, 0};
     double target_vyaw = 0;
+    double last_target_vel[2] = {0, 0};
 
     //actuators activation
     double kicker_x = 0;
@@ -69,8 +70,8 @@ private:
     //extreme params
     double vxy_max = 1.5;
     double vxy_min = 0.2;
-    double a_xy_max = 1;
-    double a_xy_brake = 12;
+    double a_xy_max = 2;
+    double a_xy_brake = 2;
     double vyaw_max = 10;
     double vyaw_min = 0.5;
     double kicker_x_max = 3;
@@ -112,7 +113,7 @@ private:
     void dynamic_calculations();
 
     void move_to(double goal[2], bool avoid_ball);
-    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2], bool avoid_ball);
+    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2], bool avoid_ball, bool is_ball);
     std::vector<double> motion_planner(std::vector<std::vector<double>> trajectory);
     std::vector<double> motion_control(std::vector<double> v_vet);
 
