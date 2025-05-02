@@ -4,7 +4,7 @@
 
 Primeiro(Instalação):
 
-Não utilize os softwares da SSL, como o ssl-vision e o game-controller, instalados localmente, utilize Docker para rodar os softwares da competição(comandos em init_softwares_competicao.txt);
+Não utilize os softwares da SSL, como o ssl-vision e o game-controller, instalados localmente, utilize Docker para rodar os softwares da competição(comandos em [init_softwares_competicao.txt](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl));
 
 Tutorial de instalação da bilioteca Docker em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
 	
