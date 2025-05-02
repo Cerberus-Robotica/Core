@@ -4,7 +4,7 @@
 
 #ifndef ROBOT_H
 #define ROBOT_H
-
+#include <deque>
 
 
 class robot {
@@ -15,7 +15,13 @@ public:
     double yaw = 0;
     double vel[2] = {0, 0};
     double vyaw = 0;
+    std::deque<double> stored_speed_x = {};
+    std::deque<double> stored_speed_y = {};
     bool detected = false;
+
+
+
+    int role = -1;
 
     robot(int id) {
         this->id = id;

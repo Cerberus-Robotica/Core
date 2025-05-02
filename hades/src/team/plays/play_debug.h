@@ -10,8 +10,8 @@
 
 class play_debug {
 public:
-    int score(team_info team, robot allies[16]);
-    std::vector<int> role_assing(int (&active_robots)[16], team_info& team, robot allies[16], std::vector<int> roles);
+    int score(world_model world, team_info team);
+    std::vector<int> role_assing(world_model& world, team_info& team, std::vector<int> roles);
 
 private:
     int required_robots = 16;

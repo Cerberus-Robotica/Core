@@ -28,5 +28,37 @@ bool world_model::ball_on_our_side() {
         return true;
     }
     return false;
+}
 
+bool world_model::ball_on_our_area() {
+    if (ball_pos[0] > our_defese_area[0][0] && ball_pos[0] < our_defese_area[1][0]) {
+        if (ball_pos[1] > our_defese_area[0][1] && ball_pos[1] < our_defese_area[1][1]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool world_model::ball_on_their_area() {
+    if (ball_pos[0] > their_defese_area[0][0] && ball_pos[0] < their_defese_area[1][0]) {
+        if (ball_pos[1] > their_defese_area[0][1] && ball_pos[1] < their_defese_area[1][1]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+std::vector<std::vector<double>> world_model::support_areas() {
+    double kick_distance = 500;
+    int num_of_support_areas = 16;
+    std::vector<std::vector<double>> support_areas = {};
+
+    for (int i = 0; i < num_of_support_areas; i++) {
+        support_areas.push_back({ball_pos[0] + kick_distance*their_goal[0][0]/fabs(their_goal[0][0]), field_size[1][1]/2 - field_size[1][1]*i/num_of_support_areas});
+    }
+    //TODO organizar por prioridade com funcao heuristica
+
+    return support_areas;
 }

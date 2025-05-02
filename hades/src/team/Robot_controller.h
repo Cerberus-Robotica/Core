@@ -29,12 +29,11 @@ public:
 private:
 
     int id = -1; //id; -1 unsigned
-    double radius = 220;
+    double radius = 160;
+    double ball_avoidance_radius = 0;
 
     //observed status
     double pos[2] = {0, 0};
-    std::deque<double> stored_speed_x = {};
-    std::deque<double> stored_speed_y = {};
     double yaw = 0;
     double vel[2] = {0, 0};
     double vyaw = 0;
@@ -132,6 +131,7 @@ private:
     void role_table();
     void stricker_role();
     void goal_keeper_role();
+    void attack_support_role();
 };
 
 

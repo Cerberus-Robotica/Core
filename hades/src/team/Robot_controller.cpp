@@ -10,6 +10,8 @@
 #include "../include/handlers.hpp"
 #include <chrono>
 #include <numeric>
+#include <set>
+#include <unordered_set>
 
 
 void Robot_controller::start(team_info* team) {
@@ -18,7 +20,7 @@ void Robot_controller::start(team_info* team) {
     terminate = false;
     offline_counter = 0;
     std::cout << "iniciado " << id << std::endl;
-    team->roles[id] = -1;
+    team->roles[id] = 0;
     std::thread t(&Robot_controller::loop, this);
     t.detach();
 }
@@ -40,6 +42,7 @@ void Robot_controller::loop() {
         auto t1 = std::chrono::steady_clock::now();
         receive_vision();
         //std::cout << id << ", " << team->roles[id] << std::endl;
+        //std::cout << world.enemies[0].detected<< std::endl;
         check_connection();
         role_table();
         publish();
@@ -85,13 +88,13 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
 
     //add static ball to obstacles according to avoidance radius
     if (avoid_ball) {
-        circle c({world.ball_pos[0], world.ball_pos[1]}, world.ball_avoidance_radius);
+        circle c({world.ball_pos[0], world.ball_pos[1]}, ball_avoidance_radius + radius);
         obs_circular.push_back(c);
     }
 
     //add static allies to obstacles
     for (int i = 0; i < size(world.allies) ; i++) {
-        if (!world.allies[i].detected) {
+        if (!world.allies[i].detected || i == id) {
             continue;
         }
         circle c({world.allies[i].pos[0], world.allies[i].pos[1]}, radius);
@@ -108,9 +111,17 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
     }
 
     if (team->roles[id] != 0 && !is_ball) {
-        rectangle r({world.our_defese_area[0][0], world.our_defese_area[0][1]}, {world.our_defese_area[1][0], world.our_defese_area[1][1]});
+        rectangle r({world.our_defese_area[0][0] - radius, world.our_defese_area[0][1] - radius}, {world.our_defese_area[1][0] + radius, world.our_defese_area[1][1] + radius});
         obs_rectangular.push_back(r);
     }
+
+    //goal fisical barrier
+    if (!is_ball) {
+        rectangle r({world.inside_our_goal[0][0] + radius, world.inside_our_goal[0][1] + radius}, {world.inside_our_goal[1][0] + radius, world.inside_our_goal[1][1] + radius});
+        obs_rectangular.push_back(r);
+    }
+
+
 
 
     auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
@@ -120,6 +131,10 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
 
 
 std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<double>> trajectory) {
+    for (auto i : trajectory) {
+        break;
+        std::cout << i[0] << ", " << i[1] << std::endl;
+    }
     std::vector<double> delta = {trajectory[1][0] - pos[0], trajectory[1][1] - pos[1]};
     double dist = norm(delta) / 1000.0; // metros
     std::vector<double> direction = normalize(1, delta);
@@ -165,7 +180,6 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
 
     v_target_magnitude = std::clamp(v_target_magnitude, -vxy_max, vxy_max);
     std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
-
     std::vector<double> error = {v_target[0] - last_target_vel[0], v_target[1] - last_target_vel[1]};
     std::vector<double> acceleration = {0, 0};
 
@@ -181,10 +195,15 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
         acceleration[1] = std::clamp(error[1] / delta_time, -a_xy_brake, a_xy_brake);
     }
 
+
     std::vector<double> vel_cmd = {last_target_vel[0] + acceleration[0]*delta_time, last_target_vel[1] + acceleration[1]*delta_time};
     if (norm(vel_cmd) > vxy_max) {
         vel_cmd = normalize(vxy_max, vel_cmd);
     }
+
+    if (isnan(vel_cmd[0])) vel_cmd[0] = 0;
+    if (isnan(vel_cmd[1])) vel_cmd[1] = 0;
+
     last_target_vel[0] = vel_cmd[0];
     last_target_vel[1] = vel_cmd[1];
     return vel_cmd;
@@ -192,55 +211,6 @@ std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<dou
 
 
 
-
-/*
- *std::vector<double> Robot_controller::motion_planner(std::vector<std::vector<double>> trajectory) {
-    std::vector<double> vect_pos = {pos[0], pos[1]};
-    std::vector<double> delta = subtract(trajectory[1], vect_pos);
-
-    auto dist = norm(delta)/1000;
-    auto direction = normalize(1, delta);
-    double v_safe = sqrt(2*a_xy_max*dist);
-
-    std::vector<double> v_target = {v_safe*direction[0], v_safe*direction[1]};
-
-    if (v_safe > vxy_max) v_target = {vxy_max*direction[0], vxy_max*direction[1]};
-
-    double dot = vel[0]*direction[0] + vel[1]*direction[1];
-    double norm_vel = sqrt(vel[0]*vel[0] + vel[1]*vel[1]);
-    double vel_parallel = dot; // como direction é normalizado
-
-    double vel_lateral = sqrt(std::max(0.0, norm_vel*norm_vel - vel_parallel*vel_parallel));
-
-    // Quanto de aceleração lateral precisa para corrigir
-    double a_lateral = vel_lateral / delta_time;
-
-    // Se a aceleração lateral for maior que o permitido
-    if (a_lateral > a_xy_max) {
-        // Precisa reduzir velocidade para garantir curva segura
-        double max_vel_lateral = a_xy_max * delta_time;
-        double new_norm_vel = sqrt(vel_parallel*vel_parallel + max_vel_lateral*max_vel_lateral);
-
-        // Aponta para a direção desejada, com nova magnitude
-        v_target = {new_norm_vel * direction[0], new_norm_vel * direction[1]};
-    }
-
-
-    std::vector<double> error = {v_target[0] - vel[0], v_target[1] - vel[1]};
-
-    std::vector<double> acceleration = {0, 0};
-    acceleration[0] = std::clamp(error[0]/delta_time, -a_xy_max, a_xy_max);
-    acceleration[1] = std::clamp(error[1]/delta_time, -a_xy_max, a_xy_max);
-
-    std::vector<double> v_vet = {vel[0] + acceleration[0]*delta_time, vel[1] + acceleration[1]*delta_time};
-    std::cout << "ASDWASDW" << std::endl;
-    std::cout << trajectory[1][0] << ", " << trajectory[1][1] << std::endl;
-    std::cout << vel[0] << ", " << vel[1] << std::endl;
-    std::cout << v_vet[0] << ", " << v_vet[1] << std::endl;
-    std::cout << delta_time << std::endl;
-    return v_vet;
-}
-*/
 std::vector<double> Robot_controller::motion_control(std::vector<double> v_vet) {
     const double ang = -yaw;
     double x = v_vet[0];
@@ -262,6 +232,7 @@ void Robot_controller::move_to(double goal[2], bool avoid_ball = true) {
 
     auto trajectory = find_trajectory(pos, goal, avoid_ball);
     auto v_vet = motion_planner(trajectory);
+
     v_vet = motion_control(v_vet);
 
     target_vel[0] = v_vet[0];
@@ -366,6 +337,7 @@ void Robot_controller::follow_trajectory(std::vector<std::vector<double>>& traje
 
 void Robot_controller::role_table() {
     //TODO roles
+
     if (team->roles[id] == -1) {
         target_vel[0] = 0;
         target_vel[1] = 0;
@@ -398,14 +370,14 @@ void Robot_controller::role_table() {
 
 
 void Robot_controller::stricker_role() {
-    //TODO melhorar stricker_role
+    //TODO melhorar stricker_role para chutar para o passe
     //std::cout << state << std::endl;
 
     //double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
     double goal[2] = {(world.our_goal[0][1] + world.our_goal[0][0])/2, (world.our_goal[1][1] + world.our_goal[1][0])/2};
 
     auto traj = find_trajectory(world.ball_pos, goal, false, true);
-    std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], radius);
+    std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], ball_avoidance_radius + radius);
     double next_point[2] = {traj[1][0], traj[1][1]};
 
     if (state == 0) {
@@ -426,7 +398,8 @@ void Robot_controller::stricker_role() {
 
 void Robot_controller::goal_keeper_role() {
     //TODO melhorar goal_keeper_role
-    if (state == 0) {
+    if (!world.ball_on_our_area() || world.ball_speed_module > 0.2) {
+        state = 0;
         //posicionando para defesa
         std::vector<int> enemies_ids = {};
         std::vector<double> enemies_distances = {};
@@ -443,19 +416,19 @@ void Robot_controller::goal_keeper_role() {
                 closest_idx = idx;
             }
         }
-        int closest_id = enemies_ids[closest_idx];
 
-        double a = 10000;
-        if (sqrt(pow(world.ball_speed[0], 2) + pow(world.ball_speed[1], 2)) > vxy_min) {
-            if (world.ball_speed[0] != 0) {
-                a = (world.ball_speed[1]) / (world.ball_speed[0]);
+        double a = 1000;
+        if (size(enemies_ids) != 0) {
+            int closest_id = enemies_ids[closest_idx];
+            if (sqrt(pow(world.ball_speed[0], 2) + pow(world.ball_speed[1], 2)) > vxy_min) {
+                if (world.ball_speed[0] != 0) {
+                    a = (world.ball_speed[1]) / (world.ball_speed[0]);
+                }
+            }
+            else if (world.ball_pos[0] - world.enemies[closest_id].pos[0] != 0) {    //para bola parada
+                a = (world.ball_pos[1] - world.enemies[closest_id].pos[1]) / (world.ball_pos[0] - world.enemies[closest_id].pos[0]);
             }
         }
-        else if (world.ball_pos[0] - world.enemies[closest_id].pos[0] != 0) {    //para bola parada
-            a = (world.ball_pos[1] - world.enemies[closest_id].pos[1]) / (world.ball_pos[0] - world.enemies[closest_id].pos[0]);
-        }
-
-
 
         double y_meet = a*(world.our_goal[0][0]) + world.ball_pos[1] -a*world.ball_pos[0];
         double y_max = world.our_goal[1][0] - radius;
@@ -477,12 +450,49 @@ void Robot_controller::goal_keeper_role() {
             meet[1] = 0;
         }
 
+
         move_to(meet, false);
         turn_to(world.ball_pos);
     }
+    else {
+        double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
+        auto traj = find_trajectory(world.ball_pos, goal, false, true);
+        std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], ball_avoidance_radius + radius);
+        double next_point[2] = {traj[1][0], traj[1][1]};
 
+        if (state == 0) {
+            double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};;
+            move_to(db_kick_pos);
+            turn_to(next_point);
+            if (positioned and oriented) {
+                state = 1;
+                return;
+            }
 
+        } else if (state == 1) {
+            kick();
+        } else if (state == 2) {
+            state = 0;
+        }
+    }
 }
+
+void Robot_controller::attack_support_role() {
+    //TODO continuar
+    auto support_areas = world.support_areas();
+    std::set<int> supports;
+    int priority = 0;
+    for (int i = 0 ; i < id ; i++ ) {
+        if (team->roles[i] == 2) priority++;
+    }
+
+    if (state == 0) {
+        double goal[2] = {support_areas[priority][0], support_areas[priority][1]};
+        move_to(goal);
+        turn_to(world.ball_pos);
+    }
+}
+
 
 
 
@@ -500,13 +510,9 @@ void Robot_controller::check_connection() {
 
 
 void Robot_controller::receive_vision() {
-    detected = false;
-    for (int i = 0; i < size(world.allies); i++) {
-        world.allies[i].detected = false;
-    }
-    for (int i = 0; i < size(world.enemies); i++) {
-        world.enemies[i].detected = false;
-    }
+    std::unordered_set<int> allies_detected = {};
+    std::unordered_set<int> enemies_detected = {};
+
     for (auto blue_robot : han.new_vision.robots_blue) {
         if (team->color == 0) {
             int rb_id = blue_robot.robot_id;
@@ -515,42 +521,48 @@ void Robot_controller::receive_vision() {
                     world.allies.push_back(robot(i));
                 }
             }
-            if (rb_id == id) {
-                double new_yaw = blue_robot.orientation;
-                if (new_yaw < 0) new_yaw += 2*M_PI;
-                if (delta_time > 0) {
-                    vel[0] = (blue_robot.position_x - pos[0])/(delta_time*1000);
-                    vel[1] = (blue_robot.position_y - pos[1])/(delta_time*1000);
-                    vyaw = (yaw - new_yaw)/delta_time;
+
+            double new_yaw = blue_robot.orientation;
+            if (new_yaw < 0) new_yaw += 2*M_PI;
+            if (delta_time > 0) {
+                world.allies[rb_id].stored_speed_x.push_back((blue_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000));
+                world.allies[rb_id].stored_speed_y.push_back((blue_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000));
+                if (size(world.allies[rb_id].stored_speed_x) > 10) {
+                    world.allies[rb_id].stored_speed_x.pop_front();
+                    world.allies[rb_id].stored_speed_y.pop_front();
                 }
-                yaw = new_yaw;
-                pos[0] = blue_robot.position_x;
-                pos[1] = blue_robot.position_y;
-                detected = true;
-                continue;
+                world.allies[rb_id].vel[0] = std::accumulate(world.allies[rb_id].stored_speed_x.begin(), world.allies[rb_id].stored_speed_x.end(), 0.0)/10;
+                world.allies[rb_id].vel[1] = std::accumulate(world.allies[rb_id].stored_speed_y.begin(), world.allies[rb_id].stored_speed_y.end(), 0.0)/10;
             }
-            world.allies[rb_id].vel[0] = (blue_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000);
-            world.allies[rb_id].vel[1] = (blue_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000);
+            world.allies[rb_id].yaw = new_yaw;
             world.allies[rb_id].pos[0] = blue_robot.position_x;
             world.allies[rb_id].pos[1] = blue_robot.position_y;
-            world.allies[rb_id].yaw = blue_robot.orientation;
-            if (world.allies[rb_id].yaw < 0) world.allies[rb_id].yaw += 2*M_PI;
-            world.allies[rb_id].detected = true;
+            allies_detected.insert(rb_id);
         }
         else {
             int rb_id = blue_robot.robot_id;
             if (rb_id >= size(world.enemies)) {
                 for (int i = size(world.enemies); i <= rb_id; i++) {
-                    world.enemies.emplace_back(i);
+                    world.enemies.push_back(robot(i));
                 }
             }
-            world.enemies[rb_id].vel[0] = (blue_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000);
-            world.enemies[rb_id].vel[1] = (blue_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000);
+
+            double new_yaw = blue_robot.orientation;
+            if (new_yaw < 0) new_yaw += 2*M_PI;
+            if (delta_time > 0) {
+                world.enemies[rb_id].stored_speed_x.push_back((blue_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000));
+                world.enemies[rb_id].stored_speed_y.push_back((blue_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000));
+                if (size(world.enemies[rb_id].stored_speed_x) > 10) {
+                    world.enemies[rb_id].stored_speed_x.pop_front();
+                    world.enemies[rb_id].stored_speed_y.pop_front();
+                }
+                world.enemies[rb_id].vel[0] = std::accumulate(world.enemies[rb_id].stored_speed_x.begin(), world.enemies[rb_id].stored_speed_x.end(), 0.0)/10;
+                world.enemies[rb_id].vel[1] = std::accumulate(world.enemies[rb_id].stored_speed_y.begin(), world.enemies[rb_id].stored_speed_y.end(), 0.0)/10;
+            }
+            world.enemies[rb_id].yaw = new_yaw;
             world.enemies[rb_id].pos[0] = blue_robot.position_x;
             world.enemies[rb_id].pos[1] = blue_robot.position_y;
-            world.enemies[rb_id].yaw = blue_robot.orientation;
-            if (world.enemies[rb_id].yaw < 0) world.enemies[rb_id].yaw += 2*M_PI;
-            world.enemies[rb_id].detected = true;
+            enemies_detected.insert(rb_id);
         }
     }
 
@@ -563,65 +575,92 @@ void Robot_controller::receive_vision() {
                     world.allies.push_back(robot(i));
                 }
             }
-            if (rb_id == id) {
-                double new_yaw = yellow_robot.orientation;
-                if (new_yaw < 0) new_yaw += 2*M_PI;
-                if (delta_time > 0) {
-                    stored_speed_x.push_back((yellow_robot.position_x - pos[0])/(delta_time*1000));
-                    stored_speed_y.push_back((yellow_robot.position_y - pos[1])/(delta_time*1000));
-                    if (size(stored_speed_x) > 10) {
-                        stored_speed_x.pop_front();
-                        stored_speed_y.pop_front();
-                    }
-                    vel[0] = std::accumulate(stored_speed_x.begin(), stored_speed_x.end(), 0.0)/10;
-                    vel[1] = std::accumulate(stored_speed_y.begin(), stored_speed_y.end(), 0.0)/10;
-                    //vel[0] = (yellow_robot.position_x - pos[0])/(delta_time*1000);
-                    //vel[1] = (yellow_robot.position_y - pos[1])/(delta_time*1000);
+            double new_yaw = yellow_robot.orientation;
+            if (new_yaw < 0) new_yaw += 2*M_PI;
+            if (delta_time > 0) {
+                world.allies[rb_id].stored_speed_x.push_back((yellow_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000));
+                world.allies[rb_id].stored_speed_y.push_back((yellow_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000));
+                if (size(world.allies[rb_id].stored_speed_x) > 10) {
+                    world.allies[rb_id].stored_speed_x.pop_front();
+                    world.allies[rb_id].stored_speed_y.pop_front();
                 }
-                yaw = new_yaw;
-                pos[0] = yellow_robot.position_x;
-                pos[1] = yellow_robot.position_y;
-                detected = true;
-                continue;
+                world.allies[rb_id].vel[0] = std::accumulate(world.allies[rb_id].stored_speed_x.begin(), world.allies[rb_id].stored_speed_x.end(), 0.0)/10;
+                world.allies[rb_id].vel[1] = std::accumulate(world.allies[rb_id].stored_speed_y.begin(), world.allies[rb_id].stored_speed_y.end(), 0.0)/10;
             }
-            world.allies[rb_id].vel[0] = (yellow_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000);
-            world.allies[rb_id].vel[1] = (yellow_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000);
+            world.allies[rb_id].yaw = new_yaw;
             world.allies[rb_id].pos[0] = yellow_robot.position_x;
             world.allies[rb_id].pos[1] = yellow_robot.position_y;
-            world.allies[rb_id].yaw = yellow_robot.orientation;
-            if (world.allies[rb_id].yaw < 0) world.allies[rb_id].yaw += 2*M_PI;
-            world.allies[rb_id].detected = true;
+            allies_detected.insert(rb_id);
         }
         else {
             int rb_id = yellow_robot.robot_id;
             if (rb_id >= size(world.enemies)) {
                 for (int i = size(world.enemies); i <= rb_id; i++) {
-                    world.enemies.emplace_back(i);
+                    world.enemies.push_back(robot(i));
                 }
             }
-            world.enemies[rb_id].vel[0] = (yellow_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000);
-            world.enemies[rb_id].vel[1] = (yellow_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000);
+            double new_yaw = yellow_robot.orientation;
+            if (new_yaw < 0) new_yaw += 2*M_PI;
+            if (delta_time > 0) {
+                world.enemies[rb_id].stored_speed_x.push_back((yellow_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000));
+                world.enemies[rb_id].stored_speed_y.push_back((yellow_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000));
+                if (size(world.enemies[rb_id].stored_speed_x) > 10) {
+                    world.enemies[rb_id].stored_speed_x.pop_front();
+                    world.enemies[rb_id].stored_speed_y.pop_front();
+                }
+                world.enemies[rb_id].vel[0] = std::accumulate(world.enemies[rb_id].stored_speed_x.begin(), world.enemies[rb_id].stored_speed_x.end(), 0.0)/10;
+                world.enemies[rb_id].vel[1] = std::accumulate(world.enemies[rb_id].stored_speed_y.begin(), world.enemies[rb_id].stored_speed_y.end(), 0.0)/10;
+            }
+            world.enemies[rb_id].yaw = new_yaw;
             world.enemies[rb_id].pos[0] = yellow_robot.position_x;
             world.enemies[rb_id].pos[1] = yellow_robot.position_y;
-            world.enemies[rb_id].yaw = yellow_robot.orientation;
-            if (world.enemies[rb_id].yaw < 0) world.enemies[rb_id].yaw += 2*M_PI;
-            world.enemies[rb_id].detected = true;
+            enemies_detected.insert(rb_id);
         }
     }
+
+    for (int i = 0; i < size(world.allies); i++) {
+        if (allies_detected.find(i) != allies_detected.end()) world.allies[i].detected = true;
+        else world.allies[i].detected = false;
+        }
+
+    for (int i = 0; i < size(world.enemies); i++) {
+        if (enemies_detected.find(i) != enemies_detected.end()) world.enemies[i].detected = true;
+        else world.enemies[i].detected = false;
+    }
+
     if (delta_time != 0) {
         world.ball_speed[0] = (han.new_vision.balls.position_x - world.ball_pos[0])/(delta_time*1000);
         world.ball_speed[1] = (han.new_vision.balls.position_y - world.ball_pos[1])/(delta_time*1000);
     }
+
     world.ball_pos[0] = han.new_vision.balls.position_x;
     world.ball_pos[1] = han.new_vision.balls.position_y;
+    world.ball_speed_module = sqrt(world.ball_speed[0]*world.ball_speed[0] + world.ball_speed[1]*world.ball_speed[1]);
 
     last_time_stamp = han.new_vision.timestamp;
+
+    pos[0] = world.allies[id].pos[0];
+    pos[1] = world.allies[id].pos[1];
+    yaw = world.allies[id].yaw;
+    vel[0] = world.allies[id].vel[0];
+    vel[1] = world.allies[id].vel[1];
+    vyaw = world.allies[id].vyaw;
+    detected = world.allies[id].detected;
 }
 
 
 
 
 void Robot_controller::publish() {
+    /*
+    std::cout << id << std::endl;
+    std::cout << target_vel[1] << std::endl;
+    std::cout << target_vel[0] << std::endl;
+    std::cout << target_vyaw << std::endl;
+    */
+
+
+
     han.new_ia.robots[id].id = id;
     han.new_ia.robots[id].vel_normal = target_vel[1];
     han.new_ia.robots[id].vel_tang = target_vel[0];

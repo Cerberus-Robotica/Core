@@ -357,7 +357,7 @@ std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, a
                         point[1] = ret.major[1] + adcret;
                     }
                 }
-                adcret += ret.major[0] - ret.minor[0];
+                adcret += small_step;
                 collided = true;
             }
         }

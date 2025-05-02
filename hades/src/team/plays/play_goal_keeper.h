@@ -11,8 +11,8 @@
 
 class play_goal_keeper {
 public:
-    int score(world_model field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team);
-    std::vector<int> role_assing(int (&active_robots)[16], double ball_pos[2], team_info& team, robot allies[16], robot enemies[16], std::vector<int> roles);
+    int score(world_model field, team_info team);
+    std::vector<int> role_assing(world_model& world, team_info team, std::vector<int> roles);
 
 private:
     int required_robots = 1;

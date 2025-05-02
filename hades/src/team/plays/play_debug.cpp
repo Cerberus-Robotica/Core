@@ -4,7 +4,7 @@
 
 #include "play_debug.h"
 
-int play_debug::score(team_info team, robot allies[16]) {
+int play_debug::score(world_model world, team_info team) {
     int score = 0;
     if (team.debug) {
         score += 999991;
@@ -12,12 +12,12 @@ int play_debug::score(team_info team, robot allies[16]) {
     return score;
 }
 
-std::vector<int> play_debug::role_assing(int (&active_robots)[16], team_info& team, robot allies[16], std::vector<int> roles) {
+std::vector<int> play_debug::role_assing(world_model& world, team_info& team, std::vector<int> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
 
-    for (int i = 0 ; i < 16 ; i++) {
-        if (active_robots[i] == 1) {
+    for (int i = 0 ; i < std::size(team.active_robots) ; i++) {
+        if (team.active_robots[i] == 1) {
             if (roles[i] != -1) {
                 continue;
             }

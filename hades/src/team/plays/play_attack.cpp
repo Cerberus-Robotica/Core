@@ -7,42 +7,41 @@
 #include <iostream>
 #include <math.h>
 
-int play_attack::score(world_model field, robot allies[16], robot enemies[16], double ball_pos[2], team_info team) {
+int play_attack::score(world_model world, team_info team) {
     int score = 0;
-    if (ball_pos[0] > 0 && team.left_side) {
+    if (world.ball_pos[0] > 0 && team.left_side) {
         score += 100;
     }
-    if (ball_pos[0] < 0 && !team.left_side) {
+    if (world.ball_pos[0] < 0 && !team.left_side) {
         score += 100;
     }
     return score;
 }
 
-std::vector<int> play_attack::role_assing(int active_robots[16], double ball_pos[2], team_info& team, robot allies[16], robot enemies[16], std::vector<int> roles) {
-
+std::vector<int> play_attack::role_assing(world_model& world, team_info& team, std::vector<int> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
     std::vector<int> active_enemies_ids = {};
     std::vector<double> distances_allies_from_ball = {};
     std::vector<double> distances_enemies_from_ball = {};
-    for (int i = 0 ; i < 16 ; i++) {
-        if (active_robots[i] == 1) {
+    for (int i = 0 ; i < std::size(team.active_robots) ; i++) {
+        if (team.active_robots[i] == 1) {
             if (roles[i] != -1) {
                 continue;
             }
             num_active_robots++;
             active_allies_ids.push_back(i);
-            distances_allies_from_ball.push_back(sqrt(pow(allies[i].pos[0] - ball_pos[0],2) + pow(allies[i].pos[1] - ball_pos[1],2)));
+            distances_allies_from_ball.push_back(sqrt(pow(world.allies[i].pos[0] - world.ball_pos[0],2) + pow(world.allies[i].pos[1] - world.ball_pos[1],2)));
         }
     }
     if (active_allies_ids.empty()) {
         return roles;
     }
 
-    for (int i = 0; i < 16; i++) {
-        if (enemies[i].detected) {
+    for (int i = 0; i < size(world.enemies) ; i++) {
+        if (world.enemies[i].detected) {
             active_enemies_ids.push_back(i);
-            distances_enemies_from_ball.push_back(sqrt(pow(enemies[i].pos[0] - ball_pos[0],2) + pow(enemies[i].pos[1] - ball_pos[1],2)));
+            distances_enemies_from_ball.push_back(sqrt(pow(world.enemies[i].pos[0] - world.ball_pos[0],2) + pow(world.enemies[i].pos[1] - world.ball_pos[1],2)));
         }
     }
 
