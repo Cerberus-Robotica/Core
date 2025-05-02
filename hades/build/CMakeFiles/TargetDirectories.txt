@@ -1,0 +1,3 @@
+/home/cerberus/Desktop/Core/hades/build/CMakeFiles/hades.dir
+/home/cerberus/Desktop/Core/hades/build/CMakeFiles/edit_cache.dir
+/home/cerberus/Desktop/Core/hades/build/CMakeFiles/rebuild_cache.dir
