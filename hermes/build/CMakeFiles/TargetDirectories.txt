@@ -1,3 +1,0 @@
-/home/caiu/Desktop/ssl/Core/hermes/build/CMakeFiles/hermes.dir
-/home/caiu/Desktop/ssl/Core/hermes/build/CMakeFiles/edit_cache.dir
-/home/caiu/Desktop/ssl/Core/hermes/build/CMakeFiles/rebuild_cache.dir
