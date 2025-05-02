@@ -1,3 +1,0 @@
-/home/caiu/Desktop/ssl/Core/caronte/build/CMakeFiles/caronte.dir
-/home/caiu/Desktop/ssl/Core/caronte/build/CMakeFiles/edit_cache.dir
-/home/caiu/Desktop/ssl/Core/caronte/build/CMakeFiles/rebuild_cache.dir
