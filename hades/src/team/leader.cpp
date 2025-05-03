@@ -18,7 +18,7 @@ void leader::start() {
 }
 
 void leader::loop() {
-    std::cout << "ASDASDASD";
+    std::cout << "Leader inicializado" << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     auto t0 = std::chrono::steady_clock::now();
     receive_vision();
@@ -267,6 +267,7 @@ void leader::select_plays() {
         team.roles[i] = roles[i];
     }
 }
+
 
 
 

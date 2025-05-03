@@ -66,6 +66,18 @@ std::vector<int> play_attack::role_assing(world_model& world, team_info& team, s
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
         }
+        if (role == 2) {
+            int closest_idx = 0;
+            for (int idx = 0; idx < active_allies_ids.size(); idx++) {
+                if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
+                    closest_idx = idx;
+                }
+            }
+            int closest_id = active_allies_ids[closest_idx];
+            roles[closest_id] = 2;
+            distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
+            active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
+        }
     }
 
     return roles;

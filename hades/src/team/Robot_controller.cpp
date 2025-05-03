@@ -94,7 +94,7 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
 
     //add static allies to obstacles
     for (int i = 0; i < size(world.allies) ; i++) {
-        if (!world.allies[i].detected || i == id) {
+        if (!world.allies[i].detected || i == id || is_ball) {
             continue;
         }
         circle c({world.allies[i].pos[0], world.allies[i].pos[1]}, radius);
@@ -115,13 +115,33 @@ std::vector<std::vector<double>> Robot_controller::find_trajectory(double start[
         obs_rectangular.push_back(r);
     }
 
-    //goal fisical barrier
     if (!is_ball) {
-        rectangle r({world.inside_our_goal[0][0] + radius, world.inside_our_goal[0][1] + radius}, {world.inside_our_goal[1][0] + radius, world.inside_our_goal[1][1] + radius});
+        rectangle r({world.their_defese_area[0][0] - radius, world.their_defese_area[0][1] - radius}, {world.their_defese_area[1][0] + radius, world.their_defese_area[1][1] + radius});
         obs_rectangular.push_back(r);
     }
 
+    //goal fisical barrier
+    if (!is_ball) {
+        rectangle r({world.back_fisical_left_goal[0][0] - radius, world.back_fisical_left_goal[0][1] - radius}, {world.back_fisical_left_goal[1][0] - radius, world.back_fisical_left_goal[1][1] + radius});
+        obs_rectangular.push_back(r);
+        r.minor = {world.left_fisical_left_goal[0][0] - radius, world.left_fisical_left_goal[0][1] - radius};
+        r.major = {world.left_fisical_left_goal[1][0] - radius, world.left_fisical_left_goal[1][1] - radius};
+        obs_rectangular.push_back(r);
+        r.minor = {world.right_fisical_left_goal[0][0] - radius, world.right_fisical_left_goal[0][1] + radius};
+        r.major = {world.right_fisical_left_goal[1][0] - radius, world.right_fisical_left_goal[1][1] + radius};
+        obs_rectangular.push_back(r);
 
+
+        r.minor = {world.back_fisical_right_goal[0][0] + radius, world.back_fisical_right_goal[0][1] - radius};
+        r.major = {world.back_fisical_right_goal[1][0] + radius, world.back_fisical_right_goal[1][1] + radius};
+        obs_rectangular.push_back(r);
+        r.minor = {world.left_fisical_right_goal[0][0] + radius, world.left_fisical_right_goal[0][1] - radius};
+        r.major = {world.left_fisical_right_goal[1][0] + radius, world.left_fisical_right_goal[1][1] - radius};
+        obs_rectangular.push_back(r);
+        r.minor = {world.right_fisical_right_goal[0][0] + radius, world.right_fisical_right_goal[0][1] + radius};
+        r.major = {world.right_fisical_right_goal[1][0] + radius, world.right_fisical_right_goal[1][1] + radius};
+        obs_rectangular.push_back(r);
+    }
 
 
     auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
@@ -230,7 +250,7 @@ void Robot_controller::move_to(double goal[2], bool avoid_ball = true) {
     }
     positioned = false;
 
-    auto trajectory = find_trajectory(pos, goal, avoid_ball);
+    auto trajectory = find_trajectory(pos, goal, avoid_ball, false);
     auto v_vet = motion_planner(trajectory);
 
     v_vet = motion_control(v_vet);
@@ -279,7 +299,7 @@ void Robot_controller::turn_to(double goal[2]) {
 }
 
 void Robot_controller::kick() {
-    if (sqrt(world.ball_speed[0]*world.ball_speed[0] + world.ball_speed[1]*world.ball_speed[1]) >= vxy_min) {
+    if (world.ball_speed_module >= vxy_min) {
         kicker_x = 0;
         state += 1;
     }
@@ -349,7 +369,12 @@ void Robot_controller::role_table() {
     }
     else if (team->roles[id] == 1) {
         stricker_role();
+    } else if (team->roles[id] == 2) {
+        std::cout << id << std::endl;
+        attack_support_role();
     }
+
+
     if (team->roles[id] == 990) {
         if (size(current_trajectory) == 0) {
             int resolution = 120;
@@ -375,6 +400,12 @@ void Robot_controller::stricker_role() {
 
     //double goal[2] = {(world.their_goal[0][1] + world.their_goal[0][0])/2, (world.their_goal[1][1] + world.their_goal[1][0])/2};
     double goal[2] = {(world.our_goal[0][1] + world.our_goal[0][0])/2, (world.our_goal[1][1] + world.our_goal[1][0])/2};
+    /*if (kick_distance < sqrt(pow(world.ball_pos[0] - world.their_goal[0][0], 2) + pow(world.ball_pos[1], 2))) {
+        world.generate_support_areas(goal, kick_distance);
+        goal[0] = world.support_areas[0][0];
+        goal[1] = world.support_areas[0][1];
+    }*/
+
 
     auto traj = find_trajectory(world.ball_pos, goal, false, true);
     std::vector<double> kick_pos = world.kicking_position(traj[0], traj[1], ball_avoidance_radius + radius);
@@ -391,6 +422,7 @@ void Robot_controller::stricker_role() {
 
     } else if (state == 1) {
         kick();
+        turn_to(next_point);
     } else if (state == 2) {
         state = 0;
     }
@@ -434,12 +466,7 @@ void Robot_controller::goal_keeper_role() {
         double y_max = world.our_goal[1][0] - radius;
         double y_min = world.our_goal[1][1] + radius;
 
-        if (y_meet > y_max) {
-            y_meet = y_max;
-        }
-        if (y_meet < y_min) {
-            y_meet = y_min;
-        }
+        y_meet = std::clamp(y_meet, y_min, y_max);
 
         double x_meet = world.our_goal[0][0] - radius*world.our_goal[0][0]/fabs(world.our_goal[0][0]);
 
@@ -452,6 +479,7 @@ void Robot_controller::goal_keeper_role() {
 
 
         move_to(meet, false);
+        kicker_x = 0;
         turn_to(world.ball_pos);
     }
     else {
@@ -479,12 +507,17 @@ void Robot_controller::goal_keeper_role() {
 
 void Robot_controller::attack_support_role() {
     //TODO continuar
-    auto support_areas = world.support_areas();
-    std::set<int> supports;
+    //TODO melhorar esquema, importar informacoes do team
+    if (world.ball_speed_module < 0.1 || size(world.support_areas) == 0) {
+        double goal[2] = {world.their_goal[0][0], 0};
+        world.generate_support_areas(goal, kick_distance);
+    }
     int priority = 0;
     for (int i = 0 ; i < id ; i++ ) {
         if (team->roles[i] == 2) priority++;
     }
+    auto support_areas = world.support_areas;
+
 
     if (state == 0) {
         double goal[2] = {support_areas[priority][0], support_areas[priority][1]};
@@ -665,7 +698,7 @@ void Robot_controller::publish() {
     han.new_ia.robots[id].vel_normal = target_vel[1];
     han.new_ia.robots[id].vel_tang = target_vel[0];
     han.new_ia.robots[id].vel_ang = static_cast<float>(target_vyaw);
-    if (kicker_x) {
+    if (kicker_x != 0) {
         han.new_ia.robots[id].kick_speed_x = kicker_x_max;
     } else {
         han.new_ia.robots[id].kick_speed_x = 0;

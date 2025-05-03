@@ -73,6 +73,7 @@ private:
     double a_xy_brake = 2;
     double vyaw_max = 10;
     double vyaw_min = 0.5;
+    double kick_distance = 2000;
     double kicker_x_max = 3;
     double kicker_x_min = 0.5;
     double kicker_z_max = 1;

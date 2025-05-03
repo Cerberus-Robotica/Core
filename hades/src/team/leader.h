@@ -24,6 +24,7 @@ public:
     };
 
 
+
     double ball_pos[2] = {0, 0};
     int64_t last_time_stamp = 0;
     double delta_time = 0;
@@ -47,6 +48,7 @@ private:
     void add_robot(int id);
     void imprimir_ativos();
     void select_plays();
+    void inspect_enemy_team();
 };
 
 
