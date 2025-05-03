@@ -1,3 +1,0 @@
-/home/cerberus/Desktop/Core/caronte/build/CMakeFiles/caronte.dir
-/home/cerberus/Desktop/Core/caronte/build/CMakeFiles/edit_cache.dir
-/home/cerberus/Desktop/Core/caronte/build/CMakeFiles/rebuild_cache.dir

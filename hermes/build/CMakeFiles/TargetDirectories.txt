@@ -1,3 +1,0 @@
-/home/cerberus/Desktop/Core/hermes/build/CMakeFiles/hermes.dir
-/home/cerberus/Desktop/Core/hermes/build/CMakeFiles/edit_cache.dir
-/home/cerberus/Desktop/Core/hermes/build/CMakeFiles/rebuild_cache.dir

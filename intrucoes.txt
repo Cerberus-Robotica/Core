@@ -33,3 +33,19 @@ Finalmente(rodar):
 		Ou dar dois clicks no executável nas pastas build/.
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
+
+Para rodar a Interface:
+
+    Estilizada:
+
+        cd Hud_Version1.0
+        python3 main.py
+
+        Obs: Próximos passos, converter para qml e fazer a integração do Core.
+
+    Funcional:
+
+        cd iris/src
+        python3 main.py
+
+        Obs: Com grSim, caronte, hades e hermes rodando
