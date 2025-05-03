@@ -1,10 +1,10 @@
 # Core
 
-# Instruções para instalação
+## Instruções para instalação
 
-Primeiro(Instalação):
+### Primeiro(Instalação):
 
-Não utilize os softwares da SSL, como o ssl-vision e o game-controller, instalados localmente, utilize Docker para rodar os softwares da competição(comandos em [init_softwares_competicao.txt](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl));
+Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, utilize Docker para rodar os softwares da competição(comandos em [init_softwares_competicao.txt](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl));
 
 Tutorial de instalação da bilioteca Docker em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
 	
@@ -16,7 +16,7 @@ Instalar LCM(c++):
 Caso enfrente problemas na hora de buildar o software relacionado à biblioteca LCM, dê uma olhada em "Programação/Frameworks da SSL/Erros de software e biblioteca".
 
 
-Segundo(construir o framework):
+### Segundo(construir o framework):
 
 Construa os três programas em C++ (com o terminal aberto na pasta principal:
 
@@ -24,7 +24,7 @@ Construa os três programas em C++ (com o terminal aberto na pasta principal:
 
 
 
-Finalmente(rodar):
+### Finalmente(rodar):
 
 Rodar o executável em python (com o terminal aberto na pasta principal):
 	
@@ -42,21 +42,19 @@ Caronte:
 
 	./caronte/build/caronte
 
-Ou dar dois clicks no executável nas pastas build/.
+Ou dar dois clicks nos executáveis nas pastas build/.
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
 
-# Rodar os softwares da SSL
+## Rodar os softwares da SSL
 
-Grsim:
+### [Grsim](https://github.com/RoboCup-SSL/grSim):
 
 Com VNC(Remmina): 
 	
 	sudo docker pull robocupssl/grsim:latest && sudo docker run --net=host -eVNC_PASSWORD=vnc -eVNC_GEOMETRY=1920x1080 robocupssl/grsim vnc
 
-Then launch your VNC client app (e.g. Remmina).
-Connect to localhost:5900.
-Enter a password (default:vnc) to login.
+Inicie o Remmina. Conecte em localhost:5900. Insira a senha "vnc".
 
 Ou
 
@@ -65,12 +63,12 @@ Headless:
 	sudo docker pull robocupssl/grsim:latest && sudo docker run robocupssl/grsim
 
 
-Game-Controller:
+### Game-Controller:
 
 	sudo docker pull robocupssl/ssl-game-controller && sudo docker run -p 8081:8081 robocupssl/ssl-game-controller -address :8081
 
 
-LCM spy:
+### LCM spy:
 
 	lcm-spy
 
