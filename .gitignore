@@ -1,6 +1,7 @@
 caronte/build/**
 hermes/build/**
 hades/build/**
+hades/cmake-build-debug/
 .idea/
 .vscode/
 __pycache__/
