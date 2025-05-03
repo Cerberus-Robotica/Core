@@ -1,8 +1,7 @@
-build/**
+caronte/build/**
+hermes/build/**
+hades/build/**
 .idea/
 .vscode/
 __pycache__/
 *.pyc
-caronte/build/
-hades/build/
-hermes/build/
