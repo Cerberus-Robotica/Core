@@ -6,7 +6,7 @@
 
 Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, utilize Docker para rodar os softwares da competição(comandos em [init_softwares_competicao.txt](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl));
 
-Tutorial de instalação da bilioteca Docker em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
+Tutorial de instalação da bilioteca Docker e de todos os softwares da SSL utilizados nesse framework em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
 	
 	
 Instalar LCM(c++):
@@ -67,6 +67,9 @@ Headless:
 
 	sudo docker pull robocupssl/ssl-game-controller && sudo docker run -p 8081:8081 robocupssl/ssl-game-controller -address :8081
 
+### AutoReferee da [Tigers](https://github.com/TIGERs-Mannheim/AutoReferee)
+
+	./run.sh
 
 ### LCM spy:
 
