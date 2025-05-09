@@ -43,6 +43,13 @@ Caronte:
 	./caronte/build/caronte
 
 Ou dar dois clicks nos executáveis nas pastas build/.
+
+Íris:
+
+ 	python3 iris/src/main.py
+Hud_Version1.0:
+
+	python3 Hud_Version1.0/main.py
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
 
