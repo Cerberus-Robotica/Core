@@ -9,11 +9,11 @@ import struct
 
 class tartarus(object):
 
-    __slots__ = ["ssl_vision", "team_blue"]
+    __slots__ = ["ssl_vision", "team_blue", "goalkeeper_id"]
 
-    __typenames__ = ["boolean", "boolean"]
+    __typenames__ = ["boolean", "boolean", "int16_t"]
 
-    __dimensions__ = [None, None]
+    __dimensions__ = [None, None, None]
 
     def __init__(self):
         self.ssl_vision = False
@@ -24,6 +24,12 @@ class tartarus(object):
         LCM Type: boolean
         """
 
+        self.goalkeeper_id = 0
+        """
+        altera o time manualmente(não recomendado usar em competições)
+        LCM Type: int16_t
+        """
+
 
     def encode(self):
         buf = BytesIO()
@@ -32,7 +38,7 @@ class tartarus(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">bb", self.ssl_vision, self.team_blue))
+        buf.write(struct.pack(">bbh", self.ssl_vision, self.team_blue, self.goalkeeper_id))
 
     @staticmethod
     def decode(data: bytes):
@@ -49,12 +55,13 @@ class tartarus(object):
         self = tartarus()
         self.ssl_vision = bool(struct.unpack('b', buf.read(1))[0])
         self.team_blue = bool(struct.unpack('b', buf.read(1))[0])
+        self.goalkeeper_id = struct.unpack(">h", buf.read(2))[0]
         return self
 
     @staticmethod
     def _get_hash_recursive(parents):
         if tartarus in parents: return 0
-        tmphash = (0xd0f2998d93e9865f) & 0xffffffffffffffff
+        tmphash = (0x19b7cbc2a1859dae) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _packed_fingerprint = None

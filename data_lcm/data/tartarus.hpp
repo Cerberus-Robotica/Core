@@ -23,6 +23,11 @@ class tartarus
          */
         int8_t     team_blue;
 
+        /**
+         * altera o time manualmente(não recomendado usar em competições)
+         */
+        int16_t    goalkeeper_id;
+
     public:
         /**
          * Encode a message into binary form.
@@ -125,6 +130,9 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -138,6 +146,9 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -146,12 +157,13 @@ int tartarus::_getEncodedSizeNoHash() const
     int enc_size = 0;
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0xd0f2998d93e9865fLL;
+    uint64_t hash = 0x19b7cbc2a1859daeLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

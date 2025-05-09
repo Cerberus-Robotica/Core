@@ -58,6 +58,7 @@ try:
         print(f"    estrategia    = {han.msg_ia.estrategia}")
         print(f"    ssl_vision    = {han.msg_tartarus.ssl_vision}")
         print(f"    team_blue    = {han.msg_tartarus.team_blue}")
+        print(f"    ID do goleiro    = {han.msg_tartarus.goalkeeper_id}")
         lc.handle()
 except KeyboardInterrupt:
     print("Shutting down...")
