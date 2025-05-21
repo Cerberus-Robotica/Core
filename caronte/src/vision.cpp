@@ -1,5 +1,6 @@
 #include "include/vision.hpp"
 #include "include/socket_connect.hpp"
+#include "include/tartarus.hpp"
 #include <iostream>
 #include <unordered_set>
 #include <thread>
@@ -21,15 +22,23 @@ void recebe_dados_vision() {
     SSL_GeometryData geometry;
     SSL_GeometryFieldSize field;
     SSL_DetectionFrame detection;
+
+    bool ssl_vision_atual;
+    int cameras;
     
     std::cout << "Conectando a visao..." << std::endl;
     while(true){
-
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);       
         
-        
-        for(int i = 0; i < 4 ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
+        if(ssl_vision_atual != han.new_tartarus.ssl_vision) {
+            close(sock_vision);
+            setupVisionSocket();
+            ssl_vision_atual = han.new_tartarus.ssl_vision;
+        }
+        cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
+
+        for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             
             int bytes_received_vision = recvfrom(sock_vision, buffer_vision, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
 
@@ -37,19 +46,16 @@ void recebe_dados_vision() {
                 // Parse dos dados recebidos (Vision)
                 vision.ParseFromArray(buffer_vision, bytes_received_vision);
 
-                
                 if(vision.has_detection()){
                     my_vision_data.timestamp = vision.detection().frame_number();
                     detection = vision.detection();
 
                     if (detection.robots_blue_size() > 0) {
-                    
                         for (int i = 0; i < detection.robots_blue_size(); i++) {
                             int id = detection.robots_blue(i).robot_id();
                     
                             // Caso o ID seja encontrado em .find(), ele retorna um iterador que aponta para o id atual, caso contrário, retorna blue_ids.end()
-                            if (blue_ids.find(id) == blue_ids.end()) {
-                                
+                            if (blue_ids.find(id) == blue_ids.end()) { 
                                 new_robot.robot_id = id;
                                 new_robot.position_x = detection.robots_blue(i).x();
                                 new_robot.position_y = detection.robots_blue(i).y();
@@ -65,12 +71,10 @@ void recebe_dados_vision() {
                     
                     // Para os robôs amarelos, repita o mesmo processo
                     if (detection.robots_yellow_size() > 0) {
-                    
                         for (int i = 0; i < detection.robots_yellow_size(); i++) {
                             int id = detection.robots_yellow(i).robot_id();
                     
-                            if (yellow_ids.find(id) == yellow_ids.end()) {
-                                
+                            if (yellow_ids.find(id) == yellow_ids.end()) {   
                                 new_robot.robot_id = id;
                                 new_robot.position_x = detection.robots_yellow(i).x();
                                 new_robot.position_y = detection.robots_yellow(i).y();
@@ -134,6 +138,7 @@ void recebe_dados_vision() {
 
     // Publica os dados no tópico "vision"
     //std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
     lcm.publish("vision", &my_vision_data);
 
     yellow_ids.clear();

@@ -1,5 +1,8 @@
 #include "include/socket_connect.hpp"
+#include "include/tartarus.hpp"
 
+// tempo de timeout em {1,..}segundos e {..., 0}microssegundos
+struct timeval tv = {1, 0};
 
 int sock_GC, sock_vision, sock_TRACKED;
 struct sockaddr_in addr_GC, addr_vision, addr_TRACKED;
@@ -16,6 +19,11 @@ void setupGCSocket() {
     
     setsockopt(sock_GC, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
+    if (setsockopt(sock_GC, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+        perror("Erro ao configurar timeout do socket Vision");
+        close(sock_GC);
+        return;
+    }
 
     // Bind do socket na porta multicast
     memset(&addr_GC, 0, sizeof(addr_GC));
@@ -43,11 +51,19 @@ void setupVisionSocket() {
     // Permitir múltiplas conexões no mesmo socket
     setsockopt(sock_vision, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
+    if (setsockopt(sock_vision, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+        perror("Erro ao configurar timeout do socket Vision");
+        close(sock_vision);
+        return;
+    }
+
     // Bind do socket na porta multicast
     memset(&addr_vision, 0, sizeof(addr_vision));
     addr_vision.sin_family = AF_INET;
     addr_vision.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr_vision.sin_port = htons(MCAST_PORT_VISION_GRSIM);
+    han.new_tartarus.ssl_vision == 1 
+        ? addr_vision.sin_port = htons(MCAST_PORT_VISION_SSLVISION)
+        : addr_vision.sin_port = htons(MCAST_PORT_VISION_GRSIM);
 
     bind(sock_vision, (struct sockaddr*)&addr_vision, sizeof(addr_vision));
 
@@ -66,6 +82,12 @@ void setupTrackedSocket() {
     sock_TRACKED = socket(AF_INET, SOCK_DGRAM, 0);
     
     setsockopt(sock_TRACKED, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse));
+
+    if (setsockopt(sock_TRACKED, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+        perror("Erro ao configurar timeout do socket Vision");
+        close(sock_TRACKED);
+        return;
+    }
 
     memset((char*)&addr_TRACKED, 0, sizeof(addr_TRACKED));
     addr_TRACKED.sin_family = AF_INET;

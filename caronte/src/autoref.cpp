@@ -1,6 +1,7 @@
 #include "include/autoref.hpp"
 #include "include/socket_connect.hpp"
 #include "include/vision.hpp"
+#include "include/tartarus.hpp"
 #include <iostream>
 #include <unordered_map>
 #include <thread>
@@ -17,13 +18,25 @@ void recebe_dados_tracked() {
 
     std::unordered_set<int> yellow_ids;
     std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos, de robôs
+    bool ssl_vision_atual;
+    int cameras;
+    
+    std::cout << "Conectando a visao..." << std::endl;
     while(true){
-
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);       
-
         
-        for(int i = 0; i < 4 ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
+        if(ssl_vision_atual != han.new_tartarus.ssl_vision) {
+            //close(sock_TRACKED);
+            //setupTrackedSocket();
+            ssl_vision_atual = han.new_tartarus.ssl_vision;
+        }
+
+        std::cout << "ssl_vision_atual: " << ssl_vision_atual << std::endl;
+        std::cout << "han.new_tartarus.ssl_vision: " << (int)han.new_tartarus.ssl_vision << std::endl;
+        cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
+
+        for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             
             int bytes_received_TRACKED = recvfrom(sock_TRACKED, buffer_TRACKED, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
             //std::cout << "bytes_received_TRACKED: " << bytes_received_TRACKED << std::endl;
@@ -111,7 +124,7 @@ void recebe_dados_tracked() {
             std::cout << "Orientação: " << my_autoref_data.robots_yellow[i].orientation << "\n" << std::endl;
         }
 
-        std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
+        std::cout << "Robos azuis: " << my_autoref_data.robots_blue_size;
         std::cout << "  Robos amarelos: " << my_autoref_data.robots_yellow_size << std::endl;
         std::cout << "Timestamp: " << my_autoref_data.timestamp << std::endl;
     

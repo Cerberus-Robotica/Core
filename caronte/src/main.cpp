@@ -14,11 +14,10 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    Handler handler;
-    handler.lc = &lcm;
+    han.lc = &lcm;
 
     //configura o lcm para receber do tópico "tartarus" pelo endereço especificado
-    lcm.subscribe("tartarus", &Handler::handle_tartarus, &handler);
+    lcm.subscribe("tartarus", &Handler::handle_tartarus, &han);
 
     setupGCSocket();
     setupVisionSocket();

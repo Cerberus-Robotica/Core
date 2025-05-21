@@ -18,6 +18,7 @@ class handlers:
 
     def handler_tartarus(self, channel, data_tartarus):
         han.msg_tartarus = tartarus.decode(data_tartarus)
+        #altera entre ultilizar o sslvision ou o GrSim para receber dados
         han.msg_tartarus.ssl_vision = False
 
         # caso o GC esteja configurado

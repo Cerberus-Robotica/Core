@@ -1,5 +1,3 @@
-void recebe_dados_tracked();
-
 #ifndef AUTOREF_HPP
 #define AUTOREF_HPP
 
@@ -8,6 +6,6 @@ void recebe_dados_tracked();
 #include "../../build/ssl_vision_wrapper_tracked.pb.h"
 
 extern data::autoref my_autoref_data;
-void recebe_dados_vision();
+void recebe_dados_tracked();
 
 #endif
