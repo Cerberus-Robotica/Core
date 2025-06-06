@@ -2,23 +2,23 @@
 // Created by caiu on 15/04/25.
 //
 
-#include "play_attack.h"
+#include "PlayAttack.h"
 
 #include <iostream>
 #include <math.h>
 
-int play_attack::score(world_model world, team_info team) {
+int PlayAttack::score(WorldModel world, TeamInfo team) {
     int score = 0;
-    if (world.ball_pos[0] > 0 && team.left_side) {
+    if (world.ball_pos[0] > 0 && team.our_side == TeamInfo::left) {
         score += 100;
     }
-    if (world.ball_pos[0] < 0 && !team.left_side) {
+    if (world.ball_pos[0] < 0 && team.our_side == TeamInfo::right) {
         score += 100;
     }
     return score;
 }
 
-std::vector<int> play_attack::role_assing(world_model& world, team_info& team, std::vector<int> roles) {
+std::vector<TeamInfo::role> PlayAttack::role_assing(WorldModel& world, TeamInfo& team, std::vector<TeamInfo::role> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
     std::vector<int> active_enemies_ids = {};
@@ -46,15 +46,15 @@ std::vector<int> play_attack::role_assing(world_model& world, team_info& team, s
     }
 
     //role assign
-    for (int role : required_roles) {
+    for (TeamInfo::role selected_role : required_roles) {
         if (active_allies_ids.empty()) {
             return roles;
         }
-        if (role == 0) {
-            roles[team.goal_keeper_id] = 0;
+        if (selected_role == TeamInfo::goal_keeper) {
+            roles[team.goal_keeper_id] = TeamInfo::goal_keeper;
             active_allies_ids.erase(active_allies_ids.begin() + team.goal_keeper_id);
         }
-        if (role == 1) {
+        if (selected_role == TeamInfo::stricker) {
             int closest_idx = 0;
             for (int idx = 0; idx < active_allies_ids.size(); idx++) {
                 if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
@@ -62,11 +62,11 @@ std::vector<int> play_attack::role_assing(world_model& world, team_info& team, s
                 }
             }
             int closest_id = active_allies_ids[closest_idx];
-            roles[closest_id] = 1;
+            roles[closest_id] = TeamInfo::stricker;
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
         }
-        if (role == 2) {
+        if (selected_role == TeamInfo::mid_field_support) {
             int closest_idx = 0;
             for (int idx = 0; idx < active_allies_ids.size(); idx++) {
                 if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
@@ -74,7 +74,7 @@ std::vector<int> play_attack::role_assing(world_model& world, team_info& team, s
                 }
             }
             int closest_id = active_allies_ids[closest_idx];
-            roles[closest_id] = 2;
+            roles[closest_id] = TeamInfo::mid_field_support;
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
         }

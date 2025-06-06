@@ -11,31 +11,29 @@ find_package(lcm REQUIRED)
 
 # Adicionar executável
 add_executable(${PROJECT_NAME} src/main.cpp
-        src/team/Robot_controller.cpp
-        src/team/Robot_controller.h
-        src/team/leader.cpp
-        src/team/leader.h
+        src/team/RobotController.cpp
+        src/team/RobotController.h
+        src/team/Leader.cpp
+        src/team/Leader.h
         src/c_trajectory/C_trajectory.cpp
         src/c_trajectory/C_trajectory.h
         src/c_trajectory/geometry/Vetop.cpp
         src/c_trajectory/geometry/Vetop.h
-        src/c_trajectory/geometry/circle.cpp
-        src/c_trajectory/geometry/circle.h
-        src/c_trajectory/geometry/rectangle.cpp
-        src/c_trajectory/geometry/rectangle.h
-        src/team/robot.cpp
-        src/team/robot.h
+        src/c_trajectory/geometry/Circle.cpp
+        src/c_trajectory/geometry/Circle.h
+        src/c_trajectory/geometry/Rectangle.cpp
+        src/c_trajectory/geometry/Rectangle.h
+        src/team/Robot.cpp
+        src/team/Robot.h
         src/include/handlers.cpp
-        src/team/team_info.cpp
-        src/team/team_info.h
-        src/team/geometry/world_model.cpp
-        src/team/geometry/world_model.h
-        src/team/plays/play_attack.cpp
-        src/team/plays/play_attack.h
-        src/team/plays/play_goal_keeper.cpp
-        src/team/plays/play_goal_keeper.h
-        src/team/plays/play_debug.cpp
-        src/team/plays/play_debug.h
+        src/team/TeamInfo.cpp
+        src/team/TeamInfo.h
+        src/team/geometry/WorldModel.cpp
+        src/team/geometry/WorldModel.h
+        src/team/plays/PlayAttack.cpp
+        src/team/plays/PlayAttack.h
+        src/team/plays/PlayDebug.cpp
+        src/team/plays/PlayDebug.h
 )
 
 target_include_directories(${PROJECT_NAME}

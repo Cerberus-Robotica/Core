@@ -12,7 +12,7 @@
 using namespace std;
 
 vector<vector<double>> C_trajectory::path_find(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular) {
+            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular) {
 
 /*Encontra uma trajetoria a partir de 3 estratégias.
 Se é encontrada uma trajetoria na primeira estratégia, a função retorna essa trajetoria,
@@ -70,7 +70,7 @@ menorpasso : Menor distancia entre dois pontos consecutivos
 }
 
 vector<vector<double>> C_trajectory::path_connect(std::vector<double>& start, std::vector<double>& goal,
-        std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular) {
+        std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular) {
     /*
     Cria uma trajetoria a partir de duas trajetorias, uma partindo do ponto inicial e outra do ponto final.
     As trajetorias tentam encontrar uma a outra.
@@ -88,7 +88,7 @@ vector<vector<double>> C_trajectory::path_connect(std::vector<double>& start, st
     vector<vector<double>> trajectory_2 ={goal};
     deque<deque<vector<double>>> alternatives_1 = {};
     deque<deque<vector<double>>> alternatives_2 = {};
-    vector<circle> new_obs_circular = obs_circular;
+    vector<Circle> new_obs_circular = obs_circular;
     vector<double> goal1;
     vector<double> goal2;
     int iteration = 0;
@@ -169,10 +169,10 @@ vector<vector<double>> C_trajectory::path_connect(std::vector<double>& start, st
 
 
 std::vector<std::vector<double>> C_trajectory::path_single(std::vector<double>& start, std::vector<double>& goal,
-             std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular) {
+             std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular) {
     vector<vector<double>> trajectory = {start};
     deque<deque<vector<double>>> alternatives = {};
-    vector<circle> new_obs_circular = obs_circular;
+    vector<Circle> new_obs_circular = obs_circular;
     int iteration = 0;
     deque<vector<double>> found;
 
@@ -203,7 +203,7 @@ std::vector<std::vector<double>> C_trajectory::path_single(std::vector<double>& 
 }
 
 std::vector<std::vector<double>> C_trajectory::path_single_inverted(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular) {
+            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular) {
     auto trajectory = path_single(start, goal, obs_circular, obs_retangular);
     invert_trajectory(trajectory);
     return trajectory;
@@ -213,12 +213,12 @@ std::vector<std::vector<double>> C_trajectory::path_single_inverted(std::vector<
 bool C_trajectory::collision_test(auto& start, auto& goal,
     auto& obs_circular, auto& obs_retangular) {
     vector<double> vet = {goal[0] - start[0], goal[1] - start[1]};
-    for (circle c: obs_circular) {
+    for (Circle c: obs_circular) {
         if (c.collision_test(start, vet)) {
             return true;
         }
     }
-    for (rectangle r: obs_retangular) {
+    for (Rectangle r: obs_retangular) {
         if (r.collision_test(start, vet)) {
             return true;
         }
@@ -247,9 +247,9 @@ void C_trajectory::find_blocking_circles(auto& trajectory, auto& goal, auto& new
     if (distance_point_squared(ponto_2, trajectory[0]) < pow(1/k, 2) || distance_point_squared(ponto_2, goal) < pow(1/k, 2)) {
         return;
     }
-    circle circle_1(ponto_1, 1/k);
+    Circle circle_1(ponto_1, 1/k);
     new_obs_circular.push_back(circle_1);
-    circle circle_2(ponto_2, 1/k);
+    Circle circle_2(ponto_2, 1/k);
     new_obs_circular.push_back(circle_2);
 }
 
@@ -316,7 +316,7 @@ std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, a
     while(true) {
         collided = false;
 
-        for (circle c : obs_circular) {
+        for (Circle c : obs_circular) {
             if (distance_point(point, c.center) <= c.radius*1.05){
                 if (point[0] - c.center[0] == 0 || point[1] - c.center[1] == 0) {
                     point[0] = 1;
@@ -329,7 +329,7 @@ std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, a
 
             }
         }
-        for (rectangle ret : obs_retangular){
+        for (Rectangle ret : obs_retangular){
             if (point[0] >= ret.minor[0] && point[0] <= ret.major[0] && point[1] >= ret.minor[1] && point[1] <= ret.major[1]) {
                 double distx = 0;
 
@@ -482,7 +482,7 @@ vector<vector<double>> C_trajectory::smoothing(auto& trajectory, auto& obs_circu
     if (k == 0) {
         return trajectory;
     }
-    circle new_obs_circular({0, 0}, 0);
+    Circle new_obs_circular({0, 0}, 0);
     double radius = 1/k;
     auto new_trajectory = trajectory;
     vector<double> x = {1, 0};

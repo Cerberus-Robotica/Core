@@ -2,7 +2,7 @@
 // Created by caiu on 11/04/25.
 //
 
-#include "world_model.h"
+#include "WorldModel.h"
 
 #include <iostream>
 #include <ostream>
@@ -10,7 +10,7 @@
 
 #include "../c_trajectory/geometry/Vetop.h"
 
-std::vector<double> world_model::kicking_position(std::vector<double> pos_0, std::vector<double> pos_1, double distance) {
+std::vector<double> WorldModel::kicking_position(std::vector<double> pos_0, std::vector<double> pos_1, double distance) {
     std::vector<double> pos_f = {0, 0};
     pos_f[0] = -pos_1[0] + pos_0[0];
     pos_f[1] = -pos_1[1] + pos_0[1];
@@ -20,7 +20,7 @@ std::vector<double> world_model::kicking_position(std::vector<double> pos_0, std
     return pos_f;
 }
 
-bool world_model::ball_on_our_side() {
+bool WorldModel::ball_on_our_side() {
     if (ball_pos[0] == 0) {
         return false;
     }
@@ -30,7 +30,7 @@ bool world_model::ball_on_our_side() {
     return false;
 }
 
-bool world_model::ball_on_our_area() {
+bool WorldModel::ball_on_our_area() {
     if (ball_pos[0] > our_defese_area[0][0] && ball_pos[0] < our_defese_area[1][0]) {
         if (ball_pos[1] > our_defese_area[0][1] && ball_pos[1] < our_defese_area[1][1]) {
             return true;
@@ -39,7 +39,7 @@ bool world_model::ball_on_our_area() {
     return false;
 }
 
-bool world_model::ball_on_their_area() {
+bool WorldModel::ball_on_their_area() {
     if (ball_pos[0] > their_defese_area[0][0] && ball_pos[0] < their_defese_area[1][0]) {
         if (ball_pos[1] > their_defese_area[0][1] && ball_pos[1] < their_defese_area[1][1]) {
             return true;
@@ -50,7 +50,7 @@ bool world_model::ball_on_their_area() {
 
 
 
-void world_model::generate_support_areas(double goal[2], double kick_distance) {
+void WorldModel::generate_support_areas(double goal[2], double kick_distance) {
     kick_distance = std::min(kick_distance,  sqrt(pow(ball_pos[0] - goal[0], 2) + pow(ball_pos[1] - goal[1], 2)/2));
     int num_of_support_areas = 16;
     std::vector<std::vector<double>> support_areas = {};

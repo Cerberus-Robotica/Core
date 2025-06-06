@@ -1,6 +1,6 @@
 #include <thread>
 #include "handlers.hpp"
-#include "team/leader.h"
+#include "team/Leader.h"
 
 
 
@@ -23,7 +23,7 @@ int main() {
     });
 
 
-    leader ia;
+    Leader ia;
     ia.start();
     lcm_thread.join();
 

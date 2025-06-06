@@ -6,11 +6,11 @@
 #define WORLD_H
 #include <vector>
 
-#include "../../c_trajectory/geometry/rectangle.h"
-#include "../team_info.h"
-#include "../robot.h"
+#include "../../c_trajectory/geometry/Rectangle.h"
+#include "../TeamInfo.h"
+#include "../Robot.h"
 
-class world_model {
+class WorldModel {
 public:
     double field_size[2][2] = {{-6000, -4500}, {6000, 4500}};
 
@@ -32,8 +32,8 @@ public:
     double outside_field_y_minus[2][2] = {{-6000, -6000}, {6000, -4700}};
     double outside_field_y_plus[2][2] = {{-6000, 4700}, {6000, 6000}};
 
-    std::vector<robot> allies = {};
-    std::vector<robot> enemies = {};
+    std::vector<Robot> allies = {};
+    std::vector<Robot> enemies = {};
     double ball_pos[2] = {0, 0};
     double ball_speed[2] = {0, 0};
     double ball_speed_module = 0;

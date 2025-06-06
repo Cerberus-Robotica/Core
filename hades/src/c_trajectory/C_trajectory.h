@@ -7,8 +7,8 @@
 #include <deque>
 #include <vector>
 #include "geometry/Vetop.h"
-#include "geometry/circle.h"
-#include "geometry/rectangle.h"
+#include "geometry/Circle.h"
+#include "geometry/Rectangle.h"
 
 class C_trajectory {
     private:
@@ -31,16 +31,16 @@ class C_trajectory {
         }
 
         std::vector<std::vector<double>> path_find(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular);
+            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         std::vector<std::vector<double>> path_connect(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular);
+            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         std::vector<std::vector<double>> path_single(std::vector<double>& start, std::vector<double>& goal,
-             std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular);
+             std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         std::vector<std::vector<double>> path_single_inverted(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<circle>& obs_circular, std::vector<rectangle>& obs_retangular);
+            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         void retrace_path(auto& trajectory, auto& obs_circular, auto& obs_retangular);
 
