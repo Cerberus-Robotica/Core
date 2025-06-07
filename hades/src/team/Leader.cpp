@@ -32,8 +32,12 @@ void Leader::loop() {
 
         receive_config();
         receive_vision();
+        inspect_enemy_team();
+        world_analysis();
         select_plays();
         //imprimir_ativos();
+
+        //std::cout << team.central_line_x << std::endl;
 
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -52,7 +56,7 @@ void Leader::receive_vision() {
     std::unordered_set<int> enemies_detected = {};
 
     for (auto blue_robot : han.new_vision.robots_blue) {
-        if (team.color == 0) {
+        if (team.color == TeamInfo::blue) {
             int rb_id = blue_robot.robot_id;
             if (rb_id >= size(world.allies)) {
                 for (int i = size(world.allies); i <= rb_id; i++) {
@@ -109,7 +113,7 @@ void Leader::receive_vision() {
 
 
     for (auto yellow_robot : han.new_vision.robots_yellow) {
-        if (team.color == 1) {
+        if (team.color == TeamInfo::yellow) {
             int rb_id = yellow_robot.robot_id;
             if (rb_id >= size(world.allies)) {
                 for (int i = size(world.allies); i <= rb_id; i++) {
@@ -186,13 +190,28 @@ void Leader::receive_vision() {
 void Leader::receive_config() {
     int is_team_blue = int(han.new_tartarus.team_blue);
     if (is_team_blue == 1) {
-        team.color = 0;
+        team.color = TeamInfo::blue;
+        team.goal_keeper_id = han.new_GC.blue.goalkeeper_id;
     }
     else if (is_team_blue == 0) {
-        team.color = 1;
+        team.color = TeamInfo::yellow;
+        team.goal_keeper_id = han.new_GC.yellow.goalkeeper_id;
     }
 
+    if (team.our_side == TeamInfo::right) team.our_side_sign = 1;
+    else team.our_side_sign = -1;
+
+
 }
+
+void Leader::world_analysis() {
+    world.ball_pos[0] != 0 ? team.central_line_x = world.ball_pos[0]
+        : team.central_line_x = 0;
+    //std::cout << team.central_line_x << std::endl;
+}
+
+
+
 
 void Leader::add_robot(int id) {
     if (id >= sizeof(team.active_robots)) {
@@ -260,6 +279,32 @@ void Leader::select_plays() {
     }
 }
 
+void Leader::inspect_enemy_team() {
+    std::vector<int> active_enemies_ids = {};
+    std::vector<double> distances_enemies_from_ball = {};
+
+    for (int i = 0; i < size(world.enemies) ; i++) {
+        if (world.enemies[i].detected) {
+            active_enemies_ids.push_back(i);
+            distances_enemies_from_ball.push_back(sqrt(pow(world.enemies[i].pos[0] - world.ball_pos[0],2) + pow(world.enemies[i].pos[1] - world.ball_pos[1],2)));
+        }
+    }
+    if (team.color == TeamInfo::blue) {
+        team.enemy_roles[han.new_GC.yellow.goalkeeper_id] = TeamInfo::goal_keeper;
+    }
+    else {
+        team.enemy_roles[han.new_GC.blue.goalkeeper_id] = TeamInfo::goal_keeper;
+    }
+    unsigned int closest_idx = 0;
+    for (int idx = 0; idx < active_enemies_ids.size(); idx++) {
+        if (distances_enemies_from_ball[idx] < distances_enemies_from_ball[closest_idx]) {
+                closest_idx = idx;
+            }
+    }
+    unsigned int id = world.enemies[closest_idx].id;
+    team.enemy_roles[id] = TeamInfo::stricker;
+
+}
 
 
 

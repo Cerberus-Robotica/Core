@@ -10,6 +10,7 @@
 #include "Robot.h"
 #include "TeamInfo.h"
 #include "geometry/WorldModel.h"
+#include "RobotCalibration.h"
 
 class RobotController {
 
@@ -51,10 +52,12 @@ private:
 
     //strategy status
     TeamInfo* mTeam;  //role; -1 unsigned
+    TeamInfo::role lastRole = TeamInfo::unknown;
 
     int mState = 0;  //estado
 
     double mDelta_time = 0;
+    double mTimer = 0;
     std::vector<std::vector<double>> mCurrent_trajectory = {};
 
 
@@ -73,7 +76,7 @@ private:
     double mA_xy_brake = 2;
     double mVyaw_max = 10;
     double mVyaw_min = 0.5;
-    double mKick_distance = 2000;
+    double mKick_distance = 3000;
     double mKicker_x_max = 3;
     double mKicker_x_min = 0.5;
     double mKicker_z_max = 1;
@@ -129,14 +132,18 @@ private:
 
     void receive_vision();
     void publish();
+    void loadCalibration();
 
     void role_table();
     void stricker_role();
     void goal_keeper_role();
-    void attack_support_role();
+    void mid_field_role();
+    void defender_role();
 
     void keep_x_line(double x_line, double y_segment[2], double y_rest);
-    void position_and_kick_to(double goal[2]);
+    void keep_a_location(double keep[2]);
+    void position_and_kick_to_destination(double goal[2]);
+    void position_and_kick_to_robot(int id);
 };
 
 

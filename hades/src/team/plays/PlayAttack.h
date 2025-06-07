@@ -14,7 +14,7 @@ public:
 
 private:
     int required_robots = 3;
-    TeamInfo::role required_roles[3] = {TeamInfo::goal_keeper, TeamInfo::stricker, TeamInfo::mid_field_support};
+    TeamInfo::role required_roles[3] = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::stricker};
 };
 
 

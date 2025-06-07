@@ -47,6 +47,7 @@ private:
     void imprimir_ativos();
     void select_plays();
     void inspect_enemy_team();
+    void world_analysis();
 };
 
 

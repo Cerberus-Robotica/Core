@@ -14,7 +14,8 @@ public:
         unknown = -1,
         goal_keeper,
         stricker,
-        mid_field_support,
+        mid_field,
+        defender,
         debug_circular_trajectory,
         debug_squared_trajectory
     };
@@ -24,20 +25,33 @@ public:
         right
     };
 
+    enum color {
+        blue,
+        yellow
+    };
+
 
     int goal_keeper_id = 0;
     sides our_side = right;
+    int our_side_sign = +1;
 
     bool debug = false;
 
+    double central_line_x = 0;
     int play = -1;
-    int color = 1; // 0.blue 1.yellow
+    color color = yellow; // 0.blue 1.yellow
     int game_state = -1;
     role roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+    role enemy_roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+
+    double striker_dislocation = 2000;
+    double mid_field_dislocation = 0;
+    double defender_dislocation = 2000;
+
     //int roles[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int active_robots[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int waiting_for_ball[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int positioned[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int num_of_active_robots = 0;
+    bool positioned[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 };
 
 

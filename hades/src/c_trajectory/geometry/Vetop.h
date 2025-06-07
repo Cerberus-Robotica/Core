@@ -12,6 +12,7 @@
 
 double distance_line_point(std::vector<double>& start, std::vector<double>& goal, std::vector<double>& ponto);
 double distance_point(std::vector<double>& ponto_1, std::vector<double>& ponto_2);
+double distance_point(double point_1[2], double point_2[2]);
 double distance_point_squared(std::vector<double>& ponto_1, std::vector<double>& ponto_2);
 std::vector<double> ortogonal_projection(std::vector<double>& u, std::vector<double>& v);
 std::vector<double> normalize(double alpha, std::vector<double>& vet);

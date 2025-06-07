@@ -18,6 +18,10 @@ double distance_line_point(std::vector<double>& start, std::vector<double>& goal
     return (fabs(a * ponto[0] - ponto[1] + c) / sqrt(pow(a, 2) + 1));
 }
 
+double distance_point(double point_1[2], double point_2[2]) {
+    return sqrt(pow(point_1[0] - point_2[0], 2) + pow(point_1[1] - point_2[1], 2));
+}
+
 double distance_point(std::vector<double>& ponto_1, std::vector<double>& ponto_2) {
     return sqrt(pow(ponto_1[0] - ponto_2[0], 2) + pow(ponto_1[1] - ponto_2[1], 2));
 }

@@ -34,6 +34,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayAttack.h
         src/team/plays/PlayDebug.cpp
         src/team/plays/PlayDebug.h
+        src/team/RobotCalibration.cpp
+        src/team/RobotCalibration.h
 )
 
 target_include_directories(${PROJECT_NAME}

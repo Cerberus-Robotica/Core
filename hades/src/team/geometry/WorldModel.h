@@ -37,6 +37,8 @@ public:
     double ball_pos[2] = {0, 0};
     double ball_speed[2] = {0, 0};
     double ball_speed_module = 0;
+    double ball_stop_position[2] = {0, 0};
+    double ball_disacceleration = 0.001;
 
     std::vector<std::vector<double>> support_areas = {};
 
@@ -44,11 +46,13 @@ public:
     //std::vector<rectangle> field_limits = {};
     //rectangle their_defense_area = rectangle({4200, -1800}, {6000, 1800});
 
-    void generate_support_areas(double goal[2], double kick_distance);
-    std::vector<double> kicking_position(std::vector<double> pos_0, std::vector<double> pos_1, double distance);
-    bool ball_on_our_side();
-    bool ball_on_our_area();
-    bool ball_on_their_area();
+    std::vector<double> getKickingPosition(std::vector<double> pos_0, std::vector<double> pos_1, double distance);
+    bool isBallOnOurSide();
+    bool isBallOnOurArea();
+    bool isBallOnTheirArea();
+    std::vector<int> getAlliesIdsAccordingToDistanceToBall();
+    int findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id);
+    void generateBallStopPosition();
 };
 
 
