@@ -2031,7 +2031,7 @@ uri-js@^4.2.2:
 
 vite@^6.3.5:
   version "6.3.5"
-  resolved "https://registry.npmjs.org/vite/-/vite-6.3.5.tgz"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.5.tgz#fec73879013c9c0128c8d284504c6d19410d12a3"
   integrity sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==
   dependencies:
     esbuild "^0.25.0"

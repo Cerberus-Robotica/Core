@@ -1,0 +1,40 @@
+Instruções para rodar a aplicação:
+
+    Em core:
+
+    Entrar no repositório da aplicação web_ui:
+        cd iris/web_ui/
+
+        Baixar o vite:
+            yarn add -D vite
+        
+        Rodar a aplicação:
+            yarn dev
+
+Instruções para rodar o servidor:
+
+    Em core:
+
+    Entrar no repositório do servidor lcm_flask_server.py:
+        cd iris/web_ui/src/backand/
+
+        Verificar se tem python3 instalado:
+            python3 --version
+
+            Baixar o python3(Caso não esteja instalado):
+                sudo apt update
+                sudo apt install python3
+
+        Verificar se tem pip instalado:
+            pip --version
+
+            Baixar o pip(Caso não esteja instalado):
+                sudo apt update
+                sudo apt install python3-pip
+        
+        Baixar o flask:
+            pip install flask
+
+        Rodar o servidor:
+            python3 lcm_flask_server
+
