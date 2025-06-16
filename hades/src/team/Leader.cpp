@@ -32,6 +32,8 @@ void Leader::loop() {
 
         receive_config();
         receive_vision();
+        receive_field_geometry();
+
         inspect_enemy_team();
         world_analysis();
         select_plays();
@@ -186,6 +188,12 @@ void Leader::receive_vision() {
 
     last_time_stamp = han.new_vision.timestamp;
 }
+
+void Leader::receive_field_geometry() {
+    team.striker_max_dislocation = fabs(world.their_defese_area[0][0] + world.their_defese_area[1][0]) / 2;
+    team.mid_field_max_dislocation = std::min(fabs(world.their_defese_area[0][0]), fabs(world.their_defese_area[1][0]));
+}
+
 
 void Leader::receive_config() {
     int is_team_blue = int(han.new_tartarus.team_blue);

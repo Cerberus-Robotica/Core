@@ -7,6 +7,7 @@
 #include <deque>
 #include <cmath>
 #include <iostream>
+#include <bits/algorithmfwd.h>
 
 
 using namespace std;
@@ -47,7 +48,6 @@ menorpasso : Menor distancia entre dois pontos consecutivos
 
 
     vector<vector<double>> mid_path = path_connect(start_new, goal_new, obs_circular, obs_retangular);
-
     if (size(mid_path) == 0) {
         mid_path = path_single(start_new, goal_new, obs_circular, obs_retangular);
         if (size(mid_path) == 0) {
@@ -58,7 +58,6 @@ menorpasso : Menor distancia entre dois pontos consecutivos
             }
         }
     }
-
     if (size(mid_path) > 0) {
         trajectory.insert(trajectory.end(), mid_path.begin(), mid_path.end());
         trajectory = smoothing(trajectory, obs_circular, obs_retangular);
@@ -194,6 +193,9 @@ std::vector<std::vector<double>> C_trajectory::path_single(std::vector<double>& 
                 std::cout << "Iteration: " << iteration << std::endl;
             }
         }
+        if (iteration >= max_iterations) {
+            return {};
+        }
     }
     trajectory.push_back(goal);
     if (size(trajectory) > 2) {
@@ -261,6 +263,9 @@ std::deque<std::vector<double>> C_trajectory::c_point(auto& start, auto& goal, a
     vector<bool> collided_rectangular;
     bool collided = false;
 
+    double boundarieMinorVector[2] = {boundaries.minor[0] - start[0], boundaries.minor[1] - start[1]};
+    double boundarieMajorVector[2] = {boundaries.major[0] - start[0], boundaries.major[1] - start[1]};
+
     for (int i = 0; i < size(obs_circular); i++) {
         collided_circle.push_back(false);
     }
@@ -292,6 +297,12 @@ std::deque<std::vector<double>> C_trajectory::c_point(auto& start, auto& goal, a
                 }
             }
         }
+        if (unchecked[0][0] < boundarieMinorVector[0] || unchecked[0][0] > boundarieMajorVector[0]){
+            collided = true;
+        }
+        if (unchecked[0][1] < boundarieMinorVector[1] || unchecked[0][1] > boundarieMajorVector[1]){
+            collided = true;
+        }
         if (!collided) {
             approved.push_back(unchecked[0]);
         }
@@ -304,6 +315,8 @@ std::deque<std::vector<double>> C_trajectory::c_point(auto& start, auto& goal, a
     }
     return approved;
 }
+
+
 
 std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, auto& obs_retangular) {
     bool collided = false;
@@ -349,11 +362,22 @@ std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, a
                         point[0] = ret.major[0] + adcret;
                     }
                 }
+
+                double disty = 0;
+
+                if (fabs(point[1] - ret.minor[1]) < fabs(point[1] - ret.major[1])) {
+                    disty = abs(point[1] - ret.minor[1]);
+                }
                 else {
+                    disty = fabs(point[1] - ret.major[1]);
+                }
+                if (disty < fabs(point[0] - ret.minor[0]) && disty < fabs(point[0] - ret.major[0])) {
                     if (fabs(point[1] - ret.minor[1]) < fabs(point[1] - ret.major[1])) {
+                        disty = fabs(point[1] - ret.minor[1]);
                         point[1] = ret.minor[1] - adcret;
                     }
                     else {
+                        disty = fabs(point[1] - ret.major[1]);
                         point[1] = ret.major[1] + adcret;
                     }
                 }
@@ -361,11 +385,20 @@ std::vector<double> C_trajectory::interference(auto point, auto& obs_circular, a
                 collided = true;
             }
         }
+        if (point[0] < boundaries.minor[0] || point[0] > boundaries.major[0]){
+            std::clamp(point[0], boundaries.minor[0], boundaries.major[0]);
+            collided = true;
+        }
+        if (point[1] < boundaries.minor[1] || point[1] > boundaries.major[1]){
+            std::clamp(point[1], boundaries.minor[1], boundaries.major[1]);
+            collided = true;
+        }
+
         if (!collided) {
             break;
         }
         tries += 1;
-        if (tries >= 1000) {
+        if (tries >= 100) {
             return backup;
         }
     }
@@ -524,7 +557,9 @@ vector<vector<double>> C_trajectory::smoothing(auto& trajectory, auto& obs_circu
         auto total_obs_circular = obs_circular;
         total_obs_circular.push_back(new_obs_circular);
 
-        C_trajectory temp(false, false, 0, int(max_iterations/10), radius/2, 0);
+        double boundariesMinor[2] = {boundaries.minor[0], boundaries.minor[1]};
+        double boundariesMajor[2] = {boundaries.major[0], boundaries.major[1]};
+        C_trajectory temp(false, false, 0, int(max_iterations/10), radius/2, 0, boundariesMinor, boundariesMajor);
         auto between = temp.path_connect(new_trajectory[i], new_trajectory[i + 1], total_obs_circular, obs_retangular);
         if (size(between) > 2) {
             between.erase(between.begin());

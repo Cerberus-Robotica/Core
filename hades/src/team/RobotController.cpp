@@ -35,41 +35,23 @@ void RobotController::stop() {
 
 void RobotController::loop() {
     auto t0 = std::chrono::steady_clock::now();
-    int cycles = 0;
+
     while (not mTerminate) {
-        //std::this_thread::sleep_for(std::chrono::milliseconds(200));
         if (mLast_time_stamp == han.new_ia.timestamp) {
             continue;
         }
         auto t1 = std::chrono::steady_clock::now();
+
+        //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
+        if (mId == 1) std::cout << mWorld.ball_speed_module << std::endl;
         receive_vision();
-        //std::cout << id << ", " << team->roles[id] << std::endl;
-        //std::cout << world.enemies[0].detected<< std::endl;
         check_connection();
-        role_table();
+        select_behavior();
         publish();
-        cycles++;
+
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
         mDelta_time = delta.count();
-        if (mDelta_time == 0 or mDelta_time < 0) {
-            std::cout << "??" << std::endl;
-            mDelta_time = 1/60;
-        }
-        if (mDelta_time != 0) {
-            continue;
-            double frequency = cycles/mDelta_time;
-            if (cycles > 1000) {
-                cycles = 0;
-                t0 = std::chrono::steady_clock::now();
-            }
-            if (frequency < 30) {
-                std::cout << mId << std::endl;
-                std::cout << "Frequencia: " << frequency << std::endl;
-                std::cout << cycles << std::endl;
-                std::cout << mDelta_time << std::endl;
-            }
-        }
     }
     std::cout << "Encerrado " << mId << std::endl;
 }
@@ -80,7 +62,7 @@ void RobotController::loop() {
 std::vector<std::vector<double>> RobotController::find_trajectory(double start[2], double goal[2], bool avoid_ball = true) {
     //goal[0] = 7261.12;
     //goal[1] = -2280.79;
-    C_trajectory pf(false, false, 0, 100, 50, 0);
+    C_trajectory pf(false, false, 0, 100, 50, 0, mWorld.boundariesMinor, mWorld.boundariesMajor);
     std::vector<double> double_start = {start[0], start[1]};
     std::vector<double> double_goal = {goal[0], goal[1]};
 
@@ -161,15 +143,14 @@ std::vector<std::vector<double>> RobotController::find_trajectory(double start[2
     r.major = {mWorld.outside_field_y_plus[1][0], mWorld.outside_field_y_plus[1][1]};
     obs_rectangular.push_back(r);
 
-
-
     auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
+
     return trajectory;
 }
 
 
 std::vector<std::vector<double>> RobotController::find_ball_trajectory(double start[2], double goal[2]) {
-    C_trajectory pf(false, false, 0, 1000, 300, 0);
+    C_trajectory pf(false, false, 0, 1000, 300, 0, mWorld.boundariesMinor, mWorld.boundariesMajor);
     std::vector<double> double_start = {start[0], start[1]};
     std::vector<double> double_goal = {goal[0], goal[1]};
     std::vector<Circle> obs_circular = {};
@@ -290,9 +271,9 @@ void RobotController::move_to(double goal[2], bool avoid_ball = true) {
     }
     mPositioned = false;
     mTeam->positioned[mId] = false;
-
+    std::vector<double> v_vet;
     auto trajectory = find_trajectory(mpos, goal, avoid_ball);
-    auto v_vet = motion_planner(trajectory);
+    size(trajectory) > 0 ? v_vet = motion_planner(trajectory) : v_vet = {0, 0};
 
     v_vet = motion_control(v_vet);
 
@@ -392,7 +373,7 @@ void RobotController::follow_trajectory(std::vector<std::vector<double>>& trajec
 
 
 
-void RobotController::role_table() {
+void RobotController::select_behavior() {
     //TODO roles
     //role reset
     if (lastRole != mTeam->roles[mId]) {
@@ -448,12 +429,16 @@ void RobotController::stricker_role() {
     int Pivot_id = -1;
     double their_goal[2] = {mWorld.their_goal[0][0], 0};
 
-    auto closest_allies_to_ball = mWorld.getAlliesIdsAccordingToDistanceToBall();
-
-    if (closest_allies_to_ball[0] != mTeam->goal_keeper_id) {
-        Pivot_id = closest_allies_to_ball[0];
-    } else if (mTeam->num_of_active_robots > 1) {
-        Pivot_id = closest_allies_to_ball[1];
+    auto interceptor = mWorld.getIdOfTheBallInterceptor();
+    if ( mWorld.ball_speed_module != 0 && interceptor < 20 && mTeam->num_of_active_robots > 1) {
+        Pivot_id = interceptor;
+    } else{
+        auto closest_allies_to_ball = mWorld.getAlliesIdsAccordingToDistanceToBall();
+        if (closest_allies_to_ball[0] != mTeam->goal_keeper_id) {
+            Pivot_id = closest_allies_to_ball[0];
+        } else if (mTeam->num_of_active_robots > 1) {
+            Pivot_id = closest_allies_to_ball[1];
+        }
     }
 
     if (Pivot_id == mId || Pivot_id == -1) {
@@ -466,8 +451,10 @@ void RobotController::stricker_role() {
         }
     }
     else {
-        double x_position = mTeam->central_line_x + (mTeam->striker_dislocation)*mTeam->our_side_sign;
-        double delta_y = sqrt(pow(mKick_distance, 2) - pow(x_position - mWorld.ball_pos[0], 2));
+
+        double striker_dislocation = fabs(mWorld.ball_pos[0]) + 2000;
+        double x_position = std::clamp(mTeam->central_line_x + (striker_dislocation)*mTeam->our_side_sign, -mTeam->striker_max_dislocation, mTeam->striker_max_dislocation);
+        double delta_y = sqrt(fabs(pow(mKick_distance, 2) - pow(x_position - mWorld.ball_pos[0], 2)));
         double y_position;
         mWorld.allies[Pivot_id].pos[1] != 0 ? y_position = mWorld.ball_pos[1] - delta_y*mWorld.allies[Pivot_id].pos[1]/fabs(mWorld.allies[Pivot_id].pos[1])
             : y_position = mWorld.ball_pos[1];
@@ -483,7 +470,7 @@ void RobotController::stricker_role() {
 
 void RobotController::goal_keeper_role() {
     //TODO melhorar goal_keeper_role
-    if (!mWorld.isBallOnOurArea() || mWorld.ball_speed_module > 0.2) {
+    if (!mWorld.isBallOnOurArea() || mWorld.ball_speed_module != 0) {
         mState = 0;
         keep_x_line(mWorld.our_goal[0][0], mWorld.our_goal[1], (mWorld.our_goal[1][0] + mWorld.our_goal[1][1])/2);
     }
@@ -498,15 +485,22 @@ void RobotController::mid_field_role() {
     bool isPivot;
     int Pivot_id = -1;
     double their_goal[2] = {mWorld.their_goal[0][0], 0};
-    auto closest_allies_to_ball = mWorld.getAlliesIdsAccordingToDistanceToBall();
-    if (closest_allies_to_ball[0] != mTeam->goal_keeper_id) {
-        Pivot_id = closest_allies_to_ball[0];
-    } else if (closest_allies_to_ball.size() > 1) {
-        Pivot_id = closest_allies_to_ball[1];
+
+    auto interceptor = mWorld.getIdOfTheBallInterceptor();
+    if ( mWorld.ball_speed_module != 0 && interceptor < 20 && mTeam->num_of_active_robots > 1) {
+        Pivot_id = interceptor;
+    } else{
+        auto closest_allies_to_ball = mWorld.getAlliesIdsAccordingToDistanceToBall();
+        if (closest_allies_to_ball[0] != mTeam->goal_keeper_id) {
+            Pivot_id = closest_allies_to_ball[0];
+        } else if (mTeam->num_of_active_robots > 1) {
+            Pivot_id = closest_allies_to_ball[1];
+        }
     }
 
+
     if (Pivot_id == mId || Pivot_id == -1) {
-        if (mWorld.ball_speed_module > 0.1) {
+        if (mWorld.ball_speed_module != 0) {
             keep_a_location(mpos);
         }
         if (find_ball_trajectory(mWorld.ball_pos, their_goal).size() == 2 && distance_point(mWorld.ball_pos, their_goal) < mKick_distance) {
@@ -518,7 +512,8 @@ void RobotController::mid_field_role() {
         }
     }
     else {
-        double x_position = mTeam->central_line_x + (mTeam->mid_field_dislocation)*mTeam->our_side_sign;
+        double mid_field_dislocation = fabs(mWorld.ball_pos[0]);
+        double x_position = std::clamp(mTeam->central_line_x + (mid_field_dislocation)*mTeam->our_side_sign, -mTeam->mid_field_max_dislocation, mTeam->mid_field_max_dislocation);
         double delta_y = sqrt(pow(mKick_distance, 2) - pow(x_position - mWorld.ball_pos[0], 2));
         double y_position;
         mWorld.allies[Pivot_id].pos[1] != 0 ? y_position = mWorld.ball_pos[1] - delta_y*mWorld.allies[Pivot_id].pos[1]/fabs(mWorld.allies[Pivot_id].pos[1])
@@ -538,27 +533,22 @@ void RobotController::defender_role() {
 }
 
 void RobotController::keep_a_location(double keep[2]) {
-    if (mWorld.ball_speed_module < 0.1) {
+    if (mWorld.ball_speed_module == 0 || !mWorld.isBallMovingIdDirection(mId)) {
         move_to(keep);
     }
     else {
-        move_to(mWorld.ball_stop_position);
+        if (distance_point(mpos, mWorld.ball_pos) > mRadius*5) move_to(mWorld.ball_stop_position);
+        else move_to(mWorld.ball_pos);
     }
 }
 
 
 
-void RobotController::keep_x_line(double x_line, double y_segment[2], double y_rest) {
+void RobotController::keep_x_line(double x_line, const double y_segment[2], double y_rest) {
     std::vector<int> enemies_ids = {};
-    std::vector<double> enemies_distances = {};
     int enemy_stricker_id = 0;
 
-    for (Robot i : mWorld.enemies) {
-        if (i.detected) {
-            enemies_ids.push_back(i.id);
-            enemies_distances.push_back(sqrt(pow(i.pos[0] - mWorld.ball_pos[0], 2) + pow(i.pos[1] - mWorld.ball_pos[1], 2)));
-        }
-    }
+
 
     for (int i = 0; i < enemies_ids.size(); i++) {
         if (mTeam->enemy_roles[i] == TeamInfo::stricker) {
@@ -633,7 +623,7 @@ void RobotController::position_and_kick_to_robot(int id) {
     }
     else if (mState == 1) {
         kick();
-        mTimer = 2;
+        mTimer = 3;
     }
     else if (mState == 2) {
         move_to(mpos);
@@ -801,6 +791,8 @@ void RobotController::receive_vision() {
     mvyaw = mWorld.allies[mId].vyaw;
     mDetected = mWorld.allies[mId].detected;
 }
+
+
 
 void RobotController::loadCalibration() {
     RobotCalibration load;

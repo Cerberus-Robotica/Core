@@ -64,9 +64,22 @@ std::vector<TeamInfo::role> PlayAttack::role_assing(WorldModel& world, TeamInfo&
         }
         if (selected_role == TeamInfo::mid_field) {
             int closest_idx = 0;
-            for (int idx = 0; idx < active_allies_ids.size(); idx++) {
-                if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
-                    closest_idx = idx;
+            if (world.ball_speed_module < 0.1) {
+                for (int idx = 0; idx < active_allies_ids.size(); idx++) {
+                    if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
+                        closest_idx = idx;
+                    }
+                }
+            }
+            else {
+                int interceptor = world.getIdOfTheBallInterceptor();
+                if (interceptor < 20) {
+                    for (int idx = 0; idx < active_allies_ids.size(); idx++) {
+                        if (active_allies_ids[idx] == interceptor) {
+                            closest_idx = idx;
+                            break;
+                        }
+                    }
                 }
             }
             int closest_id = active_allies_ids[closest_idx];

@@ -42,6 +42,7 @@ public:
 private:
     void loop();
     void receive_vision();
+    void receive_field_geometry();
     void receive_config();
     void add_robot(int id);
     void imprimir_ativos();

@@ -131,16 +131,17 @@ private:
     void follow_trajectory(std::vector<std::vector<double>>& trajectory);
 
     void receive_vision();
+    void receive_field_geometry();
     void publish();
     void loadCalibration();
 
-    void role_table();
+    void select_behavior();
     void stricker_role();
     void goal_keeper_role();
     void mid_field_role();
     void defender_role();
 
-    void keep_x_line(double x_line, double y_segment[2], double y_rest);
+    void keep_x_line(double x_line, const double y_segment[2], double y_rest);
     void keep_a_location(double keep[2]);
     void position_and_kick_to_destination(double goal[2]);
     void position_and_kick_to_robot(int id);

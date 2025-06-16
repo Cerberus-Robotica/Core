@@ -4,6 +4,8 @@
 
 #ifndef WORLD_H
 #define WORLD_H
+#include <cmath>
+#include <map>
 #include <vector>
 
 #include "../../c_trajectory/geometry/Rectangle.h"
@@ -13,9 +15,12 @@
 class WorldModel {
 public:
     double field_size[2][2] = {{-6000, -4500}, {6000, 4500}};
+    double boundariesMinor[2] = {-6300, -4800};
+    double boundariesMajor[2] = {6300, 4800};
 
     double their_goal[2][2] = {{6000, 6000}, {1000, -1000}};
     double our_goal[2][2] = {{-6000, -6000}, {1000, -1000}};
+
     double our_defese_area[2][2] = {{-6000, -1750}, {-4200, 1750}};
     double their_defese_area[2][2] = {{4200, -1750}, {6000, 1750}};
 
@@ -32,19 +37,30 @@ public:
     double outside_field_y_minus[2][2] = {{-6000, -6000}, {6000, -4700}};
     double outside_field_y_plus[2][2] = {{-6000, 4700}, {6000, 6000}};
 
+    //TODO organizar nesse formato
+    enum position {
+        top,
+        right,
+        bottom,
+        left
+    };
+    std::map<enum position, Rectangle> field_boundaries;
+    std::map<enum position, Rectangle> fisical_barrier_left_goal;
+    std::map<enum position, Rectangle> fisical_barrier_right_goal;
+
+
     std::vector<Robot> allies = {};
     std::vector<Robot> enemies = {};
     double ball_pos[2] = {0, 0};
-    double ball_speed[2] = {0, 0};
+    double ball_speed[2] = {0, 0}; //m/s"2
     double ball_speed_module = 0;
     double ball_stop_position[2] = {0, 0};
-    double ball_disacceleration = 0.001;
+    double ball_disacceleration = 0.2;
 
     std::vector<std::vector<double>> support_areas = {};
 
 
-    //std::vector<rectangle> field_limits = {};
-    //rectangle their_defense_area = rectangle({4200, -1800}, {6000, 1800});
+
 
     std::vector<double> getKickingPosition(std::vector<double> pos_0, std::vector<double> pos_1, double distance);
     bool isBallOnOurSide();
@@ -53,6 +69,8 @@ public:
     std::vector<int> getAlliesIdsAccordingToDistanceToBall();
     int findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id);
     void generateBallStopPosition();
+    int getIdOfTheBallInterceptor();
+    bool isBallMovingIdDirection(int id);
 };
 
 

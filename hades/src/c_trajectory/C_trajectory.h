@@ -5,6 +5,7 @@
 #ifndef C_TRAJECTORY_H
 #define C_TRAJECTORY_H
 #include <deque>
+#include <utility>
 #include <vector>
 #include "geometry/Vetop.h"
 #include "geometry/Circle.h"
@@ -18,10 +19,12 @@ class C_trajectory {
         int max_iterations = 1000;
         double small_step = 300;
         double k = 0;
+        Rectangle boundaries;
 
 
     public:
-        C_trajectory(bool print_each, bool print_last, int each_iterations, int max_iterations, double small_step, double k) {
+        C_trajectory(bool print_each, bool print_last, int each_iterations, int max_iterations, double small_step, double k, double boundaryMinor[2], double boundaryMajor[2])
+            : boundaries({boundaryMinor[0], boundaryMinor[1]}, {boundaryMajor[0], boundaryMajor[1]}) {
             this->print_each = print_each;
             this->print_last = print_last;
             this->each_iterations = each_iterations;
@@ -31,7 +34,7 @@ class C_trajectory {
         }
 
         std::vector<std::vector<double>> path_find(std::vector<double>& start, std::vector<double>& goal,
-            std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
+                                                   std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         std::vector<std::vector<double>> path_connect(std::vector<double>& start, std::vector<double>& goal,
             std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
@@ -57,9 +60,6 @@ class C_trajectory {
         void remove_empty_alternatives(auto& alternatives, auto& trajectory);
         void shorten_path(auto& trajectory_1, auto& trajectory_2, auto& obs_circular, auto& obs_retangular);
         std::deque<std::vector<double>> c_point(auto& start, auto& goal, auto& obs_circular, auto& obs_retangular);
-
-
-
 
 };
 

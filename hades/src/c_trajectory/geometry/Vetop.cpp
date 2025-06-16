@@ -59,6 +59,18 @@ double angle_vectors_small(std::vector<double>& u, std::vector<double>& v) {
     return acos(cosine);
 }
 
+double angle_vectors_small(std::vector<double>&& u, std::vector<double>&& v) {
+    double norm_u = norm(u);
+    double norm_v = norm(v);
+    if (norm_u == 0 or norm_v == 0) {
+        return 0;
+    }
+    double cosine = (u[0] * v[0] + u[1] * v[1]) / (norm_u * norm_v);
+    cosine = std::clamp(cosine, -1.0, 1.0);
+    auto m = acos(cosine);
+    return acos(cosine);
+}
+
 double angle_vectors_acw(std::vector<double>& u, std::vector<double>& v) {
     double theta = atan2(u[1], u[0]) - atan2(v[1], v[0]);
     if (theta > M_PI) {

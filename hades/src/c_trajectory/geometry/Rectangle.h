@@ -18,6 +18,11 @@ public:
         this->major = major;
     }
 
+    Rectangle(std::vector<double>&& minor, std::vector<double>&& major) {
+        this->minor = minor;
+        this->major = major;
+    }
+
     bool collision_test(std::vector<double>& start, std::vector<double>& vet);
     std::vector<std::vector<double>> avoid(std::vector<double>& start);
 };

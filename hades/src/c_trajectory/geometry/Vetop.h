@@ -17,6 +17,7 @@ double distance_point_squared(std::vector<double>& ponto_1, std::vector<double>&
 std::vector<double> ortogonal_projection(std::vector<double>& u, std::vector<double>& v);
 std::vector<double> normalize(double alpha, std::vector<double>& vet);
 double angle_vectors_small(std::vector<double>& u, std::vector<double>& v);
+double angle_vectors_small(std::vector<double>&& u, std::vector<double>&& v);
 double angle_vectors_acw(std::vector<double>& u, std::vector<double>& v);
 void rotate_vector(double& ang, std::vector<double>& vet);
 void angle_sort(std::vector<double>& start, std::vector<double>& goal, std::deque<std::vector<double>>& pontos);

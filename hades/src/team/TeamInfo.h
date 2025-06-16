@@ -4,7 +4,7 @@
 
 #ifndef TEAM_H
 #define TEAM_H
-
+#include <map>
 
 
 class TeamInfo {
@@ -43,10 +43,11 @@ public:
     int game_state = -1;
     role roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
     role enemy_roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+    //std::map<role, int> enemy_roles;
 
-    double striker_dislocation = 2000;
-    double mid_field_dislocation = 0;
-    double defender_dislocation = 2000;
+    double striker_max_dislocation = 2000;
+    double mid_field_max_dislocation = 0;
+    double defender_min_dislocation = 2000;
 
     //int roles[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int active_robots[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
