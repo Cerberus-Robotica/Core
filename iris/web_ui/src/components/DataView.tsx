@@ -1,12 +1,17 @@
-import { useState } from "react";
-import type { DataType } from "../types";
-import { useFetchLoop } from "../hooks/useFetchLoop";
+import { useState } from 'react';
+import type { DataType } from '../types';
+import { useFetchLoop } from '../hooks/useFetchLoop';
+import { sendData } from '../hooks/useSendData';
 
 export function DataView() {
   const [reading, setReading] = useState<boolean>(false);
+  const [sending, setSending] = useState<boolean>(false);
 
   const initialData: DataType = {
-    caronte: { processo: "Aguardando dados...", estrategia: "Aguardando dados..." },
+    caronte: {
+      processo: 'Aguardando dados...',
+      estrategia: 'Aguardando dados...',
+    },
     ia: { robots_size: 0 },
     vision: { timestamp: 0, field_length: 0 },
     gc: { team_blue: false, score_yellow: 0, score_blue: 0 },
@@ -15,45 +20,97 @@ export function DataView() {
 
   const data = useFetchLoop(reading, initialData);
 
+  const handleEnviar = async () => {
+    setSending(true);
+    try {
+      await sendData(data);
+      console.log('Dados enviados com sucesso!');
+    } catch (error) {
+      console.error('Falha ao enviar dados:', error);
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div className="p-2 w-full md:w-[300px] lg:w-[350px]">
       <div className="p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] w-full">
         <button
           onClick={() => setReading(!reading)}
           className={`mb-4 w-full py-2 rounded-[5px] font-semibold transition-colors duration-200 ${
-            reading ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"
+            reading
+              ? 'bg-red-600 hover:bg-red-700'
+              : 'bg-green-600 hover:bg-green-700'
           } text-white`}
         >
-          {reading ? "Parar leitura" : "Iniciar leitura"}
+          {reading ? 'Parar leitura' : 'Iniciar leitura'}
         </button>
 
         <h2 className="text-lg font-bold mb-1">Caronte</h2>
-        <p>Processo: <span className="font-mono">{data.caronte.processo}</span></p>
-        <p>Estratégia: <span className="font-mono">{data.caronte.estrategia}</span></p>
+        <p>
+          Processo: <span className="font-mono">{data.caronte.processo}</span>
+        </p>
+        <p>
+          Estratégia:{' '}
+          <span className="font-mono">{data.caronte.estrategia}</span>
+        </p>
 
-        <div className="my-2 border-t border-[#3B3B3B]"></div>
+        <div className="my-2 border-t border-[#3B3B3B]" />
 
         <h2 className="text-lg font-bold mb-1">IA</h2>
-        <p>Robots Size: <span className="font-mono">{data.ia.robots_size}</span></p>
+        <p>
+          Robots Size: <span className="font-mono">{data.ia.robots_size}</span>
+        </p>
 
-        <div className="my-2 border-t border-[#3B3B3B]"></div>
+        <div className="my-2 border-t border-[#3B3B3B]" />
 
         <h2 className="text-lg font-bold mb-1">Vision</h2>
-        <p>Timestamp: <span className="font-mono">{data.vision.timestamp}</span></p>
-        <p>Field Length: <span className="font-mono">{data.vision.field_length}</span></p>
+        <p>
+          Timestamp: <span className="font-mono">{data.vision.timestamp}</span>
+        </p>
+        <p>
+          Field Length:{' '}
+          <span className="font-mono">{data.vision.field_length}</span>
+        </p>
 
-        <div className="my-2 border-t border-[#3B3B3B]"></div>
+        <div className="my-2 border-t border-[#3B3B3B]" />
 
         <h2 className="text-lg font-bold mb-1">Game Controller (GC)</h2>
-        <p>Team Blue: <span className="font-mono">{data.gc.team_blue ? "Sim" : "Não"}</span></p>
-        <p>Score Yellow: <span className="font-mono">{data.gc.score_yellow}</span></p>
-        <p>Score Blue: <span className="font-mono">{data.gc.score_blue}</span></p>
+        <p>
+          Team Blue:{' '}
+          <span className="font-mono">{data.gc.team_blue ? 'Sim' : 'Não'}</span>
+        </p>
+        <p>
+          Score Yellow:{' '}
+          <span className="font-mono">{data.gc.score_yellow}</span>
+        </p>
+        <p>
+          Score Blue: <span className="font-mono">{data.gc.score_blue}</span>
+        </p>
 
-        <div className="my-4 border-t border-[#3B3B3B]"></div>
+        <div className="my-4 border-t border-[#3B3B3B]" />
 
         <h2 className="text-lg font-bold mb-1">Tartarus</h2>
-        <p>SSL Vision: <span className="font-mono">{data.tartarus.ssl_vision ? "Sim" : "Não"}</span></p>
-        <p>Team Blue Status: <span className="font-mono">{data.tartarus.team_blue_status ? "Sim" : "Não"}</span></p>
+        <p>
+          SSL Vision:{' '}
+          <span className="font-mono">
+            {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
+          </span>
+        </p>
+        <p>
+          Team Blue Status:{' '}
+          <span className="font-mono">
+            {data.tartarus.team_blue_status ? 'Sim' : 'Não'}
+          </span>
+        </p>
+
+        <button
+          onClick={handleEnviar}
+          disabled={sending}
+          className="w-full py-2 mb-4 rounded-[5px] bg-blue-600 hover:bg-blue-700 font-semibold text-white disabled:bg-gray-400"
+        >
+          {sending ? 'Enviando...' : 'Enviar dados'}
+        </button>
       </div>
     </div>
   );
