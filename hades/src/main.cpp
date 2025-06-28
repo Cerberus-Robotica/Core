@@ -21,7 +21,7 @@ int main() {
 
         }
     });
-
+	std::cout << "AAAA" << std::endl;
 
     Leader ia;
     ia.start();
