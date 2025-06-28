@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from 'axios';
-import MenuButton from "./MenuButton";
-import UtilityMenu from "./UtilityMenu";
+import { MenuButton } from "./MenuButton";
+import { UtilityMenu } from "./UtilityMenu";
 
-export default function MenuBar() {
+export function MenuBar() {
   const [active, setActive] = useState<string | null>(null);
   const [showUtilityMenu, setShowUtilityMenu] = useState(false);
 

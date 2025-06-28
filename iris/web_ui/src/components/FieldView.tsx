@@ -1,4 +1,4 @@
-function FieldView() {
+export function FieldView() {
   return (
     <div>
       <img src="/img/Campo.png"
@@ -6,5 +6,3 @@ function FieldView() {
     </div>
   );
 }
-
-export default FieldView;

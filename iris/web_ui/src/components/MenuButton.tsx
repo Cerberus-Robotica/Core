@@ -4,7 +4,7 @@ type MenuButtonProps = {
   variant?: 'primary' | 'default';
 };
 
-export default function MenuButton({ label, onClick, variant = 'default' }: MenuButtonProps) {
+export function MenuButton({ label, onClick, variant = 'default' }: MenuButtonProps) {
   const baseStyle = 'flex-1 py-0.5 rounded-sm transition';
   const variants = {
     primary: 'bg-[#3D1870] hover:bg-[#311A52]',

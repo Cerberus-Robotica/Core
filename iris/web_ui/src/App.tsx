@@ -1,6 +1,7 @@
-import DataView from "./components/DataView";
-import FieldView from "./components/FieldView";
-import MenuBar from "./components/TopMenuBar";
+
+import { DataView } from "./components/DataView";
+import { FieldView } from "./components/FieldView";
+import { MenuBar } from "./components/TopMenuBar";
 
 function App() {
   return (
