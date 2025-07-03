@@ -2,9 +2,12 @@
 #include "include/handler.hpp"
 #include "include/esp.hpp"
 #include "include/send_to_grsim.hpp"
+#include "include/teclado.hpp"
+#include "include/stm.hpp"
 #include <thread>
 
 grsim_sender grsim_send;
+Pacote pct;
 
 int main(int argc, char** argv) {
 
@@ -21,13 +24,23 @@ int main(int argc, char** argv) {
         grsim_send.send_to_grsim(); 
     });
 
+    std::thread t2([&]() { 
+        stm(); 
+    });
+
+    std::thread t3([&]() { 
+        teclado(); 
+    });
+
     std::thread lcm_thread([&lcm]() {
         while (true) {
             lcm.handle();
         }
     });
 
-    t1.join();
+    t1.join(); //grsim sender
+    t2.join(); //stm/radio
+    t3.join(); //teclado
     lcm_thread.join();
 
     close(sock_grsim);

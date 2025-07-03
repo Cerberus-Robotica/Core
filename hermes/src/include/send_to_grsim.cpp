@@ -8,8 +8,8 @@ void grsim_sender::send_to_grsim()
     while(true)
     {
         commands.Clear();
-        std::cout << "team robot size " << han.data_ia_copy.robots_size << std::endl;
-        std::cout << "timestamp " << han.data_ia_copy.timestamp << std::endl;
+        //std::cout << "team robot size " << han.data_ia_copy.robots_size << std::endl;
+        //std::cout << "timestamp " << han.data_ia_copy.timestamp << std::endl;
         if(han.data_tartarus_copy.team_blue == time_atual)
         {
             for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
@@ -60,13 +60,13 @@ void grsim_sender::send_to_grsim()
 
 
         packet_grsim.mutable_commands()->CopyFrom(commands);
-        std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
+        //std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
 
-        std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
+        //std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
         packet_grsim.SerializeAsString();
         std::string serialized_packet = packet_grsim.SerializeAsString();
         sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
-        std::cout << "Sending to grSim..." << std::endl;
+        //std::cout << "Sending to grSim..." << std::endl;
         
 
     }
