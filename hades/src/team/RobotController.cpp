@@ -43,7 +43,6 @@ void RobotController::loop() {
         auto t1 = std::chrono::steady_clock::now();
 
         //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
-        if (mId == 1) std::cout << mWorld.ball_speed_module << std::endl;
         receive_vision();
         check_connection();
         select_behavior();
@@ -452,7 +451,7 @@ void RobotController::stricker_role() {
     }
     else {
 
-        double striker_dislocation = fabs(mWorld.ball_pos[0]) + 2000;
+        double striker_dislocation = fabs(mWorld.ball_pos[0]) + 1000;
         double x_position = std::clamp(mTeam->central_line_x + (striker_dislocation)*mTeam->our_side_sign, -mTeam->striker_max_dislocation, mTeam->striker_max_dislocation);
         double delta_y = sqrt(fabs(pow(mKick_distance, 2) - pow(x_position - mWorld.ball_pos[0], 2)));
         double y_position;
@@ -809,16 +808,15 @@ void RobotController::publish() {
     */
 
 
-    han.new_ia.robots[mId].kick_speed_x = 1050;
     han.new_ia.robots[mId].id = mId;
     han.new_ia.robots[mId].vel_normal = mtarget_vel[1];
     han.new_ia.robots[mId].vel_tang = mtarget_vel[0];
     han.new_ia.robots[mId].vel_ang = static_cast<float>(mtarget_vyaw);
     if (mkicker_x != 0) {
         han.new_ia.robots[mId].kick_speed_x = mKicker_x_max;
-    } else {
-        han.new_ia.robots[mId].kick_speed_x = 0;
     }
+    han.new_ia.robots[mId].kick_speed_x = 0;
+
     han.lc->publish("IA", &han.new_ia);
     han.lc->publish("tartarus", &han.new_tartarus);
 
