@@ -15,26 +15,11 @@ Instruções para rodar o servidor:
 
     Em core:
 
-    Entrar no repositório do servidor lcm_flask_server.py:
-        cd iris/web_ui/src/backand/
+    cd iris/web_ui/src/backend/lcm_cpp_server/
+    mkdir -p build && cd build
+    cmake ..
+    make
+    ./server
 
-        Verificar se tem python3 instalado:
-            python3 --version
-
-            Baixar o python3(Caso não esteja instalado):
-                sudo apt update
-                sudo apt install python3
-
-        Verificar se tem pip instalado:
-            pip --version
-
-            Baixar o pip(Caso não esteja instalado):
-                sudo apt update
-                sudo apt install python3-pip
-        
-        Baixar o flask:
-            pip install flask
-
-        Rodar o servidor:
-            python3 lcm_flask_server
+    http://localhost:5000/data
 
