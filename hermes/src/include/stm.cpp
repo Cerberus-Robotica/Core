@@ -8,7 +8,7 @@ void stm() {
     pct.Vang = 0;
     pct.kicker = 1000;
     int serial_port = -1;
-    const char* port = "/dev/ttyUSB2"; // Altere conforme necessário
+    const char* port = "/dev/ttyUSB0"; // Altere conforme necessário
     while(serial_port < 0) {
         // Tenta abrir a porta serial até conseguir
         //std::cout << "Tentando abrir a porta serial: " << port << "..." << std::endl;
@@ -53,17 +53,9 @@ void stm() {
     msg[1] = start[1];
 
     while (true) {
-        for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
-            pct.id = han.data_ia_copy.robots[i].id;
-            pct.Vx = han.data_ia_copy.robots[i].vel_tang; //vx é o vel_tang
-            pct.Vy = han.data_ia_copy.robots[i].vel_normal; //vy é o vel_normal
-            pct.Vang = han.data_ia_copy.robots[i].vel_ang;
-            pct.kicker = han.data_ia_copy.robots[i].kick_speed_x;
-            std::cout << "vel_tang: " << pct.Vx << std::endl;
             memcpy(&msg[2], &pct, sizeof(Pacote));
             write(serial_port, msg, sizeof(msg));
             usleep(5000);
-        }   
     }
 
     close(serial_port);
