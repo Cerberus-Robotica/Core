@@ -13,6 +13,6 @@
 extern int sock_grsim;
 extern struct sockaddr_in addr_grsim;
 
-void setupSocket_grsim();
+extern void setupSocket_grsim();
 
 #endif

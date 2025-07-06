@@ -1,14 +1,12 @@
 #include "include/socket_connect.hpp"
 #include "include/handler.hpp"
 #include "include/esp.hpp"
-#include "include/send_to_grsim.hpp"
+#include "include/send_to_robots.hpp"
 #include <thread>
 
-grsim_sender grsim_send;
+robots_sender sender;
 
 int main(int argc, char** argv) {
-
-    setupSocket_grsim();
 
     lcm::LCM lcm;
     if (!lcm.good())
@@ -18,7 +16,7 @@ int main(int argc, char** argv) {
     lcm.subscribe("tartarus", &handler::handletartarus, &han);
 
     std::thread t1([&]() { 
-        grsim_send.send_to_grsim(); 
+        sender.send_control(); 
     });
 
     std::thread lcm_thread([&lcm]() {
@@ -31,5 +29,6 @@ int main(int argc, char** argv) {
     lcm_thread.join();
 
     close(sock_grsim);
+    close(sender.serial_port);
     return 0;
 }

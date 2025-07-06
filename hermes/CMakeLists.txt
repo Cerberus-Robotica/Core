@@ -29,7 +29,7 @@ add_executable(${PROJECT_NAME}
                 src/include/socket_connect.cpp
                 src/include/handler.cpp
                 src/include/esp.cpp
-                src/include/send_to_grsim.cpp
+                src/include/send_to_robots.cpp
                 src/include/esp_connect.cpp
                 )
 
