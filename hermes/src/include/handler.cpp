@@ -1,5 +1,4 @@
 #include "handler.hpp"
-#include "stm.hpp"
 
 handler han;
 
@@ -8,12 +7,9 @@ void handler::handleIA(const lcm::ReceiveBuffer* rbuf,
     const data::ia * data_ia) {
 
     this->data_ia_copy = *data_ia;
-
-    pct.id = data_ia->robots[0].id;
-    pct.Vx = data_ia->robots[0].vel_tang; //vx é o vel_tang
-    pct.Vy = data_ia->robots[0].vel_normal; //vy é o vel_normal
-    pct.Vang = data_ia->robots[0].vel_ang;
-    pct.kicker = data_ia->robots[0].kick_speed_x;
+    //std::cout << "timestamp" << " " << this->data_ia_copy.timestamp << std::endl;
+    //std::cout << "robot size " << this->data_ia_copy.robots_size << std::endl;
+    //std::cout << "timestamp " << this->data_ia_copy.timestamp << std::endl;
 }
 
 void handler::handletartarus(const lcm::ReceiveBuffer* rbuf,
@@ -21,4 +17,9 @@ void handler::handletartarus(const lcm::ReceiveBuffer* rbuf,
     const data::tartarus * data_tartarus) {
 
     this->data_tartarus_copy = *data_tartarus;
+    //std::cout << "Received tartarus message" << std::endl;
+    // Handle tartarus message
+    //std::cout << "estrategia " << data_tartarus->estrategia << std::endl;
+    //std::cout << "processo " << data_tartarus->processo << std::endl;
+    //std::cout << "ssl_vision " << data_tartarus->ssl_vision << std::endl;
 }

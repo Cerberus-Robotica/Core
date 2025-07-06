@@ -31,18 +31,15 @@ add_executable(${PROJECT_NAME}
                 src/include/esp.cpp
                 src/include/send_to_grsim.cpp
                 src/include/esp_connect.cpp
-                src/include/teclado.cpp
-                src/include/stm.cpp
                 )
 
 target_include_directories(${PROJECT_NAME}
                             PRIVATE 
                             ${Protobuf_INCLUDE_DIRS} 
                             ${LCM_INCLUDE_DIRS}
-                            ${ncurses_INCLUDE_DIRS}
                             ${CMAKE_SOURCE_DIR}/../data_lcm/data
                             src/include                         
                             )  
 
 # Linkar bibliotecas
-target_link_libraries(${PROJECT_NAME} ${Protobuf_LIBRARIES} lcm ncurses)
+target_link_libraries(${PROJECT_NAME} ${Protobuf_LIBRARIES} lcm)
