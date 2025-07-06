@@ -6,7 +6,6 @@
 #include <thread>
 #include <iostream>
 
-// Ajuste os includes para o caminho correto das mensagens LCM geradas (.hpp)
 #include "../../../../../data_lcm/data/game_controller.hpp"
 #include "../../../../../data_lcm/data/vision.hpp"
 #include "../../../../../data_lcm/data/tartarus.hpp"
@@ -80,23 +79,38 @@ void lcm_thread_func() {
     }
 
     Handler handler;
-
     lc.subscribe("GC", &Handler::handleGC, &handler);
     lc.subscribe("vision", &Handler::handleVision, &handler);
     lc.subscribe("tartarus", &Handler::handleTartarus, &handler);
     lc.subscribe("IA", &Handler::handleIA, &handler);
 
-    while (lc.handle() == 0) {
-        // Processa mensagens LCM
-    }
+    while (lc.handle() == 0) {}
 }
+
+// Middleware de CORS
+struct CORS {
+    struct context {};
+
+    void before_handle(crow::request& req, crow::response& res, context&) {
+        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.add_header("Access-Control-Allow-Headers", "Content-Type");
+        if (req.method == "OPTIONS"_method) {
+            res.code = 204;
+            res.end();
+        }
+    }
+
+    void after_handle(crow::request&, crow::response& res, context&) {
+        res.add_header("Access-Control-Allow-Origin", "*");
+    }
+};
 
 int main() {
     std::thread lcm_thread(lcm_thread_func);
+    crow::App<CORS> app;
 
-    crow::SimpleApp app;
-
-    CROW_ROUTE(app, "/data")([] {
+    CROW_ROUTE(app, "/data").methods("GET"_method)([] {
         std::lock_guard<std::mutex> lock(data_mutex);
         crow::json::wvalue res;
         res["timestamp"] = latest_data.timestamp;
@@ -112,9 +126,12 @@ int main() {
         return res;
     });
 
+    CROW_ROUTE(app, "/data").methods("OPTIONS"_method)([](const crow::request&, crow::response& res) {
+        res.code = 204;
+        res.end();
+    });
+
     app.port(5000).multithreaded().run();
-
     lcm_thread.join();
-
     return 0;
 }
