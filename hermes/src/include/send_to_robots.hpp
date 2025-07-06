@@ -5,6 +5,7 @@
 #include "../../build/grSim_Packet.pb.h"
 #include "socket_connect.hpp"
 #include "stm.hpp"
+#include "manual_control.hpp"
 
 class robots_sender {
     public:

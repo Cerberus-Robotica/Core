@@ -6,6 +6,8 @@ find_package(Protobuf REQUIRED)
 
 #find_package(serial REQUIRED)
 
+find_package(SDL2 REQUIRED)
+
 set(lcm_DIR "/home/cerberus/.local/lib/python3.10/site-packages/lib/lcm/cmake")
 #set(lcm_DIR "/usr/local/lib/lcm/cmake") #outra opção de diretorio
 
@@ -31,15 +33,17 @@ add_executable(${PROJECT_NAME}
                 src/include/esp.cpp
                 src/include/send_to_robots.cpp
                 src/include/esp_connect.cpp
+                src/include/manual_control.cpp
                 )
 
 target_include_directories(${PROJECT_NAME}
                             PRIVATE 
                             ${Protobuf_INCLUDE_DIRS} 
+                            ${SDL2_INCLUDE_DIRS}
                             ${LCM_INCLUDE_DIRS}
                             ${CMAKE_SOURCE_DIR}/../data_lcm/data
                             src/include                         
                             )  
 
 # Linkar bibliotecas
-target_link_libraries(${PROJECT_NAME} ${Protobuf_LIBRARIES} lcm)
+target_link_libraries(${PROJECT_NAME} ${Protobuf_LIBRARIES} lcm ${SDL2_LIBRARIES})

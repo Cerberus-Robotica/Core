@@ -1,5 +1,4 @@
 #include "send_to_robots.hpp"
-#include "handler.hpp"
 
 bool time_atual;
 Pacote pct;
@@ -132,16 +131,34 @@ void robots_sender::stm() {
 void robots_sender::send_control() {
 
     while(true) {
+        control_obj.connect_controller(); // Conecta o controle
+        control_obj.control(); // Captura comandos do controle
+
         if (han.data_tartarus_copy.ssl_vision == 0) {
             close(serial_port);
             setupSocket_grsim();
             while(han.data_tartarus_copy.ssl_vision == 0){
+
+                if(han.data_tartarus_copy.competition_mode == 0){
+                    control_obj.control(); // Mantém atualizando
+                    // Aqui você deve atribuir Vx, Vy, Vang no seu robô antes de chamar send_to_grsim()
+                    for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
+                        data::robot* r = &han.data_ia_copy.robots[i];
+                        r->vel_tang = pct.Vx;
+                        r->vel_normal = pct.Vy;
+                        r->vel_ang = pct.Vang;
+                        std::cout << "Robot ID: " << (int)r->id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                    }
+                }
+
                 send_to_grsim();
             }
-
         } else {
             stm();
             while(han.data_tartarus_copy.ssl_vision == 1) {
+                if(han.data_tartarus_copy.competition_mode == 0){
+                    control_obj.control(); // Mantém atualizando
+                }
                 memcpy(&msg[2], &pct, sizeof(Pacote));
                 write(serial_port, msg, sizeof(msg));
                 usleep(5000);

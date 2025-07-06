@@ -2,6 +2,7 @@
 #include "include/handler.hpp"
 #include "include/esp.hpp"
 #include "include/send_to_robots.hpp"
+#include "include/manual_control.hpp"
 #include <thread>
 
 robots_sender sender;

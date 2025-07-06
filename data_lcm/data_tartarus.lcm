@@ -2,7 +2,8 @@ package data;
 
 struct tartarus
 {
-	boolean ssl_vision; //alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
-	boolean team_blue; //altera o time manualmente(não recomendado usar em competições)
-	int16_t goalkeeper_id;
+	boolean ssl_vision; //alternates between using ssl-vision or grsim for vision data
+	boolean competition_mode; //alternates between the competition_mode or debug(controller mode will be activated)
+	boolean team_blue; //changes the team (not recommended for use in competitions)
+	int16_t goalkeeper_id; // changes keeper id
 }

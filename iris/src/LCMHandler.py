@@ -30,6 +30,7 @@ class LCMWorker(QObject):
         def handler_tartarus(self, channel, data_tartarus):
             self.msg_tartarus = tartarus.decode(data_tartarus)
             self.msg_tartarus.ssl_vision = False
+            self.msg_tartarus.competition_mode = True  # alterna entre usar ssl-vision ou grsim para visão
             self.msg_tartarus.goalkeeper_id = 0 # usar para alterar o ID do goleiro internamente
 
             if self.msg_GC.blue.name == "Cerberus":
@@ -62,6 +63,7 @@ class LCMWorker(QObject):
                 "estrategia": self.han.msg_ia.estrategia,
                 "ssl_vision": self.han.msg_tartarus.ssl_vision,
                 "team_blue_status": self.han.msg_tartarus.team_blue,
+                "competition_mode": self.han.msg_tartarus.competition_mode,
             }
             self.dataUpdated.emit(data)
             time.sleep(0.001)

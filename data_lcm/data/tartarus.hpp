@@ -21,6 +21,11 @@ class tartarus
         /**
          * alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
          */
+        int8_t     competition_mode;
+
+        /**
+         * alterna entre o modo competitivo ou modo debug
+         */
         int8_t     team_blue;
 
         /**
@@ -127,6 +132,9 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -143,6 +151,9 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -157,13 +168,14 @@ int tartarus::_getEncodedSizeNoHash() const
     int enc_size = 0;
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x19b7cbc2a1859daeLL;
+    uint64_t hash = 0xb08f07417e89f529LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

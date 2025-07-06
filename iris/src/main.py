@@ -20,6 +20,7 @@ class handlers:
         han.msg_tartarus = tartarus.decode(data_tartarus)
         #altera entre ultilizar o sslvision ou o GrSim para receber dados
         han.msg_tartarus.ssl_vision = False
+        han.msg_tartarus.competition_mode = True
 
         # caso o GC esteja configurado
         if(han.msg_GC.blue.name == "Cerberus"):
@@ -60,6 +61,7 @@ try:
         print(f"    ssl_vision    = {han.msg_tartarus.ssl_vision}")
         print(f"    team_blue    = {han.msg_tartarus.team_blue}")
         print(f"    ID do goleiro    = {han.msg_tartarus.goalkeeper_id}")
+        print(f"    competition_mode    = {han.msg_tartarus.competition_mode}")
         lc.handle()
 except KeyboardInterrupt:
     print("Shutting down...")
