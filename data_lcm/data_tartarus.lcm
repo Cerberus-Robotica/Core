@@ -5,5 +5,7 @@ struct tartarus
 	boolean ssl_vision; //alternates between using ssl-vision or grsim for vision data
 	boolean competition_mode; //alternates between the competition_mode or debug(controller mode will be activated)
 	boolean team_blue; //changes the team (not recommended for use in competitions)
+	boolean bool_controller; //turn on or off the controller mode
+	int16_t stm_port; //changes the stm connected port via UI
 	int16_t goalkeeper_id; // changes keeper id
 }

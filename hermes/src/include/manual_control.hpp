@@ -16,10 +16,12 @@ public:
 
     void control();
     void connect_controller();
-    void send_control();
 
     SDL_Event e;
     SDL_Joystick* joy;
+
+    int robot_id; // Variable to store the current robot ID
+    bool try_connect; // Variable to control connection attempts
 };
 
 extern controller control_obj;

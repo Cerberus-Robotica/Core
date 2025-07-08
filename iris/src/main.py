@@ -20,7 +20,7 @@ class handlers:
         han.msg_tartarus = tartarus.decode(data_tartarus)
         #altera entre ultilizar o sslvision ou o GrSim para receber dados
         han.msg_tartarus.ssl_vision = False
-        han.msg_tartarus.competition_mode = True
+        han.msg_tartarus.competition_mode = False
 
         # caso o GC esteja configurado
         if(han.msg_GC.blue.name == "Cerberus"):

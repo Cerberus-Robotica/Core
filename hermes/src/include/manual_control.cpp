@@ -37,4 +37,36 @@ void controller::control() {
                 break;
         }
     }
+
+        // Captura dos botões do D-Pad
+    if (e.type == SDL_JOYHATMOTION) {
+        if (e.jhat.hat == 0) { // geralmente 0 é o D-Pad
+            uint8_t dir = e.jhat.value;
+
+            if (dir & SDL_HAT_UP) {
+                control_obj.robot_id = 0;
+
+            } else if (dir & SDL_HAT_DOWN) {
+                control_obj.robot_id = 2;
+
+            } else if (dir & SDL_HAT_RIGHT) {
+                control_obj.robot_id = 1;
+
+            } else if (dir & SDL_HAT_LEFT) {
+                control_obj.robot_id = 3;
+
+            }
+        }
+    }
+
+    if (e.type == SDL_JOYBUTTONDOWN) {
+        if (e.jbutton.button == 0) { // Button A (xbox) or X (playstation)
+            pct.kicker = 1000; 
+        }
+    if (e.type == SDL_JOYBUTTONUP) {
+        if (e.jbutton.button == 0) { // Button A (xbox) or X (playstation)
+            pct.kicker = 0; 
+        }
+    }
+    }
 }

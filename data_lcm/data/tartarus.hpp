@@ -19,17 +19,27 @@ class tartarus
         int8_t     ssl_vision;
 
         /**
-         * alterna entre usar o ssl-vision ou o GrSim para receber dados de visão
+         * alternates between using ssl-vision or grsim for vision data
          */
         int8_t     competition_mode;
 
         /**
-         * alterna entre o modo competitivo ou modo debug
+         * alternates between the competition_mode or debug(controller mode will be activated)
          */
         int8_t     team_blue;
 
         /**
-         * altera o time manualmente(não recomendado usar em competições)
+         * changes the team (not recommended for use in competitions)
+         */
+        int8_t     bool_controller;
+
+        /**
+         * turn on or off the controller mode
+         */
+        int16_t    stm_port;
+
+        /**
+         * changes the stm connected port via UI
          */
         int16_t    goalkeeper_id;
 
@@ -138,6 +148,12 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->bool_controller, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -157,6 +173,12 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->bool_controller, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -169,13 +191,15 @@ int tartarus::_getEncodedSizeNoHash() const
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0xb08f07417e89f529LL;
+    uint64_t hash = 0xe4c62f9929c52ca5LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

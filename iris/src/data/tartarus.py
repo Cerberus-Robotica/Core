@@ -9,11 +9,11 @@ import struct
 
 class tartarus(object):
 
-    __slots__ = ["ssl_vision", "competition_mode", "team_blue", "goalkeeper_id"]
+    __slots__ = ["ssl_vision", "competition_mode", "team_blue", "bool_controller", "stm_port", "goalkeeper_id"]
 
-    __typenames__ = ["boolean", "boolean", "boolean", "int16_t"]
+    __typenames__ = ["boolean", "boolean", "boolean", "boolean", "int16_t", "int16_t"]
 
-    __dimensions__ = [None, None, None, None]
+    __dimensions__ = [None, None, None, None, None, None]
 
     def __init__(self):
         self.ssl_vision = False
@@ -30,9 +30,21 @@ class tartarus(object):
         LCM Type: boolean
         """
 
-        self.goalkeeper_id = 0
+        self.bool_controller = False
         """
         changes the team (not recommended for use in competitions)
+        LCM Type: boolean
+        """
+
+        self.stm_port = 0
+        """
+        turn on or off the controller mode
+        LCM Type: int16_t
+        """
+
+        self.goalkeeper_id = 0
+        """
+        changes the stm connected port via UI
         LCM Type: int16_t
         """
 
@@ -44,7 +56,7 @@ class tartarus(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">bbbh", self.ssl_vision, self.competition_mode, self.team_blue, self.goalkeeper_id))
+        buf.write(struct.pack(">bbbbhh", self.ssl_vision, self.competition_mode, self.team_blue, self.bool_controller, self.stm_port, self.goalkeeper_id))
 
     @staticmethod
     def decode(data: bytes):
@@ -62,13 +74,14 @@ class tartarus(object):
         self.ssl_vision = bool(struct.unpack('b', buf.read(1))[0])
         self.competition_mode = bool(struct.unpack('b', buf.read(1))[0])
         self.team_blue = bool(struct.unpack('b', buf.read(1))[0])
-        self.goalkeeper_id = struct.unpack(">h", buf.read(2))[0]
+        self.bool_controller = bool(struct.unpack('b', buf.read(1))[0])
+        self.stm_port, self.goalkeeper_id = struct.unpack(">hh", buf.read(4))
         return self
 
     @staticmethod
     def _get_hash_recursive(parents):
         if tartarus in parents: return 0
-        tmphash = (0xb08f07417e89f529) & 0xffffffffffffffff
+        tmphash = (0xe4c62f9929c52ca5) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _packed_fingerprint = None

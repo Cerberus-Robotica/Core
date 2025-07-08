@@ -3,8 +3,7 @@
 bool time_atual;
 Pacote pct;
 
-void robots_sender::send_to_grsim()
-{
+void robots_sender::send_to_grsim() { // function to send data to grSim
     commands.Clear();
     std::cout << "team robot size " << han.data_ia_copy.robots_size << std::endl;
     std::cout << "timestamp " << han.data_ia_copy.timestamp << std::endl;
@@ -76,7 +75,7 @@ void robots_sender::send_to_grsim()
 }
 
 
-void robots_sender::stm() {
+void robots_sender::stm() { // function to send data to the robots via STM32
     pct.id = 0;
     pct.Vx = 0;
     pct.Vy = 0;
@@ -128,26 +127,39 @@ void robots_sender::stm() {
     msg[1] = start[1];
 }
 
-void robots_sender::send_control() {
+void robots_sender::send_control() { // global function to send control commands
+    control_obj.robot_id = 0; // Default robot ID via controller
 
     while(true) {
         control_obj.connect_controller(); // Conecta o controle
+        while(han.data_tartarus_copy.bool_controller == 1) {
+            control_obj.connect_controller(); // try to connect the controller
+            std::cout << "trying to connect the controller..." << std::endl;
+            sleep(0.5);
+        }
         control_obj.control(); // Captura comandos do controle
-
+        
         if (han.data_tartarus_copy.ssl_vision == 0) {
             close(serial_port);
             setupSocket_grsim();
-            while(han.data_tartarus_copy.ssl_vision == 0){
+            while(han.data_tartarus_copy.ssl_vision == 0) {
 
-                if(han.data_tartarus_copy.competition_mode == 0){
+                if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
-                    // Aqui você deve atribuir Vx, Vy, Vang no seu robô antes de chamar send_to_grsim()
+
                     for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
                         data::robot* r = &han.data_ia_copy.robots[i];
-                        r->vel_tang = pct.Vx;
-                        r->vel_normal = pct.Vy;
-                        r->vel_ang = pct.Vang;
-                        std::cout << "Robot ID: " << (int)r->id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                        if (r->id == control_obj.robot_id) {
+                            r->vel_tang = pct.Vx;
+                            r->vel_normal = pct.Vy;
+                            r->vel_ang = pct.Vang;
+                            std::cout << "Robot ID: " << (int)control_obj.robot_id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                        }
+                        else {
+                            r->vel_tang = 0;
+                            r->vel_normal = 0;
+                            r->vel_ang = 0;
+                        }
                     }
                 }
 
@@ -156,8 +168,15 @@ void robots_sender::send_control() {
         } else {
             stm();
             while(han.data_tartarus_copy.ssl_vision == 1) {
-                if(han.data_tartarus_copy.competition_mode == 0){
+                if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
+                }
+                else {
+                    pct.id = han.data_ia_copy.robots[0].id;
+                    pct.Vx = han.data_ia_copy.robots[0].vel_tang; //vx é o vel_tang
+                    pct.Vy = han.data_ia_copy.robots[0].vel_normal; //vy é o vel_normal
+                    pct.Vang = han.data_ia_copy.robots[0].vel_ang;
+                    pct.kicker = han.data_ia_copy.robots[0].kick_speed_x;
                 }
                 memcpy(&msg[2], &pct, sizeof(Pacote));
                 write(serial_port, msg, sizeof(msg));
