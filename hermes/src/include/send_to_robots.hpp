@@ -10,7 +10,7 @@
 class robots_sender {
     public:
         void send_to_grsim();
-        void stm();
+        void stm_connect();
         void send_control();
 
         grSim_Commands commands;

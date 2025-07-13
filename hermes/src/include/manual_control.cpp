@@ -38,7 +38,7 @@ void controller::control() {
         }
     }
 
-        // Captura dos botões do D-Pad
+        // Captura dos botões do D-Pad (XBOX)
     if (e.type == SDL_JOYHATMOTION) {
         if (e.jhat.hat == 0) { // geralmente 0 é o D-Pad
             uint8_t dir = e.jhat.value;
@@ -56,6 +56,24 @@ void controller::control() {
                 control_obj.robot_id = 3;
 
             }
+        }
+    }
+
+    if (e.type == SDL_JOYBUTTONDOWN) { // suporte para controle de ps3
+        switch (e.jbutton.button) {
+            case 13: // Exemplo: D-Pad cima
+                control_obj.robot_id = 0;
+                break;
+            case 14: // D-Pad direita
+                control_obj.robot_id = 1;
+                break;
+            case 15: // D-Pad baixo
+                control_obj.robot_id = 5;
+                break;
+            case 16: // D-Pad esquerda
+                control_obj.robot_id = 4;
+                break;
+        
         }
     }
 

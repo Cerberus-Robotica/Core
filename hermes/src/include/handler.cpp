@@ -8,7 +8,7 @@ void handler::handleIA(const lcm::ReceiveBuffer* rbuf,
     const data::ia * data_ia) {
 
     this->data_ia_copy = *data_ia;
-    
+
 }
 
 void handler::handletartarus(const lcm::ReceiveBuffer* rbuf,

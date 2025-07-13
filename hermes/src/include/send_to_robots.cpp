@@ -75,7 +75,7 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
 }
 
 
-void robots_sender::stm() { // function to send data to the robots via STM32
+void robots_sender::stm_connect() { // function to send data to the robots via STM32
     pct.id = 0;
     pct.Vx = 0;
     pct.Vy = 0;
@@ -132,11 +132,11 @@ void robots_sender::send_control() { // global function to send control commands
 
     while(true) {
         control_obj.connect_controller(); // Conecta o controle
-        while(han.data_tartarus_copy.bool_controller == 1) {
-            control_obj.connect_controller(); // try to connect the controller
-            std::cout << "trying to connect the controller..." << std::endl;
-            sleep(0.5);
-        }
+        //while(han.data_tartarus_copy.bool_controller == 1) { //only works with UI
+        //    control_obj.connect_controller(); // try to connect the controller
+        //    std::cout << "trying to connect the controller..." << std::endl;
+        //    sleep(0.5);
+        //}
         control_obj.control(); // Captura comandos do controle
         
         if (han.data_tartarus_copy.ssl_vision == 0) {
@@ -166,7 +166,7 @@ void robots_sender::send_control() { // global function to send control commands
                 send_to_grsim();
             }
         } else {
-            stm();
+            stm_connect();
             while(han.data_tartarus_copy.ssl_vision == 1) {
                 if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
