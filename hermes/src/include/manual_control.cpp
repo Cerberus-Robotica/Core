@@ -60,13 +60,29 @@ void controller::control() {
     }
 
     if (e.type == SDL_JOYBUTTONDOWN) {
-        if (e.jbutton.button == 0) { // Button A (xbox) or X (playstation)
-            pct.kicker = 1000; 
+        switch(e.jbutton.button) { 
+            case 0:    // Button A (xbox) or X (playstation)
+                pct.kicker = 1000; 
+                break;
+            case 4:    // Button LB (xbox) or L1 (playstation)
+                control_obj.robot_id--; // Decrementa o ID do robô
+                break;
+            case 5:    // Button RB (xbox) or R1 (playstation)
+                control_obj.robot_id++; // Incrementa o ID do robô
+                break;
         }
+    }
+
     if (e.type == SDL_JOYBUTTONUP) {
         if (e.jbutton.button == 0) { // Button A (xbox) or X (playstation)
             pct.kicker = 0; 
         }
     }
+    
+    if(control_obj.robot_id < 0) {
+        control_obj.robot_id = 15; // Garante que o ID do robô não seja negativo
+    }
+    if(control_obj.robot_id > 15) {
+        control_obj.robot_id = 0; // Garante que o ID do robô não ultrapasse o limite
     }
 }
