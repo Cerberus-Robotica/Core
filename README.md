@@ -2,7 +2,7 @@
 
 ## Instruções para instalação
 
-### Primeiro(Instalação):
+### Primeiro(instalação):
 
 Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, porém instale as dependências deles em seu dispostivo.
 
@@ -11,47 +11,30 @@ Utilize Docker para rodar os softwares da competição(comandos em [Rodar os sof
 Tutorial de instalação da bilioteca Docker e de todos os softwares da SSL utilizados nesse framework em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
 	
 	
-Instalar LCM(c++):
+Instalar dependências:
 
-	sudo apt install liblcm-dev
+	./install_packages.sh
 		
 Caso enfrente problemas na hora de buildar o software relacionado à biblioteca LCM, dê uma olhada em "Programação/Frameworks da SSL/Erros de software e biblioteca".
 
 
 ### Segundo(construir o framework):
 
-Construa os três programas em C++ (com o terminal aberto na pasta principal:
+Construa os três programas em C++ (com o terminal aberto na pasta principal):
 
-	chmod +x install_core.sh && ./install_core.sh
-
-
+	./build_core.sh
 
 ### Finalmente(rodar):
 
-Rodar o executável em python (com o terminal aberto na pasta principal):
-	
-	/bin/python3 ./iris/src/main.py
+Rodar os executáveis (com o terminal aberto na pasta principal)
 
-Rodar os executáveis (com o terminal aberto na pasta principal):
+Para rodar apenas o Hades, Hermes, Caronte e Íris:
 
-Hades:
+	./run_ALL_our.sh
+ ou, para rodar com o GrSim e o Game-Controller:
+ 
+ 	./run_ALL.sh
 
-	./hades/build/hades
-Hermes:
-
-	./hermes/build/hermes
-Caronte:
-
-	./caronte/build/caronte
-
-Ou dar dois clicks nos executáveis nas pastas build/.
-
-Íris:
-
- 	python3 iris/src/main.py
-Hud_Version1.0:
-
-	python3 Hud_Version1.0/main.py
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
 
