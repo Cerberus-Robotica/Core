@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.20)
 
 project(hades)
 
-find_package(Protobuf REQUIRED)
+#find_package(Protobuf REQUIRED)
 
-set(lcm_DIR "/home/cerberus/.local/lib/python3.10/site-packages/lib/lcm/cmake")
+#set(lcm_DIR "/home/cerberus/.local/lib/python3.10/site-packages/lib/lcm/cmake")
 #set(lcm_DIR "/usr/local/lib/lcm/cmake") #outra opção de diretorio
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
-find_package(lcm REQUIRED)
+#find_package(lcm REQUIRED)
 
 # Adicionar executável
 add_executable(${PROJECT_NAME} src/main.cpp

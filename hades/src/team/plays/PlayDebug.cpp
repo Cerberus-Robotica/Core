@@ -4,7 +4,7 @@
 
 #include "PlayDebug.h"
 
-#include <team_info.hpp>
+#include "../TeamInfo.h"
 
 int PlayDebug::score(WorldModel world, TeamInfo team) {
     int score = 0;

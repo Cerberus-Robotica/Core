@@ -6,3 +6,5 @@ hades/cmake-build-debug/
 .vscode/
 __pycache__/
 *.pyc
+build/
+iris/src/data/__pycache__/*.pyc
