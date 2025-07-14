@@ -7,4 +7,4 @@ hades/cmake-build-debug/
 __pycache__/
 *.pyc
 build/
-iris/src/data/__pycache__/*.pyc
+iris/src/data/__pycache__/*.cpython-310.pyc
