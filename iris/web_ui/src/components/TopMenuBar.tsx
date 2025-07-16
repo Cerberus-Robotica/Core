@@ -1,65 +1,47 @@
 import { useState } from "react";
-import axios from 'axios';
 import { MenuButton } from "./MenuButton";
-import { UtilityMenu } from "./UtilityMenu";
+import type { SoftwareOption } from "../App";
 
-export function MenuBar() {
+export function MenuBar({ onSelectSoftware }: { onSelectSoftware: (software: SoftwareOption) => void }) {
   const [active, setActive] = useState<string | null>(null);
-  const [showUtilityMenu, setShowUtilityMenu] = useState(false);
-
-  const handleUtilityClick = () => {
-    setShowUtilityMenu((prev) => !prev);
-    setActive("utility");
-  };
-
-  const handleTerminalSelect = () => {
-    axios
-      .post("http://localhost:4000/open-terminal")
-      .then(() => console.log("Terminal aberto"))
-      .catch((err) => console.error("Erro ao abrir terminal:", err));
-  };
 
   return (
-    <>
-      <nav className="w-full bg-[#3B3B3B] text-white flex items-center justify-between px-1 py-1 shadow-md relative">
-        <div className="flex flex-wrap gap-2 flex-1 relative">
-          <MenuButton
-            label="Utilidades"
-            variant={active === "utility" ? "primary" : "default"}
-            onClick={handleUtilityClick}
-          />
-          <MenuButton
-            label="Botão 2"
-            variant={active === "botao2" ? "primary" : "default"}
-            onClick={() => setActive("botao2")}
-          />
-          {showUtilityMenu && (
-            <div className="absolute top-full left-0">
-              <UtilityMenu onSelectTerminal={handleTerminalSelect} />
-            </div>
-          )}
-        </div>
+    <nav className="w-full bg-[#3B3B3B] text-white flex items-center justify-between px-1 py-1 shadow-md relative">
+      <div className="flex space-x-4 flex-1 max-w-xs relative">
+        
+        <MenuButton
+          label="Dados"
+          variant={active === "dados" ? "primary" : "default"}
+          onClick={() => setActive(active === "dados" ? null : "dados")}
+        />
+        {active === "dados" && (
+          <div className="absolute top-full z-10 bg-[#3B3B3B] rounded border border-gray-600">
+            <select
+              className="bg-[#3B3B3B] text-white p-2 w-full"
+              onChange={(e) => onSelectSoftware(e.target.value as SoftwareOption)}
+              defaultValue=""
+            >
+              <option disabled value="">Escolha um software</option>
+              <option value="ia">IA</option>
+              <option value="gc">Game Controller</option>
+              <option value="vision">Vision</option>
+              <option value="tartarus">Tartarus</option>
+              <option value="caronte">AutoRef</option>
+            </select>
+          </div>
+        )}
+        <MenuButton label="Botão 2" variant="default" onClick={() => {}} />
+        
+      </div>
 
-        <div className="flex-1 flex justify-center">
-          <img
-            src="/img/LogoCerberus.png"
-            className="h-10 w-auto select-none"
-          />
-        </div>
+      <div className="flex-1 flex justify-center">
+        <img src="/img/LogoCerberus.png" className="h-10 w-auto select-none" />
+      </div>
 
-        <div className="flex flex-wrap gap-2 flex-1 relative">
-          <MenuButton
-            label="NomeExemplo3"
-            variant={active === "botao3" ? "primary" : "default"}
-            onClick={() => setActive("botao3")}
-          />
-          <MenuButton
-            label="Botão 4"
-            variant={active === "botao4" ? "primary" : "default"}
-            onClick={() => setActive("botao4")}
-          />
-        </div>
-      </nav>
-    </>
+      <div className="flex space-x-4 flex-1 max-w-xs justify-end">
+        <MenuButton label="Botão 3" variant="default" onClick={() => {}} />
+        <MenuButton label="Botão 4" variant="default" onClick={() => {}} />
+      </div>
+    </nav>
   );
 }
