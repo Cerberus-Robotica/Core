@@ -29,10 +29,11 @@ export function DataViewAll({ reading, selected }: Props) {
           Robots Size: <span className="font-mono">{data.ia.robots_size}</span>
         </p>
 
-        <div className="mt-2 max-h-[250px] overflow-y-auto space-y-2">
+        <div className="mt-2 max-h-[250px] overflow-y-auto space-y-2 border-3 border-[#6805F2] rounded-[5px] p-2 bg-[#545454] shadow-inner">
+
           {data.ia.robots?.length > 0 ? (
             data.ia.robots.map((robot) => (
-              <div key={robot.id} className="p-2 bg-[#3D1870] rounded text-sm">
+              <div key={robot.id} className="p-2 bg-[#2E2E2E] rounded text-sm">
                 <p>ID: {robot.id}</p>
                 <p>Spinner: {robot.spinner ? 'Sim' : 'Não'}</p>
                 <p>Kick: {robot.kick ? 'Sim' : 'Não'}</p>

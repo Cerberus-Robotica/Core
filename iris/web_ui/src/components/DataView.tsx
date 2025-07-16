@@ -77,7 +77,7 @@ export function DataView({ reading, setReading }: Props) {
           </span>
         </p>
 
-        <div className="mb-4">
+        <div>
           <label className="block mb-1 font-semibold text-white">
             ID do Goleiro:
           </label>
@@ -89,12 +89,12 @@ export function DataView({ reading, setReading }: Props) {
           />
           <button
             onClick={handleSendGoalie}
-            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold"
+            className="w-full py-2 bg-[#6805F2] hover:bg-[#34007D] text-white rounded font-semibold"
           >
             Enviar Goleiro
           </button>
           <TeamSelector/>
-          <p>Time Atual: <span className="font-mono">{data.gc.team_blue ? "Azul" : "Amarelo"}</span></p>
+          <p className='w-full text-center mt-4'>Time Atual: <span className="font-mono">{data.gc.team_blue ? "Azul" : "Amarelo"}</span></p>
 
         </div>
       </div>
