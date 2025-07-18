@@ -2,27 +2,27 @@ cmake_minimum_required(VERSION 3.20)
 
 project(caronte)
 
-#find_package(Protobuf REQUIRED)
+find_package(Protobuf REQUIRED)
 
-#set(lcm_DIR "/home/cerberus/.local/lib/python3.10/site-packages/lib/lcm/cmake")
+set(lcm_DIR "${CMAKE_SOURCE_DIR}/../external/lcm/cmake")
 #set(lcm_DIR "/usr/local/lib/lcm/cmake") #outra opção de diretorio
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/../cmake")
+#list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
 #find_package(lcm REQUIRED)
 
 message(STATUS "Using Protobuf ${Protobuf_VERSION}")
 
 set(PROTO_FILES
-    ${CMAKE_SOURCE_DIR}/proto/ssl_gc_referee_message.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_vision_wrapper.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_gc_geometry.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_vision_detection.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_vision_geometry.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_gc_common.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_gc_engine.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_gc_game_event.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_vision_wrapper_tracked.proto
-    ${CMAKE_SOURCE_DIR}/proto/ssl_vision_detection_tracked.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_referee_message.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_wrapper.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_geometry.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_detection.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_geometry.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_common.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_engine.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_game_event.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_wrapper_tracked.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_detection_tracked.proto
 )
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})

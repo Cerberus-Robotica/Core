@@ -3,7 +3,7 @@
 
 #include <lcm/lcm-cpp.hpp>
 #include "../../data_lcm/data/vision.hpp"
-#include "../../../build/caronte/ssl_vision_wrapper.pb.h"
+#include "../../build/ssl_vision_wrapper.pb.h"
 
 extern data::vision my_vision_data;
 void recebe_dados_vision();

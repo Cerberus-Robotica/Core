@@ -4,7 +4,7 @@
 #include <lcm/lcm-cpp.hpp>
 #include "../../data_lcm/data/ia.hpp"
 #include "../../data_lcm/data/tartarus.hpp"
-#include "../../../build/hermes/grSim_Packet.pb.h"
+#include "../../build/grSim_Packet.pb.h"
 
 class handler {
     public:

@@ -1,7 +1,5 @@
-import sys
+import lcm
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-from build.python import lcm
 from data import *
 import time
 
