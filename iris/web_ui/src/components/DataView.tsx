@@ -73,8 +73,8 @@ const DataView: React.FC = () => {
   };
 
   return (
-    <div className="p-2 min-w-[20%] ">
-      <div className="p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] min-h-full w-full">
+    <div className="p-2 w-full md:w-[300px] lg:w-[350px]">
+      <div className="p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] w-full">
         <button
           onClick={() => setReading(!reading)}
           className={`mb-4 w-full py-2 rounded-[5px] font-semibold transition-colors duration-200 ${

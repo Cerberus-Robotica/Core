@@ -22,7 +22,7 @@ export default function MenuBar() {
   return (
     <>
       <nav className="w-full bg-[#3B3B3B] text-white flex items-center justify-between px-1 py-1 shadow-md relative">
-        <div className="flex space-x-4 flex-1 max-w-xs relative">
+        <div className="flex flex-wrap gap-2 flex-1 relative">
           <MenuButton
             label="Utilidades"
             variant={active === "utility" ? "primary" : "default"}
@@ -47,9 +47,9 @@ export default function MenuBar() {
           />
         </div>
 
-        <div className="flex space-x-4 flex-1 max-w-xs justify-end">
+        <div className="flex flex-wrap gap-2 flex-1 relative">
           <MenuButton
-            label="Botão 3"
+            label="NomeExemplo3"
             variant={active === "botao3" ? "primary" : "default"}
             onClick={() => setActive("botao3")}
           />
