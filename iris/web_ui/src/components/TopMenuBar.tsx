@@ -8,7 +8,6 @@ export function MenuBar({ onSelectSoftware }: { onSelectSoftware: (software: Sof
   return (
     <nav className="w-full bg-[#3B3B3B] text-white flex items-center justify-between px-1 py-1 shadow-md relative">
       <div className="flex space-x-4 flex-1 max-w-xs relative">
-        
         <MenuButton
           label="Dados"
           variant={active === "dados" ? "primary" : "default"}
@@ -21,7 +20,9 @@ export function MenuBar({ onSelectSoftware }: { onSelectSoftware: (software: Sof
               onChange={(e) => onSelectSoftware(e.target.value as SoftwareOption)}
               defaultValue=""
             >
-              <option disabled value="">Escolha um software</option>
+              <option disabled value="">
+                Escolha um software
+              </option>
               <option value="ia">IA</option>
               <option value="gc">Game Controller</option>
               <option value="vision">Vision</option>
@@ -31,7 +32,6 @@ export function MenuBar({ onSelectSoftware }: { onSelectSoftware: (software: Sof
           </div>
         )}
         <MenuButton label="Botão 2" variant="default" onClick={() => {}} />
-        
       </div>
 
       <div className="flex-1 flex justify-center">

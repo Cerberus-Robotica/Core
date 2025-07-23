@@ -54,7 +54,7 @@ export function DataView({ reading, setReading }: Props) {
         </p>
         <p>
           Field Length:{' '}
-          <span className="font-mono">{data.vision.field_length}</span>
+          
         </p>
 
         <h2 className="text-lg font-bold mt-4 mb-1">Game Controller</h2>
