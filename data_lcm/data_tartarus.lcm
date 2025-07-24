@@ -7,5 +7,6 @@ struct tartarus
 	boolean team_blue; //changes the team (not recommended for use in competitions)
 	boolean bool_controller; //turn on or off the controller mode
 	int16_t stm_port; //changes the stm connected port via UI
+	int16_t controller_port; //changes the controller port via UI
 	int16_t goalkeeper_id; // changes keeper id
 }

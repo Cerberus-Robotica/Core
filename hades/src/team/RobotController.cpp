@@ -818,6 +818,6 @@ void RobotController::publish() {
     han.new_ia.robots[mId].kick_speed_x = 0;
 
     han.lc->publish("IA", &han.new_ia);
-    han.lc->publish("tartarus", &han.new_tartarus);
+    //han.lc->publish("tartarus", &han.new_tartarus);
 
 }

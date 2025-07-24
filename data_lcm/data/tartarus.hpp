@@ -41,6 +41,11 @@ class tartarus
         /**
          * changes the stm connected port via UI
          */
+        int16_t    controller_port;
+
+        /**
+         * changes the controller port via UI
+         */
         int16_t    goalkeeper_id;
 
     public:
@@ -154,6 +159,9 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->controller_port, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -179,6 +187,9 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->controller_port, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -194,12 +205,13 @@ int tartarus::_getEncodedSizeNoHash() const
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0xe4c62f9929c52ca5LL;
+    uint64_t hash = 0x38f7f5f2db059489LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 
