@@ -12,6 +12,7 @@
 #include "../../../../../data_lcm/data/ia.hpp"
 #include "../../../../../data_lcm/data/team_info.hpp"
 
+lcm::LCM global_lcm;  // LCM para publicar comandos
 
 // ======= Dados Compartilhados =======
 std::mutex data_mutex;
@@ -283,8 +284,14 @@ struct CORS {
 
 // ======= Rotas HTTP =======
 int main() {
+    if (!global_lcm.good()) {
+        std::cerr << "Erro ao inicializar o LCM publisher" << std::endl;
+        return 1;
+    }
+
     std::thread lcm_thread(lcm_thread_func);
     crow::App<CORS> app;
+
 
     CROW_ROUTE(app, "/data").methods("GET"_method)([] {
         std::lock_guard<std::mutex> lock(data_mutex);
@@ -426,6 +433,17 @@ int main() {
                 latest_data.bool_controller = body["bool_controller"].b();
                 std::cout << "[POST] bool_controller atualizado para " << (latest_data.bool_controller ? "true" : "false") << std::endl;
             }
+            // ===== PUBLICAÇÃO TARTARUS =====
+            data::tartarus msg;
+            msg.ssl_vision = latest_data.ssl_vision;
+            msg.competition_mode = latest_data.competition_mode;
+            msg.bool_controller = latest_data.bool_controller;
+            msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;
+            msg.stm_port = latest_data.stm_port;
+
+            global_lcm.publish("tartarus", &msg);
+            std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
+
 
         } catch (const std::exception& e) {
             std::cerr << "Erro ao processar POST: " << e.what() << std::endl;
