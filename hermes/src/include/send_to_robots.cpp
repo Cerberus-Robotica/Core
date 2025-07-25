@@ -85,9 +85,10 @@ void robots_sender::stm_connect() { // function to send data to the robots via S
 
     while(serial_port < 0) {
         // Tenta abrir a porta serial até conseguir
-        std::cout << "Tentando abrir a porta serial: " << port << "..." << std::endl;
+        std::cout << "Tentando abrir a porta serial: " << port << han.data_tartarus_copy.stm_port << "..." << std::endl;
         sleep(1); // Espera 1 segundo antes de tentar novamente
-        serial_port = open(port, O_RDWR);
+        std::string porta_usb = "/dev/ttyUSB" + std::to_string(han.data_tartarus_copy.stm_port);
+        serial_port = open(porta_usb.c_str(), O_RDWR);
         //std::cout << "ID atual: " << (int)pct.id << std::endl;
         if(han.data_tartarus_copy.ssl_vision == 0){
             break;
@@ -133,10 +134,10 @@ void robots_sender::send_control() { // global function to send control commands
 
     while(true) {
         control_obj.connect_controller(); // Conecta o controle
-        while(han.data_tartarus_copy.bool_controller == 1) { //only works with UI
+        while(han.data_tartarus_copy.bool_controller == 1 && SDL_NumJoysticks() < 1) { //only works with UI
             control_obj.connect_controller(); // try to connect the controller
             std::cout << "trying to connect the controller..." << std::endl;
-            sleep(0.5);
+            sleep(1.0);
         }
         
         if (han.data_tartarus_copy.ssl_vision == 0) {

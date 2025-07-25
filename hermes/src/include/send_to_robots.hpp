@@ -17,7 +17,7 @@ class robots_sender {
         grSim_Packet packet_grsim;
 
         int serial_port;
-        const char* port = "/dev/ttyUSB0"; // Altere conforme necessário
+        const char* port = "/dev/ttyUSB";
         uint8_t start[2] = {0xAA, 0xBB};
         uint8_t msg[sizeof(Pacote) + 2];
 };
