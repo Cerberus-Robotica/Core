@@ -28,11 +28,20 @@ export function DataViewAll({ reading, selected }: Props) {
     }
   };
 
+  const updateNumber = async (key: string, value: number) => {
+    const success = await sendPost('http://localhost:5000/command', {
+      [key]: value,
+    });
+    if (!success) {
+      console.error(`Erro ao atualizar ${key} para ${value}`);
+    }
+  };
+
   const section = {
     ia: <IASection data={data} />,
     gc: <GCSection data={data} />,
     vision: <VisionSection data={data} />,
-    tartarus: <TartarusSection data={data} toggleBoolean={toggleBoolean} />,
+    tartarus: <TartarusSection data={data} updateNumber={updateNumber} toggleBoolean={toggleBoolean} />,
     caronte: <CaronteSection data={data} />,
   };
 

@@ -87,6 +87,7 @@ export type TartarusData = {
   team_blue: boolean;
   bool_controller: boolean;
   stm_port: number;
+  controller_port: number;
   goalkeeper_id: number;
 };
 
