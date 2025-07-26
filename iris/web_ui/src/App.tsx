@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DataView } from './components/DataView';
 import { FieldView } from './components/FieldView';
-import { MenuBar } from './components/TopMenuBar';
+import { MenuBar } from './components/MenuBar';
 import { DataViewAll } from './components/DataViewAll';
 
 export type SoftwareOption = 'ia' | 'gc' | 'vision' | 'tartarus' | 'caronte';
