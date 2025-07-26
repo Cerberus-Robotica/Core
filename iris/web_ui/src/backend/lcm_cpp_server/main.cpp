@@ -203,12 +203,10 @@ int main()
                 latest_data.ssl_vision = body["ssl_vision"].b();
                 std::cout << "[POST] ssl_vision atualizado para " << (latest_data.ssl_vision ? "true" : "false") << std::endl;
             }
-
             if (body.has("competition_mode") && (body["competition_mode"].t() == crow::json::type::True || body["competition_mode"].t() == crow::json::type::False)) {
                 latest_data.competition_mode = body["competition_mode"].b();
                 std::cout << "[POST] competition_mode atualizado para " << (latest_data.competition_mode ? "true" : "false") << std::endl;
             }
-
             if (body.has("bool_controller") && (body["bool_controller"].t() == crow::json::type::True || body["bool_controller"].t() == crow::json::type::False)) {
                 latest_data.bool_controller = body["bool_controller"].b();
                 std::cout << "[POST] bool_controller atualizado para " << (latest_data.bool_controller ? "true" : "false") << std::endl;
@@ -217,7 +215,6 @@ int main()
                 latest_data.stm_port = body["stm_port"].i();
                 std::cout << "[POST] stm_port atualizado para " << latest_data.stm_port << std::endl;
             }
-
             if (body.has("controller_port") && body["controller_port"].t() == crow::json::type::Number) {
                 latest_data.controller_port = body["controller_port"].i();
                 std::cout << "[POST] controller_port atualizado para " << latest_data.controller_port << std::endl;

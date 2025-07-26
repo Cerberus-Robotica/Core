@@ -28,7 +28,8 @@ export function MenuButton({ label, onClick, variant = 'default', children }: Me
     };
   }, [open]);
 
-  const baseStyle = 'flex-1 py-0.5 w-35 px-5 rounded-sm transition relative';
+  const baseStyle = 'flex-1 py-0.5 w-35 px-5 text-sm rounded-sm transition relative';
+
   const variants = {
     primary: 'bg-[#3D1870] hover:bg-[#311A52]',
     default: 'bg-[#6805F2] hover:bg-[#34007D]',

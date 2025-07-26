@@ -41,15 +41,19 @@ export function DataViewAll({ reading, selected }: Props) {
     ia: <IASection data={data} />,
     gc: <GCSection data={data} />,
     vision: <VisionSection data={data} />,
-    tartarus: <TartarusSection data={data} updateNumber={updateNumber} toggleBoolean={toggleBoolean} />,
+    tartarus: (
+      <TartarusSection
+        data={data}
+        updateNumber={updateNumber}
+        toggleBoolean={toggleBoolean}
+      />
+    ),
     caronte: <CaronteSection data={data} />,
   };
 
   return (
-    <div className="p-2 min-w-[40%]">
-      <div className="max-h-screen overflow-y-auto p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] min-h-full w-full">
-        {section[selected]}
-      </div>
+    <div className="ml-0 m-2 p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] w-full max-h-full overflow-y-auto">
+      {section[selected]}
     </div>
   );
 }

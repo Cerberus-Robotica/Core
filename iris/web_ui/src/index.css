@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+body {
+  @apply text-sm; /* ou text-xs para ainda menor */
+}

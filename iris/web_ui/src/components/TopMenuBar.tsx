@@ -35,7 +35,7 @@ export function MenuBar({ onSelectSoftware }: { onSelectSoftware: (software: Sof
       </div>
 
       <div className="flex-1 flex justify-center">
-        <img src="/img/LogoCerberus.png" className="h-10 w-auto select-none" />
+        <img src="/img/LogoTextCerberus.png" className="h-8 w-auto select-none" />
       </div>
 
       <div className="flex space-x-4 flex-1 max-w-xs justify-end">
