@@ -57,6 +57,7 @@ export const initialData: DataType = {
     team_blue: false,
     bool_controller: false,
     stm_port: 0,
+    controller_port: 0,
     goalkeeper_id: 0,
   },
 };

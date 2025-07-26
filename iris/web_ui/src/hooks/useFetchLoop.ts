@@ -70,6 +70,7 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
             team_blue: json.team_blue,
             bool_controller: json.bool_controller,
             stm_port: json.stm_port,
+            controller_port: json.controller_port,
             goalkeeper_id: json.goalkeeper_id,
           },
         });
@@ -81,7 +82,7 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
 
     if (reading) {
       fetchData();
-      interval = setInterval(fetchData, 500);
+      interval = setInterval(fetchData, 33);
     } else {
       // Se parar a leitura, pode resetar para initialData para evitar dados antigos
       setData(initialData);

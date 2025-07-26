@@ -49,6 +49,13 @@ export type DetectionRobot = {
   orientation: number; // rad
 };
 
+export type RobotField = {
+  id: number;
+  x: number;
+  y: number;
+  orientation: number; // graus
+}
+
 export type DetectionBall = {
   position_x: number; // mm
   position_y: number; // mm

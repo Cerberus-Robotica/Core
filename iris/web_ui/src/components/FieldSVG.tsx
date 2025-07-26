@@ -1,0 +1,183 @@
+import type { FIELD_DIMENSIONS } from '../data/fieldDimensions';
+
+type FieldDimensions = (typeof FIELD_DIMENSIONS)[keyof typeof FIELD_DIMENSIONS];
+
+export type Robot = {
+  id: number;
+  x: number;
+  y: number;
+  orientation?: number; // graus, opcional
+};
+
+type Props = {
+  dimensions: FieldDimensions;
+  blueRobots?: Robot[];
+  yellowRobots?: Robot[];
+};
+
+export function FieldSVG({
+  dimensions,
+  blueRobots = [],
+  yellowRobots = [],
+}: Props) {
+  const totalFieldLength = dimensions.field_length + 2 * dimensions.goal_depth;
+  const centerX = dimensions.field_width / 2;
+  const centerY = totalFieldLength / 2;
+  const goalTopY = 0;
+  const goalBottomY = totalFieldLength - dimensions.goal_depth;
+  const strokeWidth = 10;
+  const robotSize = dimensions.max_robot_radius * 2;
+
+  return (
+    <svg
+      className="h-full w-auto"
+      viewBox={`0 0 ${dimensions.field_width} ${totalFieldLength}`}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      {/* Fundo campo + gol (centralizado com largura do gol) */}
+      <rect
+        x={(dimensions.field_width - dimensions.goal_width) / 2}
+        y={0}
+        width={dimensions.goal_width}
+        height={totalFieldLength}
+        fill="#545454"
+      />
+
+      {/* Campo jogável */}
+      <rect
+        x={0}
+        y={dimensions.goal_depth}
+        width={dimensions.field_width}
+        height={dimensions.field_length}
+        stroke="white"
+        strokeWidth={dimensions.line_thickness}
+        fill="#545454"
+      />
+
+      {/* Linha do meio campo */}
+      <line
+        x1={0}
+        y1={centerY}
+        x2={dimensions.field_width}
+        y2={centerY}
+        stroke="white"
+        strokeWidth={dimensions.line_thickness}
+      />
+
+      {/* Circulo central */}
+      <circle
+        cx={centerX}
+        cy={centerY}
+        r={dimensions.center_circle_radius}
+        stroke="white"
+        strokeWidth={dimensions.line_thickness}
+        fill="transparent"
+      />
+
+      {/* Área de defesa superior */}
+      <rect
+        x={(dimensions.field_width - dimensions.defense_area_width) / 2}
+        y={dimensions.goal_depth}
+        width={dimensions.defense_area_width}
+        height={dimensions.defense_area_height}
+        stroke="white"
+        strokeWidth={dimensions.line_thickness}
+        fill="transparent"
+      />
+
+      {/* Área de defesa inferior */}
+      <rect
+        x={(dimensions.field_width - dimensions.defense_area_width) / 2}
+        y={
+          dimensions.goal_depth +
+          dimensions.field_length -
+          dimensions.defense_area_height
+        }
+        width={dimensions.defense_area_width}
+        height={dimensions.defense_area_height}
+        stroke="white"
+        strokeWidth={dimensions.line_thickness}
+        fill="transparent"
+      />
+
+      {/* Gol superior */}
+      <line
+        x1={(dimensions.field_width - dimensions.goal_width) / 2}
+        y1={goalTopY}
+        x2={(dimensions.field_width + dimensions.goal_width) / 2}
+        y2={goalTopY}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+      <line
+        x1={(dimensions.field_width - dimensions.goal_width) / 2}
+        y1={goalTopY}
+        x2={(dimensions.field_width - dimensions.goal_width) / 2}
+        y2={goalTopY + dimensions.goal_depth}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+      <line
+        x1={(dimensions.field_width + dimensions.goal_width) / 2}
+        y1={goalTopY}
+        x2={(dimensions.field_width + dimensions.goal_width) / 2}
+        y2={goalTopY + dimensions.goal_depth}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+
+      {/* Gol inferior */}
+      <line
+        x1={(dimensions.field_width - dimensions.goal_width) / 2}
+        y1={goalBottomY + dimensions.goal_depth}
+        x2={(dimensions.field_width + dimensions.goal_width) / 2}
+        y2={goalBottomY + dimensions.goal_depth}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+      <line
+        x1={(dimensions.field_width - dimensions.goal_width) / 2}
+        y1={goalBottomY}
+        x2={(dimensions.field_width - dimensions.goal_width) / 2}
+        y2={goalBottomY + dimensions.goal_depth}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+      <line
+        x1={(dimensions.field_width + dimensions.goal_width) / 2}
+        y1={goalBottomY}
+        x2={(dimensions.field_width + dimensions.goal_width) / 2}
+        y2={goalBottomY + dimensions.goal_depth}
+        stroke="#8D00F2"
+        strokeWidth={strokeWidth}
+      />
+
+      {/* Robôs azuis */}
+      {blueRobots.map((robot) => (
+        <image
+          key={`blue-${robot.id}`}
+          href={`/img/blue_team/id${robot.id}.png`}
+          x={robot.x - robotSize / 2}
+          y={robot.y - robotSize / 2}
+          width={robotSize}
+          height={robotSize}
+          transform={`rotate(${robot.orientation || 0}, ${robot.x}, ${robot.y})`}
+          pointerEvents="none"
+        />
+      ))}
+
+      {yellowRobots.map((robot) => (
+        <image
+          key={`yellow-${robot.id}`}
+          href={`/img/yellow_team/id${robot.id}.png`}
+          x={robot.x - robotSize / 2}
+          y={robot.y - robotSize / 2}
+          width={robotSize}
+          height={robotSize}
+          transform={`rotate(${robot.orientation || 0}, ${robot.x}, ${robot.y})`}
+          pointerEvents="none"
+        />
+      ))}
+    </svg>
+  );
+}
