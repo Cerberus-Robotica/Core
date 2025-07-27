@@ -182,10 +182,18 @@ int main()
         try {
             std::cout << "JSON recebido: " << req.body << std::endl;
 
-            if (body.has("team_blue") && (body["team_blue"].t() == crow::json::type::True || body["team_blue"].t() == crow::json::type::False)) {
-                latest_data.team_blue = body["team_blue"].b();
-                std::cout << "[POST] team_blue atualizado para " << (latest_data.team_blue ? "azul" : "amarelo") << std::endl;
+            if (body.has("team_blue")) {
+                if (body["team_blue"].t() == crow::json::type::True) {
+                    latest_data.team_blue = true;
+                    std::cout << "[POST] team_blue atualizado para azul" << std::endl;
+                } else if (body["team_blue"].t() == crow::json::type::False) {
+                    latest_data.team_blue = false;
+                    std::cout << "[POST] team_blue atualizado para amarelo" << std::endl;
+                } else {
+                    std::cerr << "[ERRO] Valor inválido para team_blue (esperado booleano)" << std::endl;
+                }
             }
+
 
             if (body.has("goalkeeper_id") && body["goalkeeper_id"].t() == crow::json::type::Number) {
                 int id = body["goalkeeper_id"].i();
