@@ -1,6 +1,5 @@
-import type { FIELD_DIMENSIONS } from '../data/fieldDimensions';
+import type { FieldProps } from './FieldView';
 
-type FieldDimensions = (typeof FIELD_DIMENSIONS)[keyof typeof FIELD_DIMENSIONS];
 
 export type Robot = {
   id: number;
@@ -9,17 +8,12 @@ export type Robot = {
   orientation?: number; // graus, opcional
 };
 
-type Props = {
-  dimensions: FieldDimensions;
-  blueRobots?: Robot[];
-  yellowRobots?: Robot[];
-};
-
 export function FieldSVG({
   dimensions,
   blueRobots = [],
   yellowRobots = [],
-}: Props) {
+  ball,
+}: FieldProps) {
   const totalFieldLength = dimensions.field_length + 2 * dimensions.goal_depth;
   const centerX = dimensions.field_width / 2;
   const centerY = totalFieldLength / 2;
@@ -27,6 +21,7 @@ export function FieldSVG({
   const goalBottomY = totalFieldLength - dimensions.goal_depth;
   const strokeWidth = 10;
   const robotSize = dimensions.max_robot_radius * 2;
+  const ballSize = dimensions.ball_radius * 2;
 
   return (
     <svg
@@ -178,6 +173,17 @@ export function FieldSVG({
           pointerEvents="none"
         />
       ))}
+      {/* Bola */}
+      {ball && (
+        <image
+          href="/img/ball.png"
+          x={ball.x - ballSize / 2}
+          y={ball.y - ballSize / 2}
+          width={ballSize}
+          height={ballSize}
+          pointerEvents="none"
+        />
+      )}
     </svg>
   );
 }

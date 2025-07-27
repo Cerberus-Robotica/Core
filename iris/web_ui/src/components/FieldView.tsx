@@ -1,15 +1,17 @@
 import type { FIELD_DIMENSIONS } from "../data/fieldDimensions";
+import type { BallField } from "../types";
 import { FieldSVG, type Robot } from "./FieldSVG";
 
 type FieldDimensions = (typeof FIELD_DIMENSIONS)[keyof typeof FIELD_DIMENSIONS];
 
-type Props = {
+export type FieldProps = {
   dimensions: FieldDimensions;
   blueRobots?: Robot[];
   yellowRobots?: Robot[];
+  ball?: BallField;
 };
 
-export function FieldView({ dimensions, blueRobots = [], yellowRobots = [] }: Props) {
+export function FieldView({ dimensions, blueRobots = [], yellowRobots = [], ball }: FieldProps) {
   return (
     <div
       className="h-full flex justify-center items-center bg-[#3B3B3B]"
@@ -32,6 +34,7 @@ export function FieldView({ dimensions, blueRobots = [], yellowRobots = [] }: Pr
           dimensions={dimensions}
           blueRobots={blueRobots}
           yellowRobots={yellowRobots}
+          ball={ball}
         />
       </div>
     </div>

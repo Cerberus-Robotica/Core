@@ -1,7 +1,6 @@
 #pragma once
 
 #include <mutex>
-#include <vector>
 #include <string>
 #include <lcm/lcm-cpp.hpp>
 
@@ -10,89 +9,40 @@
 #include "../../../../../../data_lcm/data/tartarus.hpp"
 #include "../../../../../../data_lcm/data/ia.hpp"
 
-struct TeamInfo {
-    std::string name;
-    int score = 0;
-    int fouls = 0;
-    int goalkeeper_id = 0;
-};
-
-struct RobotData {
-    int16_t id;
-    bool spinner;
-    bool kick;
-    float vel_tang;
-    float vel_normal;
-    float vel_ang;
-    float kick_speed_x;
-    float kick_speed_z;
-    bool wheel_speed;
-    float wheel_fr;
-    float wheel_fl;
-    float wheel_bl;
-    float wheel_br;
-};
-
-struct DetectionRobots {
-    int16_t robot_id;
-    float position_x;
-    float position_y;
-    float orientation;
-};
-
-struct DetectionBalls {
-    float position_x;
-    float position_y;
-};
-
-struct DetectionGeometry {
-    int32_t field_length;
-    int32_t field_width;
-    int32_t goal_width;
-    int32_t goal_depth;
-    int32_t boundary_width;
-    int32_t center_circle_radius;
-    int32_t defense_area_width;
-    int32_t defense_area_height;
-    int32_t line_thickness;
-    int32_t goal_center_to_penalty_mark;
-    int32_t goal_height;
-    float ball_radius;
-    float max_robot_radius;
-};
+// Agora LatestData utiliza diretamente as structs LCM, sem redefini-las
 
 struct LatestData {
-    // GC
+    // Game Controller
     bool team_blue = false;
-    float designated_position_x = 0;
-    float designated_position_y = 0;
+    float designated_position_x = 0.f;
+    float designated_position_y = 0.f;
     int current_command = 0;
     int game_event = 0;
-    TeamInfo yellow;
-    TeamInfo blue;
+    data::team_info yellow;
+    data::team_info blue;
 
     // IA
     int robots_size = 0;
     std::string processo;
     std::string estrategia;
-    std::vector<RobotData> robots;
+    std::vector<data::robot> robots;  // supondo que 'robot' esteja definido no ia.hpp
 
     // Vision
     int64_t timestamp = 0;
-    int16_t robots_yellow_size;
-    int16_t robots_blue_size;
-    std::vector<DetectionRobots> robots_yellow;
-    std::vector<DetectionRobots> robots_blue;
-    DetectionBalls balls;
-    DetectionGeometry field;
+    int16_t robots_yellow_size = 0;
+    int16_t robots_blue_size = 0;
+    std::vector<data::detection_robots> robots_yellow;
+    std::vector<data::detection_robots> robots_blue;
+    data::detection_balls balls;
+    data::detection_geometry field;
 
     // Tartarus
     bool ssl_vision = false;
     bool competition_mode = false;
     bool bool_controller = false;
     bool team_blue_status = false;
-    int16_t stm_port;
-    int16_t controller_port;
+    int16_t stm_port = 0;
+    int16_t controller_port = 0;
 };
 
 extern LatestData latest_data;
@@ -110,8 +60,8 @@ public:
     tartarus_t msg_tartarus;
     ia_t msg_ia;
 
-    void handleGC(const lcm::ReceiveBuffer*, const std::string&, const gc_t*);
-    void handleVision(const lcm::ReceiveBuffer*, const std::string&, const vision_t*);
-    void handleTartarus(const lcm::ReceiveBuffer*, const std::string&, const tartarus_t*);
-    void handleIA(const lcm::ReceiveBuffer*, const std::string&, const ia_t*);
+    void handleGC(const lcm::ReceiveBuffer* rbuf, const std::string& chan, const gc_t* msg);
+    void handleVision(const lcm::ReceiveBuffer* rbuf, const std::string& chan, const vision_t* msg);
+    void handleTartarus(const lcm::ReceiveBuffer* rbuf, const std::string& chan, const tartarus_t* msg);
+    void handleIA(const lcm::ReceiveBuffer* rbuf, const std::string& chan, const ia_t* msg);
 };

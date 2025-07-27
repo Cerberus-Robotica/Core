@@ -6,7 +6,7 @@ import { DataViewAll } from './components/DataViewAll';
 import { FIELD_DIMENSIONS, type Division } from './data/fieldDimensions';
 import { initialData } from './data/initialData';
 import { useFetchLoop } from './hooks/useFetchLoop';
-import type { DetectionRobot, RobotField } from './types';
+import { mapBallToFieldCoords, mapRobotsToFieldCoords } from './utils';
 
 export type SoftwareOption = 'ia' | 'gc' | 'vision' | 'tartarus' | 'caronte';
 
@@ -24,24 +24,17 @@ export default function App() {
   const centerX = dimensions.field_width / 2;
   const centerY = totalFieldLength / 2;
 
-  // Ajusta coordenadas dos robôs do sistema de visão para coordenadas SVG
-  const yellowRobots: RobotField[] = (data.vision.robots_yellow || []).map(
-    (dr: DetectionRobot) => ({
-      id: dr.robot_id,
-      x: centerX + dr.position_y, // soma em vez de subtrair
-      y: dr.position_x + centerY,
-      orientation: ((dr.orientation * 180) / Math.PI - 90 + 360) % 360,
-    }),
+  const yellowRobots = mapRobotsToFieldCoords(
+    data.vision.robots_yellow,
+    centerX,
+    centerY,
   );
-
-  const blueRobots: RobotField[] = (data.vision.robots_blue || []).map(
-    (dr: DetectionRobot) => ({
-      id: dr.robot_id,
-      x: centerX + dr.position_y,
-      y: dr.position_x + centerY,
-      orientation: ((dr.orientation * 180) / Math.PI - 90 + 360) % 360,
-    }),
+  const blueRobots = mapRobotsToFieldCoords(
+    data.vision.robots_blue,
+    centerX,
+    centerY,
   );
+  const ball = mapBallToFieldCoords(data.vision.balls, centerX, centerY);
 
   return (
     <div className="bg-[#311A52] h-screen w-screen overflow-hidden">
@@ -59,6 +52,7 @@ export default function App() {
             dimensions={dimensions}
             blueRobots={blueRobots}
             yellowRobots={yellowRobots}
+            ball={ball}
           />
 
           <div className="flex flex-1 h-full overflow-hidden">

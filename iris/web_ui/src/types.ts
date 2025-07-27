@@ -61,6 +61,11 @@ export type DetectionBall = {
   position_y: number; // mm
 };
 
+export type BallField = {
+  x: number;
+  y: number;
+};
+
 export type DetectionGeometry = {
   field_length: number;
   field_width: number;
