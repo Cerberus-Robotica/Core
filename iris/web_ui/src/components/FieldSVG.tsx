@@ -165,7 +165,7 @@ export function FieldSVG({
 
       {yellowRobots.map((robot) => {
         // Inverter a orientação para espelhar no eixo vertical
-        const adjustedOrientation = 180 - (robot.orientation ?? 0) - 90; // subtrai 90 para alinhar e inverte o ângulo
+        const adjustedOrientation = 90 - (robot.orientation ?? 0) ; // subtrai 90 para alinhar e inverte o ângulo
 
         return (
           <image
