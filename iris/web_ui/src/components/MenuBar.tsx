@@ -35,7 +35,7 @@ export function MenuBar({
                 <option disabled value="">
                   Escolha um software
                 </option>
-                <option value="ia">IA</option>
+                <option value="ia">Hades</option>
                 <option value="gc">Game Controller</option>
                 <option value="vision">Vision</option>
                 <option value="tartarus">Tartarus</option>

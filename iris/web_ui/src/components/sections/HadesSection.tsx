@@ -35,7 +35,7 @@ export default function IASection({ data }: Props) {
 
   return (
     <>
-      <h2 className="text-lg font-bold mb-1">IA</h2>
+      <h2 className="text-lg font-bold mb-1">Hades</h2>
       <p>
         Timestamp: <span className="font-mono">{data.vision.timestamp}</span>
       </p>

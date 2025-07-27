@@ -85,7 +85,7 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
       interval = setInterval(fetchData, 33);
     } else {
       // Se parar a leitura, pode resetar para initialData para evitar dados antigos
-      setData(initialData);
+      
     }
 
     return () => {

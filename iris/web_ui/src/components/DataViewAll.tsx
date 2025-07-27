@@ -3,7 +3,7 @@ import { useFetchLoop } from '../hooks/useFetchLoop';
 import type { DataType } from '../types';
 import { initialData } from '../data/initialData';
 
-import IASection from './sections/IASection';
+import IASection from './sections/HadesSection';
 import GCSection from './sections/GCSection';
 import VisionSection from './sections/VisionSection';
 import TartarusSection from './sections/TartarusSection';

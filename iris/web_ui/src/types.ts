@@ -119,3 +119,13 @@ export type DataType = {
   gc: GCType;
   tartarus: TartarusData;
 };
+
+// --- BackendData (estrutura parcial vinda do backend) ---
+export type BackendData = Partial<{
+  caronte: Partial<CaronteData>;
+  ia: Partial<IAData>;
+  vision: Partial<VisionData>;
+  gc: Partial<GCType>;
+  tartarus: Partial<TartarusData>;
+}>;
+

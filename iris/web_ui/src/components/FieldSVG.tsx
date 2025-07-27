@@ -1,6 +1,5 @@
 import type { FieldProps } from './FieldView';
 
-
 export type Robot = {
   id: number;
   x: number;
@@ -148,31 +147,40 @@ export function FieldSVG({
       />
 
       {/* Robôs azuis */}
-      {blueRobots.map((robot) => (
-        <image
-          key={`blue-${robot.id}`}
-          href={`/img/blue_team/id${robot.id}.png`}
-          x={robot.x - robotSize / 2}
-          y={robot.y - robotSize / 2}
-          width={robotSize}
-          height={robotSize}
-          transform={`rotate(${robot.orientation || 0}, ${robot.x}, ${robot.y})`}
-          pointerEvents="none"
-        />
-      ))}
+      {blueRobots.map((robot) => {
+        const adjustedOrientation = (robot.orientation ?? 0) - 90; // Ajusta conforme seu padrão
+        return (
+          <image
+            key={`blue-${robot.id}`}
+            href={`/img/blue_team/id${robot.id}.png`}
+            x={robot.x - robotSize / 2}
+            y={robot.y - robotSize / 2}
+            width={robotSize}
+            height={robotSize}
+            transform={`rotate(${adjustedOrientation}, ${robot.x}, ${robot.y})`}
+            pointerEvents="none"
+          />
+        );
+      })}
 
-      {yellowRobots.map((robot) => (
-        <image
-          key={`yellow-${robot.id}`}
-          href={`/img/yellow_team/id${robot.id}.png`}
-          x={robot.x - robotSize / 2}
-          y={robot.y - robotSize / 2}
-          width={robotSize}
-          height={robotSize}
-          transform={`rotate(${robot.orientation || 0}, ${robot.x}, ${robot.y})`}
-          pointerEvents="none"
-        />
-      ))}
+      {yellowRobots.map((robot) => {
+        // Inverter a orientação para espelhar no eixo vertical
+        const adjustedOrientation = 180 - (robot.orientation ?? 0) - 90; // subtrai 90 para alinhar e inverte o ângulo
+
+        return (
+          <image
+            key={`yellow-${robot.id}`}
+            href={`/img/yellow_team/id${robot.id}.png`}
+            x={robot.x - robotSize / 2}
+            y={robot.y - robotSize / 2}
+            width={robotSize}
+            height={robotSize}
+            transform={`rotate(${adjustedOrientation}, ${robot.x}, ${robot.y})`}
+            pointerEvents="none"
+          />
+        );
+      })}
+
       {/* Bola */}
       {ball && (
         <image
