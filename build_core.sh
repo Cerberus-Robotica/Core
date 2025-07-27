@@ -15,7 +15,10 @@ echo " Instalando Hades... 🐺"
 
 cd ../../hades && mkdir -p build && cd build && cmake .. && make -j4
 
-cd ../..iris/web_ui/src/backend/lcm_cpp_server/ &&\
+cd ../../iris/web_ui/ && yarn add -D vite &&\
+
+cd src/backend/lcm_cpp_server &&\
+
 mkdir -p build && cd build && cmake .. && make
 
 cd ../../../../../..

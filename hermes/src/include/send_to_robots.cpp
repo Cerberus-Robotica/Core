@@ -60,7 +60,8 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
     }
 
 
-
+    std::cout << "isteamyellow " << commands.isteamyellow() << std::endl;
+    std::cout << "han.data_tartarus_copy.team_blue " << (int)han.data_tartarus_copy.team_blue << std::endl;
 
     packet_grsim.mutable_commands()->CopyFrom(commands);
     std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
