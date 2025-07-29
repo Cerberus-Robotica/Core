@@ -20,6 +20,7 @@ class robots_sender {
         const char* port = "/dev/ttyUSB";
         uint8_t start[2] = {0xAA, 0xBB};
         uint8_t msg[sizeof(Pacote) + 2];
+        bool updated = false;
 };
 
 extern robots_sender sender;

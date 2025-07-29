@@ -18,6 +18,7 @@ class handler {
 
         data::ia data_ia_copy;
         data::tartarus data_tartarus_copy;
+        bool updated_tartarus = false;
     };
 
 extern handler han;

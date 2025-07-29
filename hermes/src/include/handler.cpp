@@ -17,4 +17,7 @@ void handler::handletartarus(const lcm::ReceiveBuffer* rbuf,
 
     this->data_tartarus_copy = *data_tartarus;
 
+    updated_tartarus = !updated_tartarus;
+
+    std::cout << "tartarus has been updated: " << std::boolalpha << updated_tartarus << std::endl;
 }

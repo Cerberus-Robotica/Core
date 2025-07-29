@@ -59,18 +59,14 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
         time_atual = han.data_tartarus_copy.team_blue;
     }
 
-
-    std::cout << "isteamyellow " << commands.isteamyellow() << std::endl;
-    std::cout << "han.data_tartarus_copy.team_blue " << (int)han.data_tartarus_copy.team_blue << std::endl;
-
     packet_grsim.mutable_commands()->CopyFrom(commands);
     std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
 
-    std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
+    //std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
     packet_grsim.SerializeAsString();
     std::string serialized_packet = packet_grsim.SerializeAsString();
     sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
-    std::cout << "Sending to grSim..." << std::endl;
+    std::cout << "Sending to grSim..." << std::endl << std::endl;
         
 
 }
@@ -134,8 +130,11 @@ void robots_sender::send_control() { // global function to send control commands
     control_obj.robot_id = 0; // Default robot ID via controller
     setupSocket_grsim();
     while(true) {
-        control_obj.connect_controller(); // Conecta o controle
-        while(han.data_tartarus_copy.bool_controller == 1 && SDL_NumJoysticks() < 1) { //only works with UI
+        if(han.updated_tartarus != sender.updated) {
+            sender.updated = !sender.updated;
+        }
+        //control_obj.connect_controller(); // Conecta o controle
+        while(han.data_tartarus_copy.bool_controller == 1 && control_obj.joy == nullptr) { //only works with UI
             control_obj.connect_controller(); // try to connect the controller
             std::cout << "trying to connect the controller..." << std::endl;
             sleep(1.0);
@@ -144,7 +143,12 @@ void robots_sender::send_control() { // global function to send control commands
         if (han.data_tartarus_copy.ssl_vision == 0) {
             close(serial_port);
             
-            while(han.data_tartarus_copy.ssl_vision == 0) {
+            while(han.data_tartarus_copy.ssl_vision == 0 && han.updated_tartarus == sender.updated) {
+                if(han.updated_tartarus != sender.updated) {
+                    sender.updated = !sender.updated;
+                }
+
+
 
                 if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
@@ -155,22 +159,26 @@ void robots_sender::send_control() { // global function to send control commands
                             r->vel_tang = pct.Vx;
                             r->vel_normal = pct.Vy;
                             r->vel_ang = pct.Vang;
-                            std::cout << "Robot ID: " << (int)control_obj.robot_id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                            std::cout << "Robot ID: " << (int)r->id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
                         }
                         else {
-                            //r->vel_tang = 0;
-                            //r->vel_normal = 0;
-                            //r->vel_ang = 0;
+                            r->vel_tang = 0;
+                            r->vel_normal = 0;
+                            r->vel_ang = 0;
                         }
                     }
                 }
 
                 send_to_grsim();
                 sleep(0.05); // Sleep for a short time to avoid flooding the network
+
             }
         } else {
             stm_connect();
-            while(han.data_tartarus_copy.ssl_vision == 1) {
+            while(han.data_tartarus_copy.ssl_vision == 1 && han.updated_tartarus == sender.updated) {
+                if(han.updated_tartarus != sender.updated) {
+                    sender.updated = !sender.updated;
+                }
                 if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
                 }
@@ -188,6 +196,7 @@ void robots_sender::send_control() { // global function to send control commands
             }
         }
         sleep(1); // Sleep for a while before sending again
+        
     }
     close(serial_port);
     close(sock_grsim);
