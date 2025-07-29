@@ -5,11 +5,17 @@
 extern std::mutex data_mutex;
 extern LatestData latest_data;
 
+LCMControl lcm_control;
+
 void Handler::handleGC(const lcm::ReceiveBuffer *, const std::string &, const gc_t *msg)
 {
     std::lock_guard<std::mutex> lock(data_mutex);
     msg_GC = *msg;
-    latest_data.team_blue = msg->team_blue;
+
+    if (lcm_control.team_blue_from_lcm) {
+        latest_data.team_blue = msg->team_blue;
+    }
+
     latest_data.designated_position_x = msg->designated_position_x;
     latest_data.designated_position_y = msg->designated_position_y;
     latest_data.current_command = msg->current_command;
@@ -18,6 +24,32 @@ void Handler::handleGC(const lcm::ReceiveBuffer *, const std::string &, const gc
     latest_data.blue = msg->blue;
     latest_data.yellow = msg->yellow;
 }
+
+void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, const tartarus_t *msg)
+{
+    std::lock_guard<std::mutex> lock(data_mutex);
+    msg_tartarus = *msg;
+
+    if (lcm_control.goalkeeper_id_from_lcm) {
+        if (msg_GC.blue.name == "Cerberus") {
+            latest_data.team_blue_status = true;
+            latest_data.blue.goalkeeper_id = msg->goalkeeper_id;
+        } else if (msg_GC.yellow.name == "Cerberus") {
+            latest_data.team_blue_status = false;
+            latest_data.yellow.goalkeeper_id = msg->goalkeeper_id;
+        } else {
+            latest_data.team_blue_status = true;
+            latest_data.blue.goalkeeper_id = msg->goalkeeper_id;
+        }
+    }
+
+    latest_data.ssl_vision = msg->ssl_vision;
+    latest_data.competition_mode = msg->competition_mode;
+    latest_data.bool_controller = msg->bool_controller;
+    latest_data.stm_port = msg->stm_port;
+    latest_data.controller_port = msg->controller_port;
+}
+
 
 void Handler::handleVision(const lcm::ReceiveBuffer *, const std::string &, const vision_t *msg)
 {
@@ -43,35 +75,6 @@ void Handler::handleVision(const lcm::ReceiveBuffer *, const std::string &, cons
 
     latest_data.balls = msg->balls;
     latest_data.field = msg->field;
-}
-
-
-void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, const tartarus_t *msg)
-{
-    std::lock_guard<std::mutex> lock(data_mutex);
-    msg_tartarus = *msg;
-
-    if (msg_GC.blue.name == "Cerberus")
-    {
-        latest_data.team_blue_status = true;
-        latest_data.blue.goalkeeper_id = msg->goalkeeper_id;
-    }
-    else if (msg_GC.yellow.name == "Cerberus")
-    {
-        latest_data.team_blue_status = false;
-        latest_data.yellow.goalkeeper_id = msg->goalkeeper_id;
-    }
-    else
-    {
-        latest_data.team_blue_status = true;
-        latest_data.blue.goalkeeper_id = msg->goalkeeper_id;
-    }
-
-    latest_data.ssl_vision = msg->ssl_vision;
-    latest_data.competition_mode = msg->competition_mode;
-    latest_data.bool_controller = msg->bool_controller;
-    latest_data.stm_port = msg->stm_port;
-    latest_data.controller_port = msg->controller_port;
 }
 
 void Handler::handleIA(const lcm::ReceiveBuffer *, const std::string &, const ia_t *msg)

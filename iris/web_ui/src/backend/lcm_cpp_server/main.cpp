@@ -7,6 +7,8 @@
 #include <iostream>
 #include "handlers/handlers.hpp"
 
+extern LCMControl lcm_control;
+
 lcm::LCM global_lcm; // LCM para publicar comandos
 
 // ======= Dados Compartilhados =======
@@ -169,44 +171,58 @@ int main()
 
         return crow::response{data}; });
 
+    // POST /command — recebe comandos para atualizar valores manualmente
     CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req)
-                                                       {
+    {
         auto body = crow::json::load(req.body);
-        if (!body) {
+        if (!body)
+        {
             std::cerr << "JSON inválido: " << req.body << std::endl;
             return crow::response(400, "JSON inválido");
         }
 
         std::lock_guard<std::mutex> lock(data_mutex);
 
-        try {
-            std::cout << "JSON recebido: " << req.body << std::endl;
-
-            if (body.has("team_blue")) {
-                if (body["team_blue"].t() == crow::json::type::True) {
+        try
+        {
+            // Atualiza team_blue manualmente e desativa fonte LCM
+            if (body.has("team_blue"))
+            {
+                if (body["team_blue"].t() == crow::json::type::True)
+                {
                     latest_data.team_blue = true;
-                    std::cout << "[POST] team_blue atualizado para azul" << std::endl;
-                } else if (body["team_blue"].t() == crow::json::type::False) {
+                    lcm_control.team_blue_from_lcm = false;
+                    std::cout << "[POST] team_blue atualizado manualmente para azul\n";
+                }
+                else if (body["team_blue"].t() == crow::json::type::False)
+                {
                     latest_data.team_blue = false;
-                    std::cout << "[POST] team_blue atualizado para amarelo" << std::endl;
-                } else {
-                    std::cerr << "[ERRO] Valor inválido para team_blue (esperado booleano)" << std::endl;
+                    lcm_control.team_blue_from_lcm = false;
+                    std::cout << "[POST] team_blue atualizado manualmente para amarelo\n";
+                }
+                else
+                {
+                    std::cerr << "[ERRO] Valor inválido para team_blue (esperado booleano)\n";
                 }
             }
 
-
-            if (body.has("goalkeeper_id") && body["goalkeeper_id"].t() == crow::json::type::Number) {
+            // Atualiza goalkeeper_id manualmente e desativa fonte LCM
+            if (body.has("goalkeeper_id") && body["goalkeeper_id"].t() == crow::json::type::Number)
+            {
                 int id = body["goalkeeper_id"].i();
-                if (latest_data.team_blue) {
+                lcm_control.goalkeeper_id_from_lcm = false;
+
+                if (latest_data.team_blue)
+                {
                     latest_data.blue.goalkeeper_id = id;
-                    std::cout << "[POST] goalkeeper_id AZUL atualizado para " << id << std::endl;
-                } else {
-                    latest_data.yellow.goalkeeper_id = id;
-                    std::cout << "[POST] goalkeeper_id AMARELO atualizado para " << id << std::endl;
                 }
+                else
+                {
+                    latest_data.yellow.goalkeeper_id = id;
+                }
+                std::cout << "[POST] goalkeeper_id atualizado manualmente para " << id << std::endl;
             }
 
-            // Extras
             if (body.has("ssl_vision") && (body["ssl_vision"].t() == crow::json::type::True || body["ssl_vision"].t() == crow::json::type::False)) {
                 latest_data.ssl_vision = body["ssl_vision"].b();
                 std::cout << "[POST] ssl_vision atualizado para " << (latest_data.ssl_vision ? "true" : "false") << std::endl;
@@ -228,7 +244,7 @@ int main()
                 std::cout << "[POST] controller_port atualizado para " << latest_data.controller_port << std::endl;
             }
 
-            // ===== PUBLICAÇÃO TARTARUS =====
+            // Publicar mensagem tartarus no LCM
             data::tartarus msg;
             msg.ssl_vision = latest_data.ssl_vision;
             msg.competition_mode = latest_data.competition_mode;
@@ -236,17 +252,19 @@ int main()
             msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;
             msg.stm_port = latest_data.stm_port;
             msg.controller_port = latest_data.controller_port;
+            msg.team_blue = latest_data.team_blue;
 
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
-
-
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception &e)
+        {
             std::cerr << "Erro ao processar POST: " << e.what() << std::endl;
             return crow::response(500, "Erro interno");
         }
 
-        return crow::response(200, "Comando recebido com sucesso"); });
+        return crow::response(200, "Comando recebido com sucesso");
+    });
 
     app.port(5000).multithreaded().run();
     lcm_thread.join();

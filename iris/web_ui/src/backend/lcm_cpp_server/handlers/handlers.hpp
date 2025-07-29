@@ -45,6 +45,13 @@ struct LatestData {
     int16_t controller_port = 0;
 };
 
+struct LCMControl {
+    bool goalkeeper_id_from_lcm = true;
+    bool team_blue_from_lcm = true;
+};
+
+extern LCMControl lcm_control;
+
 extern LatestData latest_data;
 extern std::mutex data_mutex;
 
