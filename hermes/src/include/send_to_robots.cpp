@@ -127,7 +127,6 @@ void robots_sender::stm_connect() { // function to send data to the robots via S
 }
 
 void robots_sender::send_control() { // global function to send control commands
-    control_obj.robot_id = 0; // Default robot ID via controller
     setupSocket_grsim();
     while(true) {
         if(han.updated_tartarus != sender.updated) {
@@ -156,10 +155,10 @@ void robots_sender::send_control() { // global function to send control commands
                     for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
                         data::robot* r = &han.data_ia_copy.robots[i];
                         if (r->id == control_obj.robot_id) {
-                            r->vel_tang = pct.Vx;
-                            r->vel_normal = pct.Vy;
+                            r->vel_tang = pct.Vy;
+                            r->vel_normal = pct.Vx;
                             r->vel_ang = pct.Vang;
-                            std::cout << "Robot ID: " << (int)r->id << " Vx: " << r->vel_tang << " Vy: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                            std::cout << "Controlled robot - " << "Robot ID: " << (int)r->id << " Vy: " << r->vel_tang << " Vx: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
                         }
                         else {
                             r->vel_tang = 0;
@@ -181,6 +180,7 @@ void robots_sender::send_control() { // global function to send control commands
                 }
                 if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
+                    pct.id = control_obj.robot_id; // Use the current robot ID from the controller
                 }
                 else {
                     pct.id = han.data_ia_copy.robots[0].id;
@@ -189,7 +189,7 @@ void robots_sender::send_control() { // global function to send control commands
                     pct.Vang = han.data_ia_copy.robots[0].vel_ang;
                     pct.kicker = han.data_ia_copy.robots[0].kick_speed_x;
                 }
-                std::cout << "Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
+                std::cout << "Controlled robot - Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
                 memcpy(&msg[2], &pct, sizeof(Pacote));
                 write(serial_port, msg, sizeof(msg));
                 usleep(5000);

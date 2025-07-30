@@ -11,7 +11,7 @@ public:
     float normalizeAxis(int16_t value) {
         const float deadzone = 8000; //define 8000 as threshold for deadzone
         if (std::abs(value) < deadzone) return 0.0f; // abs(value) returns value in module, if within deadzone, return 0, no movement
-        return value / 10000.0f; // Normalize to range [-(32768.0/10000.0), 32767.0/10000.0] <-- velocity range
+        return value / 32.0f; // Normalize to range [-(32768.0/10000.0), 32767.0/10000.0] <-- velocity range
     }
 
     void control();
@@ -20,7 +20,7 @@ public:
     SDL_Event e;
     SDL_Joystick* joy;
 
-    int robot_id; // Variable to store the current robot ID
+    int robot_id = 0; // Variable to store the current robot ID
     bool try_connect; // Variable to control connection attempts
 };
 

@@ -25,13 +25,13 @@ void controller::control() {
     if (e.type == SDL_JOYAXISMOTION) {
         switch (e.jaxis.axis) {
             case 0: // Analógico esquerdo - eixo X
-                pct.Vy = -normalizeAxis(e.jaxis.value); // Direita = +1.0 (invertido)
+                pct.Vx = -normalizeAxis(e.jaxis.value); // right and left
                 break;
             case 1: // Analógico esquerdo - eixo Y
-                pct.Vx = -normalizeAxis(e.jaxis.value); // Cima = +1.0 
+                pct.Vy = -normalizeAxis(e.jaxis.value); // up and down
                 break;
             case 3: // Analógico direito - eixo X
-                pct.Vang = -normalizeAxis(e.jaxis.value); // Direita = -1.0
+                pct.Vang = -normalizeAxis(e.jaxis.value); // right and left (YAW)
                 break;
             default:
                 break;
