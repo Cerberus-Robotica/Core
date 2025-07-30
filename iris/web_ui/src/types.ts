@@ -82,6 +82,10 @@ export type DetectionGeometry = {
   max_robot_radius: number;
 };
 
+export type FieldDimensions = {
+  [key: string]: DetectionGeometry;
+}
+
 export type VisionData = {
   timestamp: number;
   robots_yellow: DetectionRobot[];

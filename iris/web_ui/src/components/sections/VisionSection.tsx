@@ -28,9 +28,6 @@ export default function VisionSection({ data }: Props) {
   return (
     <>
       <h2 className="text-lg font-bold mb-1">Vision</h2>
-      <p>
-        Timestamp: <span className="font-mono">{data.vision.timestamp}</span>
-      </p>
 
       <h3 className="text-md font-semibold mt-2">Bola</h3>
       {data.vision.balls ? (

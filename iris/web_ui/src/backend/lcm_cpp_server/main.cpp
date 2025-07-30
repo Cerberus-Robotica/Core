@@ -173,7 +173,7 @@ int main()
 
     // POST /command — recebe comandos para atualizar valores manualmente
     CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req)
-    {
+                                                       {
         auto body = crow::json::load(req.body);
         if (!body)
         {
@@ -210,6 +210,8 @@ int main()
             if (body.has("goalkeeper_id") && body["goalkeeper_id"].t() == crow::json::type::Number)
             {
                 int id = body["goalkeeper_id"].i();
+
+                // Bloqueia updates pelo LCM para goalkeeper_id
                 lcm_control.goalkeeper_id_from_lcm = false;
 
                 if (latest_data.team_blue)
@@ -222,6 +224,9 @@ int main()
                 }
                 std::cout << "[POST] goalkeeper_id atualizado manualmente para " << id << std::endl;
             }
+
+
+
 
             if (body.has("ssl_vision") && (body["ssl_vision"].t() == crow::json::type::True || body["ssl_vision"].t() == crow::json::type::False)) {
                 latest_data.ssl_vision = body["ssl_vision"].b();
@@ -254,6 +259,13 @@ int main()
             msg.controller_port = latest_data.controller_port;
             msg.team_blue = latest_data.team_blue;
 
+            std::cout << "[POST] Enviando goalkeeper_id: " << msg.goalkeeper_id << " para time "
+          << (latest_data.team_blue ? "blue" : "yellow") << std::endl;
+          std::cout << "[handleTartarus] goal_keeper_id_from_lcm: " << lcm_control.goalkeeper_id_from_lcm 
+          << ", goal_keeper_id recebido do LCM: " << msg.goalkeeper_id << std::endl;
+
+
+
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
         }
@@ -263,8 +275,10 @@ int main()
             return crow::response(500, "Erro interno");
         }
 
-        return crow::response(200, "Comando recebido com sucesso");
-    });
+        crow::response res("{\"status\":\"ok\"}");
+        res.code = 200;
+        res.add_header("Content-Type", "application/json");
+        return res; });
 
     app.port(5000).multithreaded().run();
     lcm_thread.join();

@@ -8,15 +8,20 @@ import GCSection from './sections/GCSection';
 import VisionSection from './sections/VisionSection';
 import TartarusSection from './sections/TartarusSection';
 import CaronteSection from './sections/CaronteSection';
+import FieldSection from './sections/FieldSection';
 
 import { sendPost } from '../hooks/useSendPost';
 
 type Props = {
   reading: boolean;
   selected: keyof DataType;
+  flipField: boolean;
+  receptDimensions: boolean;
+  setFlipField: React.Dispatch<React.SetStateAction<boolean>>;
+  setReceptDimensions: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function DataViewAll({ reading, selected }: Props) {
+export function DataViewAll({ reading, selected, flipField, setFlipField, receptDimensions, setReceptDimensions }: Props) {
   const data = useFetchLoop(reading, initialData);
 
   const toggleBoolean = async (key: string, currentValue: boolean) => {
@@ -46,9 +51,14 @@ export function DataViewAll({ reading, selected }: Props) {
         data={data}
         updateNumber={updateNumber}
         toggleBoolean={toggleBoolean}
+        flipField={flipField}
+        setFlipField={setFlipField}
+        receptDimensions={receptDimensions}
+        setReceptDimensions={setReceptDimensions}
       />
     ),
     caronte: <CaronteSection data={data} />,
+    field: <FieldSection data={data} />,
   };
 
   return (

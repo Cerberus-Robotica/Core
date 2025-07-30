@@ -9,9 +9,10 @@ export type FieldProps = {
   blueRobots?: Robot[];
   yellowRobots?: Robot[];
   ball?: BallField;
+  flipField: boolean;
 };
 
-export function FieldView({ dimensions, blueRobots = [], yellowRobots = [], ball }: FieldProps) {
+export function FieldView({ dimensions, blueRobots = [], yellowRobots = [], ball, flipField }: FieldProps) {
   return (
     <div
       className="h-full flex justify-center items-center bg-[#3B3B3B]"
@@ -35,6 +36,7 @@ export function FieldView({ dimensions, blueRobots = [], yellowRobots = [], ball
           blueRobots={blueRobots}
           yellowRobots={yellowRobots}
           ball={ball}
+          flipField={flipField}
         />
       </div>
     </div>

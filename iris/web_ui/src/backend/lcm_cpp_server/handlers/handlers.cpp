@@ -21,14 +21,31 @@ void Handler::handleGC(const lcm::ReceiveBuffer *, const std::string &, const gc
     latest_data.current_command = msg->current_command;
     latest_data.game_event = msg->game_event;
 
-    latest_data.blue = msg->blue;
-    latest_data.yellow = msg->yellow;
+    // Atualiza blue, exceto goalkeeper_id se desabilitado para LCM
+    latest_data.blue.name = msg->blue.name;
+    latest_data.blue.score = msg->blue.score;
+    latest_data.blue.fouls = msg->blue.fouls;
+    if (lcm_control.goalkeeper_id_from_lcm) {
+        latest_data.blue.goalkeeper_id = msg->blue.goalkeeper_id;
+    }
+
+    // Atualiza yellow, exceto goalkeeper_id se desabilitado para LCM
+    latest_data.yellow.name = msg->yellow.name;
+    latest_data.yellow.score = msg->yellow.score;
+    latest_data.yellow.fouls = msg->yellow.fouls;
+    if (lcm_control.goalkeeper_id_from_lcm) {
+        latest_data.yellow.goalkeeper_id = msg->yellow.goalkeeper_id;
+    }
 }
+
 
 void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, const tartarus_t *msg)
 {
     std::lock_guard<std::mutex> lock(data_mutex);
     msg_tartarus = *msg;
+
+    std::cout << "[handleTartarus] goal_keeper_id_from_lcm: " << lcm_control.goalkeeper_id_from_lcm
+            << ", goal_keeper_id recebido do LCM: " << msg->goalkeeper_id << std::endl;
 
     if (lcm_control.goalkeeper_id_from_lcm) {
         if (msg_GC.blue.name == "Cerberus") {

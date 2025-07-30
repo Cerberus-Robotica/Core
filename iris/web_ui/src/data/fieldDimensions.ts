@@ -1,6 +1,8 @@
 // src/data/fieldDimensions.ts
 
-export const FIELD_DIMENSIONS = {
+import type { FieldDimensions } from "../types";
+
+export const FIELD_DIMENSIONS: FieldDimensions = {
   'Entry Level': {
     field_length: 4500,
     field_width: 3000,

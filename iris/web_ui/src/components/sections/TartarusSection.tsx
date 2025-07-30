@@ -3,16 +3,18 @@ import type { DataType } from '../../types';
 
 type Props = {
   data: DataType;
-  toggleBoolean: (key: string, currentValue: boolean) => void;
   updateNumber: (key: string, value: number) => void;
+  toggleBoolean: (key: string, currentValue: boolean) => void;
+  flipField: boolean;
+  receptDimensions: boolean;
+  setFlipField: React.Dispatch<React.SetStateAction<boolean>>;
+  setReceptDimensions: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // Wrapper padrão de linha
 function RowWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-4 flex items-center justify-between">
-      {children}
-    </div>
+    <div className="mb-4 flex items-center justify-between">{children}</div>
   );
 }
 
@@ -38,9 +40,15 @@ export default function TartarusSection({
   data,
   toggleBoolean,
   updateNumber,
+  setFlipField,
+  flipField,
+  setReceptDimensions,
+  receptDimensions,
 }: Props) {
   const [stmPort, setStmPort] = useState(data.tartarus.stm_port);
-  const [controllerPort, setControllerPort] = useState(data.tartarus.controller_port);
+  const [controllerPort, setControllerPort] = useState(
+    data.tartarus.controller_port,
+  );
 
   return (
     <>
@@ -48,7 +56,10 @@ export default function TartarusSection({
 
       <RowWrapper>
         <p>
-          SSL Vision: <span className="font-mono">{data.tartarus.ssl_vision ? 'Sim' : 'Não'}</span>
+          SSL Vision:{' '}
+          <span className="font-mono">
+            {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
+          </span>
         </p>
         <ActionButton
           onClick={() => toggleBoolean('ssl_vision', data.tartarus.ssl_vision)}
@@ -58,27 +69,40 @@ export default function TartarusSection({
 
       <RowWrapper>
         <p>
-          Modo Competição: <span className="font-mono">{data.tartarus.competition_mode ? 'Sim' : 'Não'}</span>
+          Modo Competição:{' '}
+          <span className="font-mono">
+            {data.tartarus.competition_mode ? 'Sim' : 'Não'}
+          </span>
         </p>
         <ActionButton
-          onClick={() => toggleBoolean('competition_mode', data.tartarus.competition_mode)}
+          onClick={() =>
+            toggleBoolean('competition_mode', data.tartarus.competition_mode)
+          }
           label="Alternar"
         />
       </RowWrapper>
 
       <RowWrapper>
         <p>
-          Modo Controller: <span className="font-mono">{data.tartarus.bool_controller ? 'Sim' : 'Não'}</span>
+          Modo Controller:{' '}
+          <span className="font-mono">
+            {data.tartarus.bool_controller ? 'Sim' : 'Não'}
+          </span>
         </p>
         <ActionButton
-          onClick={() => toggleBoolean('bool_controller', data.tartarus.bool_controller)}
+          onClick={() =>
+            toggleBoolean('bool_controller', data.tartarus.bool_controller)
+          }
           label="Alternar"
         />
       </RowWrapper>
 
       <RowWrapper>
         <p>
-          Time Azul: <span className="font-mono">{data.tartarus.team_blue ? 'Sim' : 'Não'}</span>
+          Time Azul:{' '}
+          <span className="font-mono">
+            {data.tartarus.team_blue ? 'Sim' : 'Não'}
+          </span>
         </p>
       </RowWrapper>
 
@@ -114,6 +138,24 @@ export default function TartarusSection({
             label="Alterar"
           />
         </div>
+      </RowWrapper>
+
+      <h2 className="text-lg font-bold mb-4">Campo</h2>
+
+      <RowWrapper>
+        <p>Orientação do Campo:</p>
+        <ActionButton
+          onClick={() => setFlipField(!flipField)} // precisa passar o estado atual para o pai, invertido
+          label={flipField ? 'Normal' : 'Inverter'}
+        />
+      </RowWrapper>
+
+      <RowWrapper>
+        <p>Dimensões do Campo:</p>
+        <ActionButton
+          onClick={() => setReceptDimensions(!receptDimensions)} // precisa passar o estado atual para o pai, invertido
+          label={receptDimensions ? 'Fixas' : 'SSL-Vision'}
+        />
       </RowWrapper>
     </>
   );
