@@ -30,10 +30,10 @@ Rodar os executáveis (com o terminal aberto na pasta principal)
 
 Para rodar apenas o Hades, Hermes, Caronte e Íris:
 
-	./run_ALL_our.sh
+	./run.sh
  ou, para rodar com o GrSim e o Game-Controller:
  
- 	./run_ALL.sh
+ 	./run_with_simulator.sh
 
 	
 OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
