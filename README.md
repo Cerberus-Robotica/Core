@@ -36,8 +36,6 @@ Para rodar apenas o Hades, Hermes, Caronte e Íris:
  	./run_with_simulator.sh
 
 	
-OBS: Rodar o main.py pelo VS code diminui em 15Hz a taxa de atualização do software em comparação com o terminal do linux, além de que o VS code consome uma RAM desgraçada.
-
 ## Rodar os softwares da SSL
 
 ### [Grsim](https://github.com/RoboCup-SSL/grSim):
