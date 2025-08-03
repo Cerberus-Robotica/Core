@@ -6,7 +6,7 @@
 
 Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, porém instale as dependências deles em seu dispostivo.
 
-Utilize Docker para rodar os softwares da competição(comandos em [Rodar os softwares da SSL](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl));
+Utilize Docker para rodar os softwares da competição(comandos em [Rodar os softwares da SSL](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl) para rodar manualmente);
 
 Tutorial de instalação da bilioteca Docker e de todos os softwares da SSL utilizados nesse framework em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
 	
@@ -15,8 +15,6 @@ Instalar dependências:
 
 	./install_packages.sh
 		
-Caso enfrente problemas na hora de buildar o software relacionado à biblioteca LCM, dê uma olhada em "Programação/Frameworks da SSL/Erros de software e biblioteca".
-
 
 ### Segundo(construir o framework):
 
