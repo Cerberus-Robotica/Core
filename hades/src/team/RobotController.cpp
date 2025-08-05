@@ -58,95 +58,6 @@ void RobotController::loop() {
 
 
 
-std::vector<std::vector<double>> RobotController::find_trajectory(double start[2], double goal[2], bool avoid_ball = true) {
-    //goal[0] = 7261.12;
-    //goal[1] = -2280.79;
-    C_trajectory pf(false, false, 0, 100, 50, 0, mWorld.boundariesMinor, mWorld.boundariesMajor);
-    std::vector<double> double_start = {start[0], start[1]};
-    std::vector<double> double_goal = {goal[0], goal[1]};
-
-    std::vector<Circle> obs_circular = {};
-    std::vector<Rectangle> obs_rectangular = {};
-    Rectangle r({0, 0}, {0, 0});
-    //rectangle r = field.their_defense_area;
-    //obs_rectangular.push_back(r);
-
-    //add static ball to obstacles according to avoidance radius
-    if (avoid_ball) {
-        Circle c({mWorld.ball_pos[0], mWorld.ball_pos[1]}, mBall_avoidance_radius + mRadius);
-        obs_circular.push_back(c);
-    }
-
-    //add static allies to obstacles
-    for (int i = 0; i < size(mWorld.allies) ; i++) {
-        if (!mWorld.allies[i].detected || i == mId) {
-            continue;
-        }
-        Circle c({mWorld.allies[i].pos[0], mWorld.allies[i].pos[1]}, mRadius);
-        obs_circular.push_back(c);
-    }
-
-    //add static enemies to obstacles
-    for (int i = 0; i < size(mWorld.enemies) ; i++) {
-        if (!mWorld.enemies[i].detected) {
-            continue;
-        }
-        Circle c({mWorld.enemies[i].pos[0], mWorld.enemies[i].pos[1]}, mRadius);
-        obs_circular.push_back(c);
-    }
-
-    if (mTeam->roles[mId] != TeamInfo::goal_keeper) {
-        Rectangle r({mWorld.our_defese_area[0][0] - mRadius, mWorld.our_defese_area[0][1] - mRadius}, {mWorld.our_defese_area[1][0] + mRadius, mWorld.our_defese_area[1][1] + mRadius});
-        obs_rectangular.push_back(r);
-    }
-
-
-    r.minor = {mWorld.their_defese_area[0][0] - mRadius, mWorld.their_defese_area[0][1] - mRadius};
-    r.major = {mWorld.their_defese_area[1][0] + mRadius, mWorld.their_defese_area[1][1] + mRadius};
-    obs_rectangular.push_back(r);
-
-
-    //goal fisical barrier
-
-    r.minor = {mWorld.back_fisical_left_goal[0][0] - mRadius, mWorld.back_fisical_left_goal[0][1] - mRadius};
-    r.major = {mWorld.back_fisical_left_goal[1][0] - mRadius, mWorld.back_fisical_left_goal[1][1] + mRadius};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.left_fisical_left_goal[0][0] - mRadius, mWorld.left_fisical_left_goal[0][1] - mRadius};
-    r.major = {mWorld.left_fisical_left_goal[1][0] - mRadius, mWorld.left_fisical_left_goal[1][1] - mRadius};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.right_fisical_left_goal[0][0] - mRadius, mWorld.right_fisical_left_goal[0][1] + mRadius};
-    r.major = {mWorld.right_fisical_left_goal[1][0] - mRadius, mWorld.right_fisical_left_goal[1][1] + mRadius};
-    obs_rectangular.push_back(r);
-
-
-    r.minor = {mWorld.back_fisical_right_goal[0][0] + mRadius, mWorld.back_fisical_right_goal[0][1] - mRadius};
-    r.major = {mWorld.back_fisical_right_goal[1][0] + mRadius, mWorld.back_fisical_right_goal[1][1] + mRadius};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.left_fisical_right_goal[0][0] + mRadius, mWorld.left_fisical_right_goal[0][1] - mRadius};
-    r.major = {mWorld.left_fisical_right_goal[1][0] + mRadius, mWorld.left_fisical_right_goal[1][1] - mRadius};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.right_fisical_right_goal[0][0] + mRadius, mWorld.right_fisical_right_goal[0][1] + mRadius};
-    r.major = {mWorld.right_fisical_right_goal[1][0] + mRadius, mWorld.right_fisical_right_goal[1][1] + mRadius};
-    obs_rectangular.push_back(r);
-
-    r.minor = {mWorld.outside_field_x_minus[0][0], mWorld.outside_field_x_minus[0][1]};
-    r.major = {mWorld.outside_field_x_minus[1][0], mWorld.outside_field_x_minus[1][1]};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.outside_field_x_plus[0][0], mWorld.outside_field_x_plus[0][1]};
-    r.major = {mWorld.outside_field_x_plus[1][0], mWorld.outside_field_x_plus[1][1]};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.outside_field_y_minus[0][0], mWorld.outside_field_y_minus[0][1]};
-    r.major = {mWorld.outside_field_y_minus[1][0], mWorld.outside_field_y_minus[1][1]};
-    obs_rectangular.push_back(r);
-    r.minor = {mWorld.outside_field_y_plus[0][0], mWorld.outside_field_y_plus[0][1]};
-    r.major = {mWorld.outside_field_y_plus[1][0], mWorld.outside_field_y_plus[1][1]};
-    obs_rectangular.push_back(r);
-
-    auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
-
-    return trajectory;
-}
-
 
 std::vector<std::vector<double>> RobotController::find_ball_trajectory(double start[2], double goal[2]) {
     C_trajectory pf(false, false, 0, 1000, 300, 0, mWorld.boundariesMinor, mWorld.boundariesMajor);
@@ -169,155 +80,8 @@ std::vector<std::vector<double>> RobotController::find_ball_trajectory(double st
 }
 
 
-std::vector<double> RobotController::motion_planner(std::vector<std::vector<double>> trajectory) {
-    for (auto i : trajectory) {
-        break;
-        std::cout << i[0] << ", " << i[1] << std::endl;
-    }
-    std::vector<double> delta = {trajectory[1][0] - mpos[0], trajectory[1][1] - mpos[1]};
-    double dist = norm(delta) / 1000.0; // metros
-    std::vector<double> direction = normalize(1, delta);
-
-    double curve_safe_speed = mVxy_min;
-    double v_target_magnitude = mVxy_max;
-    if (trajectory.size() > 2) {
-        std::vector<double> p0 = {mpos[0], mpos[1]};
-        std::vector<double> p1 = {trajectory[1][0], trajectory[1][1]};
-        std::vector<double> p2 = {trajectory[2][0], trajectory[2][1]};
-
-        std::vector<double> v1 = {p1[0] - p0[0], p1[1] - p0[1]};
-        std::vector<double> v2 = {p2[0] - p1[0], p2[1] - p1[1]};
-
-        double dot_product = v1[0] * v2[0] + v1[1] * v2[1];
-        double norm_v1 = sqrt(v1[0]*v1[0] + v1[1]*v1[1]);
-        double norm_v2 = sqrt(v2[0]*v2[0] + v2[1]*v2[1]);
-        double angle_between = acos(std::clamp(dot_product / (norm_v1 * norm_v2 + 1e-6), -1.0, 1.0));
-
-        double chord_length = sqrt(pow(p2[0] - p0[0], 2) + pow(p2[1] - p0[1], 2)); // mm
-        chord_length /= 1000.0; // Para metros
-
-        double radius = chord_length / (2.0 * sin(std::max(angle_between/2, 1e-3)));
-        radius = std::max(radius, 0.05);
-        curve_safe_speed = sqrt(mA_xy_max * radius)/4;
-        curve_safe_speed = std::clamp(curve_safe_speed, mVxy_min, mVxy_max);
-
-        if (angle_between > 70.0 * M_PI / 180.0) {
-            curve_safe_speed = mVxy_min;
-        }
-
-    }
-
-    double current_speed = sqrt(mvel[0]*mvel[0] + mvel[1]*mvel[1]);
-
-    double brake_distance = (mVxy_max*mVxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * mA_xy_brake);
-    brake_distance = std::max(brake_distance, 0.0);
-    if (dist <= brake_distance) {
-        v_target_magnitude = curve_safe_speed;
-    } else {
-        v_target_magnitude = mVxy_max;
-    }
-
-    v_target_magnitude = std::clamp(v_target_magnitude, -mVxy_max, mVxy_max);
-    std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
-    std::vector<double> error = {v_target[0] - mlast_target_vel[0], v_target[1] - mlast_target_vel[1]};
-    std::vector<double> acceleration = {0, 0};
-
-    if (fabs(v_target[0]) > fabs(mlast_target_vel[0])) {
-        acceleration[0] = std::clamp(error[0] / mDelta_time, -mA_xy_max, mA_xy_max);
-    } else {
-        acceleration[0] = std::clamp(error[0] / mDelta_time, -mA_xy_brake, mA_xy_brake);
-    }
-
-    if (fabs(v_target[1]) > fabs(mlast_target_vel[1])) {
-        acceleration[1] = std::clamp(error[1] / mDelta_time, -mA_xy_max, mA_xy_max);
-    } else {
-        acceleration[1] = std::clamp(error[1] / mDelta_time, -mA_xy_brake, mA_xy_brake);
-    }
 
 
-    std::vector<double> vel_cmd = {mlast_target_vel[0] + acceleration[0]*mDelta_time, mlast_target_vel[1] + acceleration[1]*mDelta_time};
-    if (norm(vel_cmd) > mVxy_max) {
-        vel_cmd = normalize(mVxy_max, vel_cmd);
-    }
-
-    if (isnan(vel_cmd[0])) vel_cmd[0] = 0;
-    if (isnan(vel_cmd[1])) vel_cmd[1] = 0;
-
-    mlast_target_vel[0] = vel_cmd[0];
-    mlast_target_vel[1] = vel_cmd[1];
-    return vel_cmd;
-}
-
-
-
-std::vector<double> RobotController::motion_control(std::vector<double> v_vet) {
-    const double ang = -myaw;
-    double x = v_vet[0];
-    double y = v_vet[1];
-    v_vet = {x * cos(ang) - y * sin(ang), x * sin(ang) + y * cos(ang)};
-    return v_vet;
-}
-
-void RobotController::move_to(double goal[2], bool avoid_ball = true) {
-
-    if (sqrt(pow(goal[0] - mpos[0], 2) + pow(goal[1] - mpos[1], 2)) < mStatic_position_tolarance) {
-        mtarget_vel[0] = 0;
-        mtarget_vel[1] = 0;
-        mtarget_vyaw = 0;
-        mPositioned = true;
-        mTeam->positioned[mId] = true;
-        return;
-    }
-    mPositioned = false;
-    mTeam->positioned[mId] = false;
-    std::vector<double> v_vet;
-    auto trajectory = find_trajectory(mpos, goal, avoid_ball);
-    size(trajectory) > 0 ? v_vet = motion_planner(trajectory) : v_vet = {0, 0};
-
-    v_vet = motion_control(v_vet);
-
-    mtarget_vel[0] = v_vet[0];
-    mtarget_vel[1] = v_vet[1];
-}
-
-double RobotController::find_angle_error(double goal[2]) {
-    double theta_final = atan2(goal[1] - mpos[1], goal[0] - mpos[0]);
-    double orientation = myaw;
-    double delta = theta_final - orientation;
-    if (delta > M_PI) delta -= 2 * M_PI;
-    if (delta < -M_PI) delta += 2 * M_PI;
-    return delta;
-}
-
-double RobotController::turn_control(double delta) {
-    double P = mKP_ang * delta;
-    mI_ang = mI_ang + delta*mDelta_time*mKI_ang;
-    double D = (delta-mLast_delta)*mKD_ang;
-    //std::cout << P << ", " << I_ang << ", " << D << std::endl;
-    double PID_vyaw = P + mI_ang + D;
-
-    mLast_delta = delta;
-
-    if (fabs(PID_vyaw) > mVyaw_max) {
-        PID_vyaw = mVyaw_max*PID_vyaw/fabs(PID_vyaw);
-    };
-    if (fabs(PID_vyaw) < mVyaw_min && fabs(PID_vyaw) != 0) {
-        PID_vyaw = mVyaw_min*PID_vyaw/fabs(PID_vyaw);
-    }
-    return PID_vyaw;
-}
-
-
-void RobotController::turn_to(double goal[2]) {
-    double delta = find_angle_error(goal);
-    if (fabs(delta) < mStatic_angle_tolarance) {
-        mtarget_vyaw = 0;
-        mOriented = true;
-        return;
-    }
-    mOriented = false;
-    mtarget_vyaw = turn_control(delta);
-}
 
 void RobotController::kick() {
     if (mWorld.ball_speed_module >= mVxy_min) {
@@ -330,7 +94,7 @@ void RobotController::kick() {
     mtarget_vel[0] = v_vet[0]*cos(-myaw) - v_vet[1]*sin(-myaw);
     mtarget_vel[1] = v_vet[0]*sin(-myaw) + v_vet[1]*cos(-myaw);
     mkicker_x = 1000;
-
+    turn_to(mWorld.ball_pos);
 }
 
 
@@ -359,10 +123,7 @@ void RobotController::follow_trajectory(std::vector<std::vector<double>>& trajec
     }
 
     double next_point[2] = {trajectory[0][0], trajectory[0][1]};
-    auto mid_trajectory = find_trajectory(mpos, next_point, true);
-    mid_trajectory.insert(mid_trajectory.end(), trajectory.begin() + 1, trajectory.end());
-    auto v_vet = motion_planner(mid_trajectory);
-    v_vet = motion_control(v_vet);
+    skills::move_to(this, next_point);
 
     mtarget_vel[0] = v_vet[0];
     mtarget_vel[1] = v_vet[1];
@@ -813,9 +574,9 @@ void RobotController::publish() {
     han.new_ia.robots[mId].vel_tang = mtarget_vel[0];
     han.new_ia.robots[mId].vel_ang = static_cast<float>(mtarget_vyaw);
     if (mkicker_x != 0) {
-        han.new_ia.robots[mId].kick_speed_x = mKicker_x_max;
-    }
-    han.new_ia.robots[mId].kick_speed_x = 0;
+        han.new_ia.robots[mId].kick = true;
+        han.new_ia.robots[mId].kick_speed_x = mkicker_x;
+    } else han.new_ia.robots[mId].kick = false;
 
     han.lc->publish("IA", &han.new_ia);
     //han.lc->publish("tartarus", &han.new_tartarus);
