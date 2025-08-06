@@ -7,7 +7,7 @@
 
 namespace roles {
 
-    void mid_field_role(RobotController& robot) {
+    void mid_field(RobotController& robot) {
         //TODO continuar
         bool isPivot;
         int Pivot_id = -1;

@@ -48,6 +48,9 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/tactics/keep_x_line.cpp
         src/team/roles/roles.h
         src/team/roles/goal_keeper.cpp
+        src/team/roles/striker.cpp
+        src/team/roles/defender.cpp
+        src/team/roles/mid_field.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

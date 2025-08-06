@@ -54,19 +54,6 @@ void RobotController::loop() {
     std::cout << "Encerrado " << mId << std::endl;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void RobotController::select_behavior() {
     //TODO roles
     //role reset
@@ -75,7 +62,6 @@ void RobotController::select_behavior() {
         mState = 0;
     }
 
-
     if (mTeam->roles[mId] == TeamInfo::unknown) {
         mtarget_vel[0] = 0;
         mtarget_vel[1] = 0;
@@ -83,14 +69,13 @@ void RobotController::select_behavior() {
     }
 
     if (mTeam->roles[mId] == TeamInfo::goal_keeper) {
-        goal_keeper_role();
-    }
-    else if (mTeam->roles[mId] == TeamInfo::stricker) {
-        stricker_role();
+        roles::goal_keeper(*this);
+    } else if (mTeam->roles[mId] == TeamInfo::stricker) {
+        roles::striker(*this);
     } else if (mTeam->roles[mId] == TeamInfo::mid_field) {
-        mid_field_role();
+        roles::mid_field(*this);
     } else if (mTeam->roles[mId] == TeamInfo::defender) {
-        defender_role();
+        roles::defender(*this);
     }
 
 
@@ -111,65 +96,6 @@ void RobotController::select_behavior() {
         tactics::follow_trajectory(*this, mCurrent_trajectory);
     }
 }
-
-
-
-void RobotController::stricker_role() {
-    //TODO melhorar stricker_role para chutar para o passe
-    //TODO fazer interceptar a bola melhor
-    double goal[2] = {(mWorld.their_goal[0][1] + mWorld.their_goal[0][0])/2, (mWorld.their_goal[1][1] + mWorld.their_goal[1][0])/2};
-    //double goal[2] = {(mWorld.our_goal[0][1] + mWorld.our_goal[0][0])/2, (mWorld.our_goal[1][1] + mWorld.our_goal[1][0])/2};
-    bool isPivot;
-    int Pivot_id = -1;
-    double their_goal[2] = {mWorld.their_goal[0][0], 0};
-
-    auto interceptor = mWorld.getIdOfTheBallInterceptor();
-    if ( mWorld.ball_speed_module != 0 && interceptor < 20 && mTeam->num_of_active_robots > 1) {
-        Pivot_id = interceptor;
-    } else{
-        auto closest_allies_to_ball = mWorld.getAlliesIdsAccordingToDistanceToBall();
-        if (closest_allies_to_ball[0] != mTeam->goal_keeper_id) {
-            Pivot_id = closest_allies_to_ball[0];
-        } else if (mTeam->num_of_active_robots > 1) {
-            Pivot_id = closest_allies_to_ball[1];
-        }
-    }
-
-    if (Pivot_id == mId || Pivot_id == -1) {
-        if (tactics::aux::find_ball_trajectory(*this, mWorld.ball_pos, their_goal).size() == 2 && distance_point(mWorld.ball_pos, their_goal) < mKick_distance) {
-            tactics::position_and_kick_to_destination(*this, their_goal);
-        }
-        else {
-            int nearest_ally_id = mWorld.findNearestAllyThatIsntTheGoalKeeper(mId, mTeam->goal_keeper_id);
-            nearest_ally_id != -1 ? tactics::position_and_kick_to_robot(*this, nearest_ally_id) : tactics::position_and_kick_to_destination(*this, their_goal);
-        }
-    }
-    else {
-
-        double striker_dislocation = fabs(mWorld.ball_pos[0]) + 1000;
-        double x_position = std::clamp(mTeam->central_line_x + (striker_dislocation)*mTeam->our_side_sign, -mTeam->striker_max_dislocation, mTeam->striker_max_dislocation);
-        double delta_y = sqrt(fabs(pow(mKick_distance, 2) - pow(x_position - mWorld.ball_pos[0], 2)));
-        double y_position;
-        mWorld.allies[Pivot_id].pos[1] != 0 ? y_position = mWorld.ball_pos[1] - delta_y*mWorld.allies[Pivot_id].pos[1]/fabs(mWorld.allies[Pivot_id].pos[1])
-            : y_position = mWorld.ball_pos[1];
-        if (y_position > mWorld.their_defese_area[0][1] - mRadius*2 && y_position < mWorld.their_defese_area[1][1] + mRadius*2) {
-            if (y_position > 0) y_position = mWorld.their_defese_area[1][1] + mRadius*2;
-            else y_position = mWorld.their_defese_area[0][1] - mRadius*2;
-        }
-        double wait_position[2] = {x_position, y_position};
-        tactics::keep_a_location(*this, wait_position);
-        skills::turn_to(*this, mWorld.ball_pos);
-    }
-}
-
-
-
-
-
-
-
-
-
 
 void RobotController::check_connection() {
     if (!mDetected) {

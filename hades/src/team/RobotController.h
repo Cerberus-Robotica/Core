@@ -13,6 +13,7 @@
 #include "RobotCalibration.h"
 #include "skills/skills.h"
 #include "tactics/tactics.h"
+#include "roles/roles.h"
 
 class RobotController {
 
@@ -121,10 +122,6 @@ private:
     void loadCalibration();
 
     void select_behavior();
-    void stricker_role();
-    void goal_keeper_role();
-    void mid_field_role();
-    void defender_role();
 
 };
 

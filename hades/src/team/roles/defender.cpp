@@ -6,7 +6,7 @@
 #include "roles.h"
 
 namespace roles {
-    void defender_role() {
+    void defender(RobotController& robot) {
         //TODO
     }
 }

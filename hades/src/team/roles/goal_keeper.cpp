@@ -7,7 +7,7 @@
 
 namespace roles {
 
-    void goal_keeper_role(RobotController& robot) {
+    void goal_keeper(RobotController& robot) {
         //TODO melhorar goal_keeper_role
         if (!robot.mWorld.isBallOnOurArea() || robot.mWorld.ball_speed_module != 0) {
             robot.mState = 0;

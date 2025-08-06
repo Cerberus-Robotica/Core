@@ -10,9 +10,10 @@ class RobotController;
 #include <cmath>
 
 namespace roles {
-    void move_to(RobotController& robot, double goal[2], bool avoid_ball = true);
-    void turn_to(RobotController& robot, double goal[2]);
-    void kick(RobotController& robot);
+    void goal_keeper(RobotController& robot);
+    void mid_field(RobotController& robot);
+    void striker(RobotController& robot);
+    void defender(RobotController& robot);
 }
 
 #endif //ROLES_H
