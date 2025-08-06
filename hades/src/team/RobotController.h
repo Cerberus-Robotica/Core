@@ -12,6 +12,7 @@
 #include "geometry/WorldModel.h"
 #include "RobotCalibration.h"
 #include "skills/skills.h"
+#include "tactics/tactics.h"
 
 class RobotController {
 
@@ -113,12 +114,6 @@ private:
     void check_connection();
     void dynamic_calculations();
 
-    std::vector<std::vector<double>> find_ball_trajectory(double start[2], double goal[2]);
-
-
-
-    void kick();
-    void follow_trajectory(std::vector<std::vector<double>>& trajectory);
 
     void receive_vision();
     void receive_field_geometry();
@@ -131,10 +126,6 @@ private:
     void mid_field_role();
     void defender_role();
 
-    void keep_x_line(double x_line, const double y_segment[2], double y_rest);
-    void keep_a_location(double keep[2]);
-    void position_and_kick_to_destination(double goal[2]);
-    void position_and_kick_to_robot(int id);
 };
 
 
