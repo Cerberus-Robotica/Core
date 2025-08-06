@@ -3,10 +3,12 @@
 //
 
 #include <cmath>
+#include <iostream>
 #include <vector>
 #include <bits/stl_algo.h>
 #include "../RobotController.h"
 #include "../c_trajectory/C_trajectory.h"
+#include "skills.h"
 
 namespace skills {
     namespace {
@@ -94,7 +96,7 @@ namespace skills {
         }
 
 
-        std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2], bool avoid_ball = true, RobotController robot) {
+        std::vector<std::vector<double>> find_trajectory( RobotController& robot, double start[2], double goal[2], bool avoid_ball = true) {
             C_trajectory pf(false, false, 0, 100, 50, 0, robot.mWorld.boundariesMinor, robot.mWorld.boundariesMajor);
             std::vector<double> double_start = {start[0], start[1]};
             std::vector<double> double_goal = {goal[0], goal[1]};
@@ -181,8 +183,7 @@ namespace skills {
         }
     }
 
-    void move_to(RobotController robot, double goal[2], bool avoid_ball = true) {
-
+    void move_to(RobotController& robot, double goal[2], bool avoid_ball) {
         if (sqrt(pow(goal[0] - robot.mpos[0], 2) + pow(goal[1] - robot.mpos[1], 2)) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel[0] = 0;
             robot.mtarget_vel[1] = 0;
@@ -194,11 +195,11 @@ namespace skills {
         robot.mPositioned = false;
         robot.mTeam->positioned[robot.mId] = false;
         std::vector<double> v_vet;
-        auto trajectory = find_trajectory(robot.mpos, goal, avoid_ball);
+        auto trajectory = find_trajectory(robot, robot.mpos, goal, avoid_ball);
         std::size(trajectory) > 0 ? v_vet = motion_planner(robot, trajectory) : v_vet = {0, 0};
 
-        v_vet = motion_control(v_vet, robot.myaw);
 
+        v_vet = motion_control(v_vet, -robot.myaw);
         robot.mtarget_vel[0] = v_vet[0];
         robot.mtarget_vel[1] = v_vet[1];
     }

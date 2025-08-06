@@ -47,7 +47,7 @@ void RobotController::loop() {
         check_connection();
         select_behavior();
         publish();
-
+        if (mId == 1) std::cout << mOriented << " " << mPositioned << std::endl;
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
         mDelta_time = delta.count();
@@ -94,7 +94,7 @@ void RobotController::kick() {
     mtarget_vel[0] = v_vet[0]*cos(-myaw) - v_vet[1]*sin(-myaw);
     mtarget_vel[1] = v_vet[0]*sin(-myaw) + v_vet[1]*cos(-myaw);
     mkicker_x = 1000;
-    turn_to(mWorld.ball_pos);
+    skills::turn_to(*this, mWorld.ball_pos);
 }
 
 
@@ -123,10 +123,8 @@ void RobotController::follow_trajectory(std::vector<std::vector<double>>& trajec
     }
 
     double next_point[2] = {trajectory[0][0], trajectory[0][1]};
-    skills::move_to(this, next_point);
+    skills::move_to(*this, next_point);
 
-    mtarget_vel[0] = v_vet[0];
-    mtarget_vel[1] = v_vet[1];
     mPositioned = false;
     mTeam->positioned[mId] = false;
 }
@@ -224,7 +222,7 @@ void RobotController::stricker_role() {
         }
         double wait_position[2] = {x_position, y_position};
         keep_a_location(wait_position);
-        turn_to(mWorld.ball_pos);
+        skills::turn_to(*this, mWorld.ball_pos);
     }
 }
 
@@ -284,7 +282,7 @@ void RobotController::mid_field_role() {
         }
         double wait_position[2] = {x_position, y_position};
         keep_a_location(wait_position);
-        turn_to(mWorld.ball_pos);
+        skills::turn_to(*this, mWorld.ball_pos);
     }
 }
 
@@ -294,11 +292,11 @@ void RobotController::defender_role() {
 
 void RobotController::keep_a_location(double keep[2]) {
     if (mWorld.ball_speed_module == 0 || !mWorld.isBallMovingIdDirection(mId)) {
-        move_to(keep);
+        skills::move_to(*this, keep);
     }
     else {
-        if (distance_point(mpos, mWorld.ball_pos) > mRadius*5) move_to(mWorld.ball_stop_position);
-        else move_to(mWorld.ball_pos);
+        if (distance_point(mpos, mWorld.ball_pos) > mRadius*5) skills::move_to(*this, mWorld.ball_stop_position);
+        else skills::move_to(*this, mWorld.ball_pos);
     }
 }
 
@@ -341,9 +339,9 @@ void RobotController::keep_x_line(double x_line, const double y_segment[2], doub
     }
 
 
-    move_to(meet, false);
+    skills::move_to(*this, meet, false);
     mkicker_x = 0;
-    turn_to(mWorld.ball_pos);
+    skills::turn_to(*this, mWorld.ball_pos);
 }
 
 void RobotController::position_and_kick_to_destination(double goal[2]) {
@@ -353,8 +351,8 @@ void RobotController::position_and_kick_to_destination(double goal[2]) {
 
     if (mState == 0) {
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};
-        move_to(db_kick_pos);
-        turn_to(next_point);
+        skills::move_to(*this, db_kick_pos);
+        skills::turn_to(*this, next_point);
         if (mPositioned and mOriented) {
             mState = 1;
         }
@@ -375,8 +373,8 @@ void RobotController::position_and_kick_to_robot(int id) {
 
     if (mState == 0) {
         double db_kick_pos[2] = {kick_pos[0], kick_pos[1]};
-        move_to(db_kick_pos);
-        turn_to(next_point);
+        skills::move_to(*this, db_kick_pos);
+        skills::turn_to(*this, next_point);
         if (mPositioned and mOriented and mTeam->positioned[id]) {
             mState = 1;
         }
@@ -386,8 +384,8 @@ void RobotController::position_and_kick_to_robot(int id) {
         mTimer = 3;
     }
     else if (mState == 2) {
-        move_to(mpos);
-        turn_to(mWorld.ball_pos);
+        skills::move_to(*this, mpos);
+        skills::turn_to(*this, mWorld.ball_pos);
         mTimer -= mDelta_time;
         if (mTimer <= 0) {
             mTimer = 0;
@@ -561,14 +559,6 @@ void RobotController::loadCalibration() {
 
 
 void RobotController::publish() {
-    /*
-    std::cout << id << std::endl;
-    std::cout << target_vel[1] << std::endl;
-    std::cout << target_vel[0] << std::endl;
-    std::cout << target_vyaw << std::endl;<
-    */
-
-
     han.new_ia.robots[mId].id = mId;
     han.new_ia.robots[mId].vel_normal = mtarget_vel[1];
     han.new_ia.robots[mId].vel_tang = mtarget_vel[0];
@@ -579,6 +569,4 @@ void RobotController::publish() {
     } else han.new_ia.robots[mId].kick = false;
 
     han.lc->publish("IA", &han.new_ia);
-    //han.lc->publish("tartarus", &han.new_tartarus);
-
 }

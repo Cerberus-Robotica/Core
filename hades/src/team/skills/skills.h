@@ -5,11 +5,13 @@
 #ifndef SKILLS_H
 #define SKILLS_H
 
-#endif //SKILLS_H
-#include "move_to.cpp"
-#include "turn_to.cpp"
+class RobotController;
+
 #include <cmath>
 
 namespace skills {
-    void move_to(RobotController robot, double goal[2]);
+    void move_to(RobotController& robot, double goal[2], bool avoid_ball = true);
+    void turn_to(RobotController& robot, double goal[2]);
 }
+
+#endif //SKILLS_H
