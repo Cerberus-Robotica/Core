@@ -46,6 +46,7 @@ void RobotController::loop() {
         receive_vision();
         check_connection();
         select_behavior();
+
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -70,12 +71,14 @@ void RobotController::select_behavior() {
 
     if (mTeam->roles[mId] == TeamInfo::goal_keeper) {
         roles::goal_keeper(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::stricker) {
+    } else if (mTeam->roles[mId] == TeamInfo::striker) {
         roles::striker(*this);
     } else if (mTeam->roles[mId] == TeamInfo::mid_field) {
         roles::mid_field(*this);
     } else if (mTeam->roles[mId] == TeamInfo::defender) {
         roles::defender(*this);
+    } else if (mTeam->roles[mId] == TeamInfo::halted) {
+        roles::halted(*this);
     }
 
 

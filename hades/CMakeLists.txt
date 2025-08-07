@@ -49,6 +49,10 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/striker.cpp
         src/team/roles/defender.cpp
         src/team/roles/mid_field.cpp
+        src/team/plays/PlayHalt.cpp
+        src/team/plays/PlayHalt.h
+        src/team/roles/halted.cpp
+        src/team/skills/stop.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

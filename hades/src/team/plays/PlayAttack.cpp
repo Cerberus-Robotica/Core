@@ -49,7 +49,7 @@ std::vector<TeamInfo::role> PlayAttack::role_assing(WorldModel& world, TeamInfo&
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + team.goal_keeper_id);
 
         }
-        if (selected_role == TeamInfo::stricker) {
+        if (selected_role == TeamInfo::striker) {
             int closest_idx = 0;
             for (int idx = 0; idx < active_allies_ids.size(); idx++) {
                 if (distances_allies_from_ball[idx] < distances_allies_from_ball[closest_idx]) {
@@ -57,7 +57,7 @@ std::vector<TeamInfo::role> PlayAttack::role_assing(WorldModel& world, TeamInfo&
                 }
             }
             int closest_id = active_allies_ids[closest_idx];
-            roles[closest_id] = TeamInfo::stricker;
+            roles[closest_id] = TeamInfo::striker;
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
             //std::cout << "striker : " << closest_id << std::endl;

@@ -13,6 +13,7 @@ namespace skills {
     void move_to(RobotController& robot, double goal[2], bool avoid_ball = true);
     void turn_to(RobotController& robot, double goal[2]);
     void kick(RobotController& robot);
+    void stop(RobotController& robot);
 }
 
 #endif //SKILLS_H

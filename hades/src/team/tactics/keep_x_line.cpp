@@ -14,7 +14,7 @@ namespace tactics {
 
 
         for (int i = 0; i < enemies_ids.size(); i++) {
-            if (robot.mTeam->enemy_roles[i] == TeamInfo::stricker) {
+            if (robot.mTeam->enemy_roles[i] == TeamInfo::striker) {
                 enemy_stricker_id = i;
                 break;
             }
@@ -39,8 +39,10 @@ namespace tactics {
         double x_meet = x_line - robot.mRadius*x_line/fabs(x_line);
         double meet[2] = {x_meet, y_meet};
 
-        if (!robot.mWorld.isBallOnOurSide() || (distance_point(robot.mWorld.enemies[enemy_stricker_id].pos, robot.mWorld.ball_pos) > 500 && robot.mWorld.ball_speed_module == 0)) {
-            meet[1] = y_rest;
+        if (robot.mWorld.enemies.size() > 0) {
+            if (!robot.mWorld.isBallOnOurSide() || (distance_point(robot.mWorld.enemies[enemy_stricker_id].pos, robot.mWorld.ball_pos) > 500 && robot.mWorld.ball_speed_module == 0)) {
+                meet[1] = y_rest;
+            }
         }
 
 

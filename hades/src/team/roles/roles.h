@@ -14,6 +14,7 @@ namespace roles {
     void mid_field(RobotController& robot);
     void striker(RobotController& robot);
     void defender(RobotController& robot);
+    void halted(RobotController& robot);
 }
 
 #endif //ROLES_H

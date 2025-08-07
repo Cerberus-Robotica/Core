@@ -32,12 +32,13 @@ void Leader::loop() {
 
         receive_config();
         receive_vision();
+        receive_gamecontroller();
         receive_field_geometry();
 
         inspect_enemy_team();
         world_analysis();
         select_plays();
-        imprimir_ativos();
+        //imprimir_ativos();
 
         //std::cout << team.central_line_x << std::endl;
 
@@ -52,6 +53,11 @@ void Leader::loop() {
     }
 
 }
+
+void Leader::receive_gamecontroller() {
+    team.current_command = TeamInfo::Command(han.new_GC.current_command);
+}
+
 
 void Leader::receive_vision() {
     std::unordered_set<int> allies_detected = {};
@@ -233,13 +239,14 @@ void Leader::add_robot(int id) {
 
 void Leader::select_plays() {
     int numOfActivaAllies = 0;
-    unsigned int num_plays = 2;
+    unsigned int num_plays = 3;
     int playsScore[num_plays];
     enum plays {
         attack_play,
-        debug_play
+        debug_play,
+        halt_play
     };
-    plays plays_priority[num_plays] = {attack_play, debug_play};
+    plays plays_priority[num_plays] = {attack_play, debug_play, halt_play};
 
 
     for (int id : team.active_robots) {
@@ -250,6 +257,7 @@ void Leader::select_plays() {
 
     playsScore[0] = attack.score(world, team);
     playsScore[1] = debug.score(world, team);
+    playsScore[2] = halt.score(world, team);
 
     for (int i = 0; i < num_plays - 1; i++) {
         // Flag para detectar se houve troca
@@ -274,12 +282,18 @@ void Leader::select_plays() {
         roles.push_back(TeamInfo::unknown);
     }
 
-    if (plays_priority[0] == attack_play) {
-        roles = attack.role_assing(world, team, roles);
-    }
+    switch (plays_priority[0]) {
+        case attack_play:
+            roles = attack.role_assing(world, team, roles);
+            break;
 
-    if (plays_priority[0] == debug_play) {
-        roles = debug.role_assing(world, team, roles);
+        case debug_play:
+            roles = debug.role_assing(world, team, roles);
+            break;
+
+        case halt_play:
+            roles = halt.role_assing(world, team, roles);
+            break;
     }
 
     for (int i = 0 ; i < 16 ; i++) {
@@ -311,7 +325,7 @@ void Leader::inspect_enemy_team() {
             }
     }
     unsigned int id = world.enemies[closest_idx].id;
-    team.enemy_roles[id] = TeamInfo::stricker;
+    team.enemy_roles[id] = TeamInfo::striker;
 
 }
 

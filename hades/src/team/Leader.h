@@ -10,6 +10,7 @@
 #include "TeamInfo.h"
 #include "plays/PlayAttack.h"
 #include "plays/PlayDebug.h"
+#include "plays/PlayHalt.h"
 
 class Leader {
 public:
@@ -30,6 +31,7 @@ public:
 
     PlayAttack attack;
     PlayDebug debug;
+    PlayHalt halt;
 
     WorldModel world;
 
@@ -44,6 +46,7 @@ private:
     void receive_vision();
     void receive_field_geometry();
     void receive_config();
+    void receive_gamecontroller();
     void add_robot(int id);
     void imprimir_ativos();
     void select_plays();

@@ -18,11 +18,17 @@ namespace roles {
             Pivot_id = interceptor;
         } else{
             auto closest_allies_to_ball = robot.mWorld.getAlliesIdsAccordingToDistanceToBall();
-            if (closest_allies_to_ball[0] != robot.mTeam->goal_keeper_id) {
-                Pivot_id = closest_allies_to_ball[0];
-            } else if (robot.mTeam->num_of_active_robots > 1) {
-                Pivot_id = closest_allies_to_ball[1];
+            if (closest_allies_to_ball.size() > 0) {
+                if (closest_allies_to_ball[0] != robot.mTeam->goal_keeper_id) {
+                    Pivot_id = closest_allies_to_ball[0];
+                } else if (robot.mTeam->num_of_active_robots > 1) {
+                    Pivot_id = closest_allies_to_ball[1];
+                }
             }
+            else {
+                Pivot_id = robot.mId;
+            }
+
         }
 
 
