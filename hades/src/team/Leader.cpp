@@ -37,7 +37,7 @@ void Leader::loop() {
         inspect_enemy_team();
         world_analysis();
         select_plays();
-        //imprimir_ativos();
+        imprimir_ativos();
 
         //std::cout << team.central_line_x << std::endl;
 
@@ -288,6 +288,7 @@ void Leader::select_plays() {
 }
 
 void Leader::inspect_enemy_team() {
+    if (size(world.enemies) == 0) return;
     std::vector<int> active_enemies_ids = {};
     std::vector<double> distances_enemies_from_ball = {};
     if (size(world.enemies) == 0) return;

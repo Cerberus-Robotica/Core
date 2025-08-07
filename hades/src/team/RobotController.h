@@ -10,7 +10,9 @@
 #include "Robot.h"
 #include "TeamInfo.h"
 #include "geometry/WorldModel.h"
-#include "RobotCalibration.h"
+#include "skills/skills.h"
+#include "tactics/tactics.h"
+#include "roles/roles.h"
 
 class RobotController {
 
@@ -24,10 +26,6 @@ public:
     void start(TeamInfo* team_ads);
     void stop();
     void loop();
-
-
-
-private:
 
     int mId = -1; //id; -1 unsigned
     double mRadius = 160;
@@ -112,24 +110,11 @@ private:
     WorldModel mWorld;
     int64_t mLast_time_stamp = 0;
 
+private:
 
     void check_connection();
     void dynamic_calculations();
 
-    void move_to(double goal[2], bool avoid_ball);
-    std::vector<std::vector<double>> find_trajectory(double start[2], double goal[2], bool avoid_ball);
-    std::vector<std::vector<double>> find_ball_trajectory(double start[2], double goal[2]);
-    std::vector<double> motion_planner(std::vector<std::vector<double>> trajectory);
-    std::vector<double> motion_control(std::vector<double> v_vet);
-
-
-    void turn_to(double goal[2]);
-    double find_angle_error(double goal[2]);
-    double turn_control(double delta);
-
-
-    void kick();
-    void follow_trajectory(std::vector<std::vector<double>>& trajectory);
 
     void receive_vision();
     void receive_field_geometry();
@@ -137,15 +122,7 @@ private:
     void loadCalibration();
 
     void select_behavior();
-    void stricker_role();
-    void goal_keeper_role();
-    void mid_field_role();
-    void defender_role();
 
-    void keep_x_line(double x_line, const double y_segment[2], double y_rest);
-    void keep_a_location(double keep[2]);
-    void position_and_kick_to_destination(double goal[2]);
-    void position_and_kick_to_robot(int id);
 };
 
 

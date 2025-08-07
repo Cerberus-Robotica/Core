@@ -35,8 +35,20 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayAttack.h
         src/team/plays/PlayDebug.cpp
         src/team/plays/PlayDebug.h
-        src/team/RobotCalibration.cpp
-        src/team/RobotCalibration.h
+        src/team/skills/move_to.cpp
+        src/team/skills/turn_to.cpp
+        src/team/skills/skills.h
+        src/team/skills/kick.cpp
+        src/team/tactics/tactics.h
+        src/team/tactics/position_and_kick_to.cpp
+        src/team/tactics/follow_trajectory.cpp
+        src/team/tactics/keep_a_location.cpp
+        src/team/tactics/keep_x_line.cpp
+        src/team/roles/roles.h
+        src/team/roles/goal_keeper.cpp
+        src/team/roles/striker.cpp
+        src/team/roles/defender.cpp
+        src/team/roles/mid_field.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
