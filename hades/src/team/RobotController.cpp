@@ -254,8 +254,7 @@ void RobotController::receive_vision() {
 
 
 void RobotController::loadCalibration() {
-    RobotCalibration load;
-    mKick_distance = load.kickDistance;
+    //TODO
 }
 
 

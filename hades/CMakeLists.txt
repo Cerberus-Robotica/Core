@@ -35,8 +35,6 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayAttack.h
         src/team/plays/PlayDebug.cpp
         src/team/plays/PlayDebug.h
-        src/team/RobotCalibration.cpp
-        src/team/RobotCalibration.h
         src/team/skills/move_to.cpp
         src/team/skills/turn_to.cpp
         src/team/skills/skills.h

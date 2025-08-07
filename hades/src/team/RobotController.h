@@ -10,7 +10,6 @@
 #include "Robot.h"
 #include "TeamInfo.h"
 #include "geometry/WorldModel.h"
-#include "RobotCalibration.h"
 #include "skills/skills.h"
 #include "tactics/tactics.h"
 #include "roles/roles.h"
