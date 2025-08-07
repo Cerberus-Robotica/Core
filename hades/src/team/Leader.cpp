@@ -290,7 +290,7 @@ void Leader::select_plays() {
 void Leader::inspect_enemy_team() {
     std::vector<int> active_enemies_ids = {};
     std::vector<double> distances_enemies_from_ball = {};
-
+    if (size(world.enemies) == 0) return;
     for (int i = 0; i < size(world.enemies) ; i++) {
         if (world.enemies[i].detected) {
             active_enemies_ids.push_back(i);

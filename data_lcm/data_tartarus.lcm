@@ -3,10 +3,18 @@ package data;
 struct tartarus
 {
 	boolean ssl_vision; //alternates between using ssl-vision or grsim for vision data
+	boolean autoreferee; //alternates between use ssl-vision vision data or tigers AR vision data
 	boolean competition_mode; //alternates between the competition_mode or debug(controller mode will be activated)
 	boolean team_blue; //changes the team (not recommended for use in competitions)
 	boolean bool_controller; //turn on or off the controller mode
 	int16_t stm_port; //changes the stm connected port via UI
 	int16_t controller_port; //changes the controller port via UI
 	int16_t goalkeeper_id; // changes keeper id
+	string mcast_grp_gc; // default "224.5.23.1"
+	int16_t mcast_port_gc; // default 10003
+	string mcast_grp_vision; // default "224.5.23.2"
+	int16_t mcast_port_vision_sslvision; // default 10006
+	int16_t mcast_port_vision_grsim; // default 10020
+	int16_t mcast_port_vision_tracked; // default 10010 "we use the tigers autoreferee"
+
 }

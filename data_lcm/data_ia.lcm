@@ -23,5 +23,5 @@ struct ia
 	int16_t estrategia; //diz a estrategia atual dos robos
 	int16_t processo; //diz o processo atual do Hades(IA)
     int16_t robots_size;
-    robot robots[robots_size];
+    robot robots[16];
 }

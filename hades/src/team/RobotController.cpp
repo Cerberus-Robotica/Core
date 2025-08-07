@@ -45,7 +45,8 @@ void RobotController::loop() {
         //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
         receive_vision();
         check_connection();
-        select_behavior();
+        turn_to(mWorld.ball_pos);
+        //select_behavior();
         publish();
 
         std::chrono::duration<double> delta = t1 - t0;
@@ -316,7 +317,15 @@ void RobotController::turn_to(double goal[2]) {
         return;
     }
     mOriented = false;
-    mtarget_vyaw = turn_control(delta);
+    double new_vyaw = turn_control(delta);
+    if (new_vyaw >= mtarget_vyaw + mA_ang_max*mDelta_time) {
+        new_vyaw = mtarget_vyaw + mA_ang_max*mDelta_time;
+    }
+    if (new_vyaw <= mtarget_vyaw - mA_ang_max*mDelta_time) {
+        new_vyaw = mtarget_vyaw - mA_ang_max*mDelta_time;
+    }
+
+    mtarget_vyaw = new_vyaw;
 }
 
 void RobotController::kick() {

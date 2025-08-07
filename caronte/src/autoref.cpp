@@ -21,7 +21,7 @@ void recebe_dados_tracked() {
     bool ssl_vision_atual;
     int cameras;
     
-    std::cout << "Conectando a visao..." << std::endl;
+    std::cout << "Connecting to tigers autoreferee..." << std::endl;
     while(true){
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);       
@@ -32,8 +32,8 @@ void recebe_dados_tracked() {
             ssl_vision_atual = han.new_tartarus.ssl_vision;
         }
 
-        std::cout << "ssl_vision_atual: " << ssl_vision_atual << std::endl;
-        std::cout << "han.new_tartarus.ssl_vision: " << (int)han.new_tartarus.ssl_vision << std::endl;
+        //std::cout << "ssl_vision_atual: " << ssl_vision_atual << std::endl;
+        //std::cout << "han.new_tartarus.ssl_vision: " << (int)han.new_tartarus.ssl_vision << std::endl;
         cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
 
         for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
@@ -110,23 +110,23 @@ void recebe_dados_tracked() {
         my_autoref_data.robots_yellow_size = yellow_ids.size();
         my_autoref_data.robots_blue_size = blue_ids.size();
 
-        for(int i = 0; i < my_autoref_data.robots_blue_size; i++){
-            std::cout << "Robô azul ID: " << my_autoref_data.robots_blue[i].robot_id << std::endl;
-            std::cout << "Posição X: " << my_autoref_data.robots_blue[i].position_x << std::endl;
-            std::cout << "Posição Y: " << my_autoref_data.robots_blue[i].position_y << std::endl;
-            std::cout << "Orientação: " << my_autoref_data.robots_blue[i].orientation << "\n" << std::endl;
-        }
-    
-        for(int i = 0; i < my_autoref_data.robots_yellow_size; i++){
-            std::cout << "Robô amarelo ID: " << my_autoref_data.robots_yellow[i].robot_id << std::endl;
-            std::cout << "Posição X: " << my_autoref_data.robots_yellow[i].position_x << std::endl;
-            std::cout << "Posição Y: " << my_autoref_data.robots_yellow[i].position_y << std::endl;
-            std::cout << "Orientação: " << my_autoref_data.robots_yellow[i].orientation << "\n" << std::endl;
-        }
-
-        std::cout << "Robos azuis: " << my_autoref_data.robots_blue_size;
-        std::cout << "  Robos amarelos: " << my_autoref_data.robots_yellow_size << std::endl;
-        std::cout << "Timestamp: " << my_autoref_data.timestamp << std::endl;
+        //for(int i = 0; i < my_autoref_data.robots_blue_size; i++){
+        //    std::cout << "Robô azul ID: " << my_autoref_data.robots_blue[i].robot_id << std::endl;
+        //    std::cout << "Posição X: " << my_autoref_data.robots_blue[i].position_x << std::endl;
+        //    std::cout << "Posição Y: " << my_autoref_data.robots_blue[i].position_y << std::endl;
+        //    std::cout << "Orientação: " << my_autoref_data.robots_blue[i].orientation << "\n" << std::endl;
+        //}
+    //
+        //for(int i = 0; i < my_autoref_data.robots_yellow_size; i++){
+        //    std::cout << "Robô amarelo ID: " << my_autoref_data.robots_yellow[i].robot_id << std::endl;
+        //    std::cout << "Posição X: " << my_autoref_data.robots_yellow[i].position_x << std::endl;
+        //    std::cout << "Posição Y: " << my_autoref_data.robots_yellow[i].position_y << std::endl;
+        //    std::cout << "Orientação: " << my_autoref_data.robots_yellow[i].orientation << "\n" << std::endl;
+        //}
+//
+        //std::cout << "Robos azuis: " << my_autoref_data.robots_blue_size;
+        //std::cout << "  Robos amarelos: " << my_autoref_data.robots_yellow_size << std::endl;
+        //std::cout << "Timestamp: " << my_autoref_data.timestamp << std::endl;
     
 
         lcm.publish("vision_tracked", &my_autoref_data);

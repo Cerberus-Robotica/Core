@@ -30,9 +30,9 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
     ? msg_vision->robots_blue_size
     : msg_vision->robots_yellow_size;
 
-    this->new_ia.robots.clear();
+    
 
-    for (int i = 0; i < this->new_ia.robots_size; ++i) {
+    for (int i = 0; i < size(robots_source); ++i) {
         data::robot robots_ia;
         const data::detection_robots& robots_sour = robots_source[i];
 
@@ -53,9 +53,14 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
         robots_ia.wheel_bl = 0;
         robots_ia.wheel_br = 0;
 
-        this->new_ia.robots.push_back(robots_ia);
     }
-
+    //for(int i = 0; i < 16; ++i) {
+    //    std::cout << "Robô ID: " << this->new_ia.robots[i].id << std::endl;
+    //    std::cout << "vel_tang: " << this->new_ia.robots[i].vel_tang << std::endl;
+    //    std::cout << "vel_normal: " << this->new_ia.robots[i].vel_normal << std::endl;
+    //    std::cout << "vel_ang: " << this->new_ia.robots[i].vel_ang << std::endl;
+    //}
+    //std::cout << " "<< std::endl;
     this->new_vision = *msg_vision;
 
     //lc->publish("IA", &this->new_ia);

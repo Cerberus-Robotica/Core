@@ -9,6 +9,7 @@
 
 #include <lcm/lcm_coretypes.h>
 
+#include <string>
 
 namespace data
 {
@@ -20,6 +21,11 @@ class tartarus
 
         /**
          * alternates between using ssl-vision or grsim for vision data
+         */
+        int8_t     autoreferee;
+
+        /**
+         * alternates between use ssl-vision vision data or tigers AR vision data
          */
         int8_t     competition_mode;
 
@@ -47,6 +53,36 @@ class tartarus
          * changes the controller port via UI
          */
         int16_t    goalkeeper_id;
+
+        /**
+         * changes keeper id
+         */
+        std::string mcast_grp_gc;
+
+        /**
+         * default "224.5.23.1"
+         */
+        int16_t    mcast_port_gc;
+
+        /**
+         * default 10003
+         */
+        std::string mcast_grp_vision;
+
+        /**
+         * default "224.5.23.2"
+         */
+        int16_t    mcast_port_vision_sslvision;
+
+        /**
+         * default 10006
+         */
+        int16_t    mcast_port_vision_grsim;
+
+        /**
+         * default 10020
+         */
+        int16_t    mcast_port_vision_tracked;
 
     public:
         /**
@@ -147,6 +183,9 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->autoreferee, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
@@ -165,6 +204,28 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    char* mcast_grp_gc_cstr = const_cast<char*>(this->mcast_grp_gc.c_str());
+    tlen = __string_encode_array(
+        buf, offset + pos, maxlen - pos, &mcast_grp_gc_cstr, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_gc, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    char* mcast_grp_vision_cstr = const_cast<char*>(this->mcast_grp_vision.c_str());
+    tlen = __string_encode_array(
+        buf, offset + pos, maxlen - pos, &mcast_grp_vision_cstr, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_sslvision, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_grsim, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_tracked, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -173,6 +234,9 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     int pos = 0, tlen;
 
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->ssl_vision, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->autoreferee, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
@@ -193,6 +257,36 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    int32_t __mcast_grp_gc_len__;
+    tlen = __int32_t_decode_array(
+        buf, offset + pos, maxlen - pos, &__mcast_grp_gc_len__, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+    if(__mcast_grp_gc_len__ > maxlen - pos) return -1;
+    this->mcast_grp_gc.assign(
+        static_cast<const char*>(buf) + offset + pos, __mcast_grp_gc_len__ - 1);
+    pos += __mcast_grp_gc_len__;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_gc, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    int32_t __mcast_grp_vision_len__;
+    tlen = __int32_t_decode_array(
+        buf, offset + pos, maxlen - pos, &__mcast_grp_vision_len__, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+    if(__mcast_grp_vision_len__ > maxlen - pos) return -1;
+    this->mcast_grp_vision.assign(
+        static_cast<const char*>(buf) + offset + pos, __mcast_grp_vision_len__ - 1);
+    pos += __mcast_grp_vision_len__;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_sslvision, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_grsim, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_tracked, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -203,6 +297,13 @@ int tartarus::_getEncodedSizeNoHash() const
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += this->mcast_grp_gc.size() + 4 + 1;
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += this->mcast_grp_vision.size() + 4 + 1;
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
@@ -211,7 +312,7 @@ int tartarus::_getEncodedSizeNoHash() const
 
 uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x38f7f5f2db059489LL;
+    uint64_t hash = 0x7c5bbeb22ee8ee8eLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

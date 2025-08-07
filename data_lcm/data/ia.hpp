@@ -9,7 +9,6 @@
 
 #include <lcm/lcm_coretypes.h>
 
-#include <vector>
 #include "robot.hpp"
 
 namespace data
@@ -33,9 +32,9 @@ class ia
         int16_t    robots_size;
 
         /**
-         * LCM Type: data.robot[robots_size]
+         * LCM Type: data.robot[16]
          */
-        std::vector< data::robot > robots;
+        data::robot robots[16];
 
     public:
         /**
@@ -145,7 +144,7 @@ int ia::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->robots_size, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    for (int a0 = 0; a0 < this->robots_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots[a0]._encodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
@@ -169,12 +168,7 @@ int ia::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->robots_size, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    try {
-        this->robots.resize(this->robots_size);
-    } catch (...) {
-        return -1;
-    }
-    for (int a0 = 0; a0 < this->robots_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots[a0]._decodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
@@ -189,7 +183,7 @@ int ia::_getEncodedSizeNoHash() const
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
-    for (int a0 = 0; a0 < this->robots_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         enc_size += this->robots[a0]._getEncodedSizeNoHash();
     }
     return enc_size;
@@ -203,7 +197,7 @@ uint64_t ia::_computeHash(const __lcm_hash_ptr *p)
             return 0;
     const __lcm_hash_ptr cp = { p, ia::getHash };
 
-    uint64_t hash = 0xd7cad144fbd63f1aLL +
+    uint64_t hash = 0x7c342bde0e4cf528LL +
          data::robot::_computeHash(&cp);
 
     return (hash<<1) + ((hash>>63)&1);

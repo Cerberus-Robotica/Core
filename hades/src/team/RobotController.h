@@ -76,6 +76,7 @@ private:
     double mA_xy_brake = 2;
     double mVyaw_max = 10;
     double mVyaw_min = 0.5;
+    double mA_ang_max = 15;
     double mKick_distance = 3000;
     double mKicker_x_max = 3;
     double mKicker_x_min = 0.5;
@@ -91,7 +92,7 @@ private:
 
     //PID control
     double mKP_ang = 10;
-    double mKI_ang = 0.0005;
+    double mKI_ang = 0.5;
     double mKD_ang = 5;
     double mI_ang = 0;
     double mLast_delta = 0;
