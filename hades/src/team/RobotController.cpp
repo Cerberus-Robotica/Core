@@ -78,6 +78,12 @@ void RobotController::select_behavior() {
         roles::defender(*this);
     } else if (mTeam->roles[mId] == TeamInfo::halted) {
         roles::halted(*this);
+    } else if (mTeam->roles[mId] == TeamInfo::kickoff_kicker) {
+        roles::kickoff_kicker(*this);
+    } else if (mTeam->roles[mId] == TeamInfo::kickoff_goal_keeper) {
+        roles::kickoff_goal_keeper(*this);
+    } else if (mTeam->roles[mId] == TeamInfo::kickoff_support) {
+        roles::kickoff_support(*this);
     }
 
 

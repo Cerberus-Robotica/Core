@@ -12,6 +12,7 @@
 
 #include "../include/handlers.hpp"
 #include "TeamInfo.h"
+#include "plays/PlayOurKickOff.h"
 
 void Leader::start() {
     loop();
@@ -53,11 +54,6 @@ void Leader::loop() {
     }
 
 }
-
-void Leader::receive_gamecontroller() {
-    team.current_command = TeamInfo::Command(han.new_GC.current_command);
-}
-
 
 void Leader::receive_vision() {
     std::unordered_set<int> allies_detected = {};
@@ -196,13 +192,15 @@ void Leader::receive_vision() {
 }
 
 void Leader::receive_field_geometry() {
+    //TODO implementar urgente
     team.striker_max_dislocation = fabs(world.their_defese_area[0][0] + world.their_defese_area[1][0]) / 2;
     team.mid_field_max_dislocation = std::min(fabs(world.their_defese_area[0][0]), fabs(world.their_defese_area[1][0]));
 }
 
-
-void Leader::receive_config() {
-    int is_team_blue = int(han.new_tartarus.team_blue);
+void Leader::receive_gamecontroller() {
+    //TODO implementar maquina de estados dos estados do jogo
+    team.current_command = TeamInfo::Command(han.new_GC.current_command);
+    int is_team_blue = int(han.new_GC.team_blue);
     if (is_team_blue == 1) {
         team.color = TeamInfo::blue;
         team.goal_keeper_id = han.new_GC.blue.goalkeeper_id;
@@ -211,6 +209,11 @@ void Leader::receive_config() {
         team.color = TeamInfo::yellow;
         team.goal_keeper_id = han.new_GC.yellow.goalkeeper_id;
     }
+}
+
+void Leader::receive_config() {
+    //TODO receber time do tartarus ou do GC
+    //TODO receber lado do time
 
     if (team.our_side == TeamInfo::right) team.our_side_sign = 1;
     else team.our_side_sign = -1;
@@ -254,7 +257,7 @@ void Leader::select_plays() {
         )> role_func;
     };
 
-    std::array<PlayInfo, 3> plays = {{
+    std::array<PlayInfo, 4> plays = {{
         { "attack", 0,
           [&](WorldModel& w, TeamInfo& t) { return attack.score(w, t); },
           [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return attack.role_assing(w, t, r); } },
@@ -265,7 +268,12 @@ void Leader::select_plays() {
 
         { "halt", 0,
           [&](WorldModel& w, TeamInfo& t) { return halt.score(w, t); },
-          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return halt.role_assing(w, t, r); } }
+          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return halt.role_assing(w, t, r); } },
+
+        { "OurKickOff", 0,
+        [&](WorldModel& w, TeamInfo& t) { return ourKickOff.score(w, t); },
+        [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return ourKickOff.role_assing(w, t, r); } }
+
     }};
 
     // Calcular scores

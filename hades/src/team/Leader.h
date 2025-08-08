@@ -11,6 +11,7 @@
 #include "plays/PlayAttack.h"
 #include "plays/PlayDebug.h"
 #include "plays/PlayHalt.h"
+#include "plays/PlayOurKickOff.h"
 
 class Leader {
 public:
@@ -32,6 +33,7 @@ public:
     PlayAttack attack;
     PlayDebug debug;
     PlayHalt halt;
+    PlayOurKickOff ourKickOff;
 
     WorldModel world;
 

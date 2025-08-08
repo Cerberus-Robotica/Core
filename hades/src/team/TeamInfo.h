@@ -17,6 +17,9 @@ public:
         mid_field,
         defender,
         halted,
+        kickoff_kicker,
+        kickoff_goal_keeper,
+        kickoff_support,
         debug_circular_trajectory,
         debug_squared_trajectory
     };

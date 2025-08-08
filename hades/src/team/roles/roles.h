@@ -15,6 +15,9 @@ namespace roles {
     void striker(RobotController& robot);
     void defender(RobotController& robot);
     void halted(RobotController& robot);
+    void kickoff_goal_keeper(RobotController& robot);
+    void kickoff_support(RobotController& robot);
+    void kickoff_kicker(RobotController& robot);
 }
 
 #endif //ROLES_H

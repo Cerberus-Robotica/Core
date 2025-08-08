@@ -1,6 +1,6 @@
 //
 // Created by caiu on 06/08/25.
-//
+//robot.mWorld.our_goal[0][0]
 
 #include "../RobotController.h"
 #include "roles.h"
