@@ -45,7 +45,8 @@ void RobotController::loop() {
         //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
         receive_vision();
         check_connection();
-        select_behavior();
+        roles::striker(*this);
+        //select_behavior();
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -264,13 +265,12 @@ void RobotController::loadCalibration() {
 
 void RobotController::publish() {
     han.new_ia.robots[mId].id = mId;
-    han.new_ia.robots[mId].vel_normal = mtarget_vel[1]*100;
-    han.new_ia.robots[mId].vel_tang = mtarget_vel[0]*100;
+    han.new_ia.robots[mId].vel_normal = mtarget_vel[1];
+    han.new_ia.robots[mId].vel_tang = mtarget_vel[0];
     han.new_ia.robots[mId].vel_ang = static_cast<float>(mtarget_vyaw);
     if (mkicker_x != 0) {
         han.new_ia.robots[mId].kick = true;
         han.new_ia.robots[mId].kick_speed_x = mkicker_x;
     } else han.new_ia.robots[mId].kick = false;
-
     han.lc->publish("IA", &han.new_ia);
 }

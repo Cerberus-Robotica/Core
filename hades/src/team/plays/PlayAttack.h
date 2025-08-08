@@ -10,11 +10,11 @@
 class PlayAttack {
 public:
     int score(WorldModel world, TeamInfo team);
-    std::vector<TeamInfo::role> role_assing(WorldModel& world, TeamInfo& team, std::vector<TeamInfo::role> roles);
+    std::array<TeamInfo::role, 16> role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles);
 
 private:
     int required_robots = 3;
-    TeamInfo::role required_roles[3] = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::striker};
+    std::array<TeamInfo::role, 3> required_roles = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::striker};
 };
 
 

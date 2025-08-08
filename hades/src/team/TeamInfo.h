@@ -90,8 +90,8 @@ public:
     int play = -1;
     color color = yellow;
     int game_state = -1;
-    role roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
-    role enemy_roles[16] = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+    std::array<role, 16> roles = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+    std::array<role, 16> enemy_roles = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
     //std::map<role, int> enemy_roles;
 
     double striker_max_dislocation = 2000;
@@ -99,7 +99,7 @@ public:
     double defender_min_dislocation = 2000;
 
     //int roles[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int active_robots[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::array<int, 16> active_robots = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int num_of_active_robots = 0;
     bool positioned[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 };

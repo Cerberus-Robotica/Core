@@ -18,7 +18,7 @@ int PlayAttack::score(WorldModel world, TeamInfo team) {
     return score;
 }
 
-std::vector<TeamInfo::role> PlayAttack::role_assing(WorldModel& world, TeamInfo& team, std::vector<TeamInfo::role> roles) {
+std::array<TeamInfo::role, 16> PlayAttack::role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
     std::vector<double> distances_allies_from_ball = {};

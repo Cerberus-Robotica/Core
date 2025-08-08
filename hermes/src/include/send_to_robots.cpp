@@ -175,7 +175,7 @@ void robots_sender::send_control() { // global function to send control commands
         } else {
             stm_connect();
             while(han.data_tartarus_copy.ssl_vision == 1 && han.updated_tartarus == sender.updated) {
-                for (int i = 5; i < 6; i++) {
+                for (int i = 0; i < 16; i++) {
                     if(han.updated_tartarus != sender.updated) {
                         sender.updated = !sender.updated;
                     }
@@ -184,13 +184,11 @@ void robots_sender::send_control() { // global function to send control commands
                         pct.id = control_obj.robot_id; // Use the current robot ID from the controller
                     }
                     else {
-                      	if (han.data_ia_copy.robots[i].id == 5){
-                        	pct.id = han.data_ia_copy.robots[i].id;
-                        	pct.Vx = han.data_ia_copy.robots[i].vel_tang; //vx é o vel_tang
-                        	pct.Vy = han.data_ia_copy.robots[i].vel_normal; //vy é o vel_normal
-                        	pct.Vang = -han.data_ia_copy.robots[i].vel_ang*1.5;
-                        	pct.kicker = han.data_ia_copy.robots[i].kick_speed_x;
-                        }
+                        pct.id = han.data_ia_copy.robots[i].id;
+                        pct.Vx = han.data_ia_copy.robots[i].vel_tang; //vx é o vel_tang
+                        pct.Vy = han.data_ia_copy.robots[i].vel_normal; //vy é o vel_normal
+                        pct.Vang = -han.data_ia_copy.robots[i].vel_ang;
+                        pct.kicker = han.data_ia_copy.robots[i].kick_speed_x;
                     }
                     std::cout << "Controlled robot - Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
                     memcpy(&msg[2], &pct, sizeof(Pacote));

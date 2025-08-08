@@ -12,11 +12,11 @@
 class PlayHalt {
 public:
     int score(WorldModel world, TeamInfo team);
-    std::vector<TeamInfo::role> role_assing(WorldModel& world, TeamInfo& team, std::vector<TeamInfo::role> roles);
+    std::array<TeamInfo::role, 16> role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles);
 
 private:
     int required_robots = 16;
-    TeamInfo::role required_roles[16] = {TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
+    std::array<TeamInfo::role, 16> required_roles = {TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
     , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
     , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted};
 };

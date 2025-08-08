@@ -238,68 +238,58 @@ void Leader::add_robot(int id) {
 }
 
 void Leader::select_plays() {
-    int numOfActivaAllies = 0;
-    unsigned int num_plays = 3;
-    int playsScore[num_plays];
-    enum plays {
-        attack_play,
-        debug_play,
-        halt_play
+    // Contar aliados ativos
+    int numOfActiveAllies = std::count_if(
+        std::begin(team.active_robots),
+        std::end(team.active_robots),
+        [](int id) { return id != 0; }
+    );
+
+    struct PlayInfo {
+        std::string name;
+        int score;
+        std::function<int(WorldModel&, TeamInfo&)> score_func;
+        std::function<std::array<TeamInfo::role, 16>(
+            WorldModel&, TeamInfo&, std::array<TeamInfo::role, 16>
+        )> role_func;
     };
-    plays plays_priority[num_plays] = {attack_play, debug_play, halt_play};
 
+    std::array<PlayInfo, 3> plays = {{
+        { "attack", 0,
+          [&](WorldModel& w, TeamInfo& t) { return attack.score(w, t); },
+          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return attack.role_assing(w, t, r); } },
 
-    for (int id : team.active_robots) {
-        if (id) {
-            numOfActivaAllies++;
-        }
+        { "debug", 0,
+          [&](WorldModel& w, TeamInfo& t) { return debug.score(w, t); },
+          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return debug.role_assing(w, t, r); } },
+
+        { "halt", 0,
+          [&](WorldModel& w, TeamInfo& t) { return halt.score(w, t); },
+          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return halt.role_assing(w, t, r); } }
+    }};
+
+    // Calcular scores
+    for (auto& play : plays) {
+        play.score = play.score_func(world, team);
     }
 
-    playsScore[0] = attack.score(world, team);
-    playsScore[1] = debug.score(world, team);
-    playsScore[2] = halt.score(world, team);
+    // Ordenar do maior para o menor score
+    std::sort(plays.begin(), plays.end(),
+              [](const PlayInfo& a, const PlayInfo& b) {
+                  return a.score > b.score;
+              });
 
-    for (int i = 0; i < num_plays - 1; i++) {
-        // Flag para detectar se houve troca
-        bool swapped = false;
+    // Criar lista inicial de roles
+    std::array<TeamInfo::role, 16> roles;
+    roles.fill(TeamInfo::unknown);
 
-        for (int j = 0; j < num_plays - i - 1; j++) {
-            // Se o elemento atual é maior que o próximo, troca
-            if (playsScore[j] < playsScore[j + 1]) {
-                std::swap(playsScore[j], playsScore[j + 1]);
-                std::swap(plays_priority[j], plays_priority[j + 1]);
-                swapped = true;
-            }
-        }
-        if (!swapped)
-            break;
-    }
+    // Aplicar roles da melhor play
+    roles = plays.front().role_func(world, team, roles);
 
-
-    std::vector<TeamInfo::role> roles;
-    roles.reserve(16);
-    for (int i = 0; i < 16; i++) {
-        roles.push_back(TeamInfo::unknown);
-    }
-
-    switch (plays_priority[0]) {
-        case attack_play:
-            roles = attack.role_assing(world, team, roles);
-            break;
-
-        case debug_play:
-            roles = debug.role_assing(world, team, roles);
-            break;
-
-        case halt_play:
-            roles = halt.role_assing(world, team, roles);
-            break;
-    }
-
-    for (int i = 0 ; i < 16 ; i++) {
-        team.roles[i] = roles[i];
-    }
+    // Copiar para o time
+    team.roles = roles;
 }
+
 
 void Leader::inspect_enemy_team() {
     if (size(world.enemies) == 0) return;

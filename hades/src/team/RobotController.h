@@ -91,7 +91,7 @@ public:
 
     //PID control
     double mKP_ang = 10;
-    double mKI_ang = 1;
+    double mKI_ang = 0.05;
     double mKD_ang = 5;
     double mI_ang = 0;
     double mLast_delta = 0;
