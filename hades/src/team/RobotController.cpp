@@ -45,8 +45,7 @@ void RobotController::loop() {
         //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
         receive_vision();
         check_connection();
-        roles::striker(*this);
-        //select_behavior();
+        select_behavior();
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -271,6 +270,9 @@ void RobotController::publish() {
     if (mkicker_x != 0) {
         han.new_ia.robots[mId].kick = true;
         han.new_ia.robots[mId].kick_speed_x = mkicker_x;
-    } else han.new_ia.robots[mId].kick = false;
+    } else {
+        han.new_ia.robots[mId].kick = false;
+        han.new_ia.robots[mId].kick_speed_x = mkicker_x;
+    }
     han.lc->publish("IA", &han.new_ia);
 }

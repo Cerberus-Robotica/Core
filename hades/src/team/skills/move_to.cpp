@@ -202,5 +202,6 @@ namespace skills {
         v_vet = motion_control(v_vet, -robot.myaw);
         robot.mtarget_vel[0] = v_vet[0];
         robot.mtarget_vel[1] = v_vet[1];
+        robot.mkicker_x = 0;
     }
 }

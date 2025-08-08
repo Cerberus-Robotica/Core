@@ -16,7 +16,7 @@ namespace skills {
         v_vet = normalize(robot.mVxy_min,v_vet);
         robot.mtarget_vel[0] = v_vet[0]*cos(-robot.myaw) - v_vet[1]*sin(-robot.myaw);
         robot.mtarget_vel[1] = v_vet[0]*sin(-robot.myaw) + v_vet[1]*cos(-robot.myaw);
-        robot.mkicker_x = 3;
+        robot.mkicker_x = 3.5;
         skills::turn_to(robot, robot.mWorld.ball_pos);
     }
 }

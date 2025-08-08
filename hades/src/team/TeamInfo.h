@@ -94,9 +94,9 @@ public:
     std::array<role, 16> enemy_roles = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
     //std::map<role, int> enemy_roles;
 
-    double striker_max_dislocation = 2000;
+    double striker_max_dislocation = 1500;
     double mid_field_max_dislocation = 0;
-    double defender_min_dislocation = 2000;
+    double defender_min_dislocation = 1500;
 
     //int roles[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::array<int, 16> active_robots = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};

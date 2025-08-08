@@ -5,6 +5,7 @@
 #include "../RobotController.h"
 #include "../../c_trajectory/C_trajectory.h"
 #include "tactics.h"
+#include <iostream>
 
 namespace tactics {
     namespace aux {
