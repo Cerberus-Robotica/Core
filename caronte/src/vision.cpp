@@ -69,7 +69,7 @@ void recebe_dados_vision() {
                         my_vision_data.robots_blue_size = my_vision_data.robots_blue.size(); // Atualizar tamanho real
                     }
                     else {
-                        my_vision_data.robots_blue_size = 0; // Se não houver robôs azuis, definir o tamanho como 0
+                        //my_vision_data.robots_blue_size = 0; // Se não houver robôs azuis, definir o tamanho como 0
                     }
                     
                     // Para os robôs amarelos, repita o mesmo processo
@@ -90,7 +90,7 @@ void recebe_dados_vision() {
                         my_vision_data.robots_yellow_size = my_vision_data.robots_yellow.size();
                     }
                     else {
-                        my_vision_data.robots_yellow_size = 0; // Se não houver robôs amarelos, definir o tamanho como 0
+                        //my_vision_data.robots_yellow_size = 0; // Se não houver robôs amarelos, definir o tamanho como 0
                     }
 
                     
