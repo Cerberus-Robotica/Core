@@ -41,6 +41,13 @@ namespace skills {
             return;
         }
         robot.mOriented = false;
-        robot.mtarget_vyaw = turn_control(robot, delta);
+        double new_vyaw = turn_control(robot, delta);
+        if (new_vyaw > robot.mtarget_vyaw + robot.mDelta_time*robot.mA_ang_max) {
+            new_vyaw = robot.mtarget_vyaw + robot.mDelta_time*robot.mA_ang_max;
+        }
+        if (new_vyaw < robot.mtarget_vyaw - robot.mDelta_time*robot.mA_ang_max) {
+            new_vyaw = robot.mtarget_vyaw - robot.mDelta_time*robot.mA_ang_max;
+        }
+        robot.mtarget_vyaw = new_vyaw;
     }
 }
