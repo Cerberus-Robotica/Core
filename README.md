@@ -63,3 +63,6 @@ Headless:
 
 	lcm-spy
 
+## Orientação utilizada pela equipe:
+
+![Robot orientation](Robot_orientation.png "Robot orientation")
