@@ -65,4 +65,4 @@ Headless:
 
 ## Orientação utilizada pela equipe:
 
-
+![Robot Orientation](Robot_orientation.png "robot orientation")
