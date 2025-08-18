@@ -12,8 +12,9 @@
 class PlayDebug : public PlayBase {
 public:
     std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
-    int score(WorldModel world, TeamInfo team) override;
+    int calc_score(WorldModel world, TeamInfo team) override;
     PlayDebug(){
+        name = "debug";
         required_robots = 16;
         required_roles = {TeamInfo::debug_circular_trajectory, TeamInfo::debug_squared_trajectory,
             TeamInfo::debug_squared_trajectory, TeamInfo::debug_squared_trajectory,

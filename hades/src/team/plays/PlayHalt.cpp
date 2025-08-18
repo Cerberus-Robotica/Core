@@ -9,11 +9,12 @@
 
 #include "../TeamInfo.h"
 
-int PlayHalt::score(WorldModel world, TeamInfo team) {
+int PlayHalt::calc_score(WorldModel world, TeamInfo team) {
     int score = 0;
     if (team.current_command == TeamInfo::halt) {
         score += 999992;
     }
+    this->score = score;
     return score;
 }
 
