@@ -241,44 +241,9 @@ void Leader::add_robot(int id) {
 }
 
 void Leader::select_plays() {
-    // Contar aliados ativos
-    int numOfActiveAllies = std::count_if(
-        std::begin(team.active_robots),
-        std::end(team.active_robots),
-        [](int id) { return id != 0; }
-    );
-
-    struct PlayInfo {
-        std::string name;
-        int score;
-        std::function<int(WorldModel&, TeamInfo&)> score_func;
-        std::function<std::array<TeamInfo::role, 16>(
-            WorldModel&, TeamInfo&, std::array<TeamInfo::role, 16>
-        )> role_func;
-    };
-
-    std::array<PlayInfo, 4> plays = {{
-        { "attack", 0,
-          [&](WorldModel& w, TeamInfo& t) { return attack.score(w, t); },
-          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return attack.role_assing(w, t, r); } },
-
-        { "debug", 0,
-          [&](WorldModel& w, TeamInfo& t) { return debug.score(w, t); },
-          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return debug.role_assing(w, t, r); } },
-
-        { "halt", 0,
-          [&](WorldModel& w, TeamInfo& t) { return halt.score(w, t); },
-          [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return halt.role_assing(w, t, r); } },
-
-        { "OurKickOff", 0,
-        [&](WorldModel& w, TeamInfo& t) { return ourKickOff.score(w, t); },
-        [&](WorldModel& w, TeamInfo& t, std::array<TeamInfo::role, 16> r) { return ourKickOff.role_assing(w, t, r); } }
-
-    }};
-
     // Calcular scores
-    for (auto& play : plays) {
-        play.score = play.score_func(world, team);
+    for (auto& p : plays) {
+        p.score = p.play->score(world, team);
     }
 
     // Ordenar do maior para o menor score
@@ -291,12 +256,17 @@ void Leader::select_plays() {
     std::array<TeamInfo::role, 16> roles;
     roles.fill(TeamInfo::unknown);
 
-    // Aplicar roles da melhor play
-    roles = plays.front().role_func(world, team, roles);
+    // Aplicar roles de todas as plays em ordem de score
+    for (auto& p : plays) {
+        roles = p.play->role_assign(world, team, roles);
+    }
 
     // Copiar para o time
     team.roles = roles;
 }
+
+
+
 
 
 void Leader::inspect_enemy_team() {

@@ -6,15 +6,17 @@
 #define PLAY_H
 #include "../geometry/WorldModel.h"
 #include "../Robot.h"
+#include "PlayBase.h"
 
-class PlayAttack {
+
+class PlayAttack : public PlayBase{
+    std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
+    int score(WorldModel world, TeamInfo team) override;
 public:
-    int score(WorldModel world, TeamInfo team);
-    std::array<TeamInfo::role, 16> role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles);
-
-private:
-    int required_robots = 3;
-    std::array<TeamInfo::role, 3> required_roles = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::striker};
+    PlayAttack() {
+        required_robots = 3;
+        required_roles = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::striker};
+    }
 };
 
 

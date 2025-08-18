@@ -34,6 +34,18 @@ public:
     PlayDebug debug;
     PlayHalt halt;
     PlayOurKickOff ourKickOff;
+    struct PlayInfo {
+        std::string name;
+        int score;
+        PlayBase* play;
+    };
+
+    std::vector<PlayInfo> plays = {
+        { "attack",    0, &attack },
+        { "debug",     0, &debug },
+        { "halt",      0, &halt },
+        { "OurKickOff",0, &ourKickOff }
+    };
 
     WorldModel world;
 
