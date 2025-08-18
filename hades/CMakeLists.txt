@@ -58,6 +58,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/kickoff_goal_keeper.cpp
         src/team/roles/kickoff_kicker.cpp
         src/team/roles/kickoff_support.cpp
+        src/team/plays/PlayBase.cpp
+        src/team/plays/PlayBase.h
 )
 
 target_include_directories(${PROJECT_NAME}

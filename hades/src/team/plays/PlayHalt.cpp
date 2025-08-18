@@ -17,7 +17,7 @@ int PlayHalt::score(WorldModel world, TeamInfo team) {
     return score;
 }
 
-std::array<TeamInfo::role, 16> PlayHalt::role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) {
+std::array<TeamInfo::role, 16> PlayHalt::role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
 

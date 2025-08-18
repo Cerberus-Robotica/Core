@@ -7,18 +7,19 @@
 
 #include "../geometry/WorldModel.h"
 #include "../Robot.h"
+#include "PlayBase.h"
 
-
-class PlayHalt {
+class PlayHalt : public PlayBase{
 public:
-    int score(WorldModel world, TeamInfo team);
-    std::array<TeamInfo::role, 16> role_assing(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles);
+    std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
+    int score(WorldModel world, TeamInfo team) override;
 
-private:
-    int required_robots = 16;
-    std::array<TeamInfo::role, 16> required_roles = {TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
-    , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
-    , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted};
+    PlayHalt() {
+        required_robots = 16;
+        required_roles = {TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
+        , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
+        , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted};
+    }
 };
 
 
