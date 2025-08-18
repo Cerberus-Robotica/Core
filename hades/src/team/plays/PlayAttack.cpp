@@ -7,7 +7,7 @@
 #include <iostream>
 #include <math.h>
 
-int PlayAttack::score(WorldModel world, TeamInfo team) {
+int PlayAttack::calc_score(WorldModel world, TeamInfo team) {
     int score = 0;
     if (world.ball_pos[0] > 0 && team.our_side == TeamInfo::left) {
         score += 100;
@@ -15,6 +15,7 @@ int PlayAttack::score(WorldModel world, TeamInfo team) {
     if (world.ball_pos[0] < 0 && team.our_side == TeamInfo::right) {
         score += 100;
     }
+    this->score = score;
     return score;
 }
 

@@ -6,11 +6,12 @@
 
 #include "../TeamInfo.h"
 
-int PlayDebug::score(WorldModel world, TeamInfo team) {
+int PlayDebug::calc_score(WorldModel world, TeamInfo team) {
     int score = 0;
     if (team.debug) {
         score += 999991;
     }
+    this->score = score;
     return score;
 }
 

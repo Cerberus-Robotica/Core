@@ -243,13 +243,13 @@ void Leader::add_robot(int id) {
 void Leader::select_plays() {
     // Calcular scores
     for (auto& p : plays) {
-        p.score = p.play->score(world, team);
+        p->calc_score(world, team);
     }
 
     // Ordenar do maior para o menor score
     std::sort(plays.begin(), plays.end(),
-              [](const PlayInfo& a, const PlayInfo& b) {
-                  return a.score > b.score;
+              [](PlayBase* a, PlayBase* b) {
+                  return a->get_score() > b->get_score();
               });
 
     // Criar lista inicial de roles
@@ -258,7 +258,7 @@ void Leader::select_plays() {
 
     // Aplicar roles de todas as plays em ordem de score
     for (auto& p : plays) {
-        roles = p.play->role_assign(world, team, roles);
+        roles = p->role_assign(world, team, roles);
     }
 
     // Copiar para o time

@@ -3,3 +3,7 @@
 //
 
 #include "PlayBase.h"
+
+int PlayBase::get_score() {
+    return score;
+}

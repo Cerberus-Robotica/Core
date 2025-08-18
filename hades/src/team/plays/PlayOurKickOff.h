@@ -13,9 +13,10 @@
 class PlayOurKickOff : public PlayBase{
 public:
     std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
-    int score(WorldModel world, TeamInfo team) override;
+    int calc_score(WorldModel world, TeamInfo team) override;
 
     PlayOurKickOff(){
+        name = "OurKickOff";
         required_robots = 3;
         required_roles = {TeamInfo::kickoff_goal_keeper, TeamInfo::kickoff_kicker, TeamInfo::kickoff_support};
     };
