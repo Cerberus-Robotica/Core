@@ -1,14 +1,15 @@
 //
-// Created by caiu on 06/08/25.
+// Created by caiu on 18/08/25.
 //
 
+#include "RoleStriker.h"
 #include "../RobotController.h"
-#include "roles.h"
 
 namespace roles {
-
-    void mid_field(RobotController& robot) {
-        //TODO continuar
+    void RoleStriker::act(RobotController& robot) {
+        //TODO melhorar striker_role para chutar para o passe
+        //TODO fazer interceptar a bola melhor
+        double goal[2] = {(robot.mWorld.their_goal[0][1] + robot.mWorld.their_goal[0][0])/2, (robot.mWorld.their_goal[1][1] + robot.mWorld.their_goal[1][0])/2};
         bool isPivot;
         int Pivot_id = -1;
         double their_goal[2] = {robot.mWorld.their_goal[0][0], 0};
@@ -24,18 +25,10 @@ namespace roles {
                 } else if (robot.mTeam->num_of_active_robots > 1) {
                     Pivot_id = closest_allies_to_ball[1];
                 }
-            }
-            else {
-                Pivot_id = robot.mId;
-            }
-
+            } else Pivot_id = robot.mId;
         }
 
-
         if (Pivot_id == robot.mId || Pivot_id == -1) {
-            if (robot.mWorld.ball_speed_module != 0) {
-                tactics::keep_a_location(robot, robot.mpos);
-            }
             if (tactics::aux::find_ball_trajectory(robot, robot.mWorld.ball_pos, their_goal).size() == 2 && distance_point(robot.mWorld.ball_pos, their_goal) < robot.mKick_distance) {
                 tactics::position_and_kick_to_destination(robot, their_goal);
             }
@@ -45,9 +38,10 @@ namespace roles {
             }
         }
         else {
-            double mid_field_dislocation = fabs(robot.mWorld.ball_pos[0]);
-            double x_position = std::clamp(robot.mTeam->central_line_x + (mid_field_dislocation)*robot.mTeam->our_side_sign, -robot.mTeam->mid_field_max_dislocation, robot.mTeam->mid_field_max_dislocation);
-            double delta_y = sqrt(pow(robot.mKick_distance, 2) - pow(x_position - robot.mWorld.ball_pos[0], 2));
+
+            double striker_dislocation = fabs(robot.mWorld.ball_pos[0]) + 1000;
+            double x_position = std::clamp(robot.mTeam->central_line_x + (striker_dislocation)*robot.mTeam->our_side_sign, -robot.mTeam->striker_max_dislocation, robot.mTeam->striker_max_dislocation);
+            double delta_y = sqrt(fabs(pow(robot.mKick_distance, 2) - pow(x_position - robot.mWorld.ball_pos[0], 2)));
             double y_position;
             robot.mWorld.allies[Pivot_id].pos[1] != 0 ? y_position = robot.mWorld.ball_pos[1] - delta_y*robot.mWorld.allies[Pivot_id].pos[1]/fabs(robot.mWorld.allies[Pivot_id].pos[1])
                 : y_position = robot.mWorld.ball_pos[1];
@@ -60,4 +54,4 @@ namespace roles {
             skills::turn_to(robot, robot.mWorld.ball_pos);
         }
     }
-}
+} // roles

@@ -177,6 +177,11 @@ namespace skills {
             r.major = {robot.mWorld.outside_field_y_plus[1][0], robot.mWorld.outside_field_y_plus[1][1]};
             obs_rectangular.push_back(r);
 
+            if (double_goal[0] > robot.mWorld.boundariesMajor[0]) double_goal[0] = robot.mWorld.boundariesMajor[0];
+            if (double_goal[0] < robot.mWorld.boundariesMinor[0]) double_goal[0] = robot.mWorld.boundariesMinor[0];
+            if (double_goal[1] > robot.mWorld.boundariesMajor[1]) double_goal[1] = robot.mWorld.boundariesMajor[1];
+            if (double_goal[1] < robot.mWorld.boundariesMinor[1]) double_goal[1] = robot.mWorld.boundariesMinor[1];
+
             auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
 
             return trajectory;

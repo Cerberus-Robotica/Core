@@ -6,6 +6,10 @@
 #define TEAM_H
 #include <map>
 #include <array>
+#include <memory>
+
+#include "roles/roles.h"
+
 
 
 class TeamInfo {
@@ -24,6 +28,28 @@ public:
         debug_circular_trajectory,
         debug_squared_trajectory
     };
+
+    std::shared_ptr<roles::RoleHalted> role_halted = std::make_shared<roles::RoleHalted>();
+    std::shared_ptr<roles::RoleDefender> role_defender = std::make_shared<roles::RoleDefender>();
+    std::shared_ptr<roles::RoleStriker> role_striker = std::make_shared<roles::RoleStriker>();
+    std::shared_ptr<roles::RoleGoalKeeper> role_goal_keeper = std::make_shared<roles::RoleGoalKeeper>();
+    std::shared_ptr<roles::RoleMidField> role_mid_field = std::make_shared<roles::RoleMidField>();
+    std::shared_ptr<roles::RoleKickOffKicker> role_kick_off_kicker = std::make_shared<roles::RoleKickOffKicker>();
+    std::shared_ptr<roles::RoleKickOffSupport> role_kick_off_support = std::make_shared<roles::RoleKickOffSupport>();
+    std::shared_ptr<roles::RoleKickOffGoalKeeper> role_kick_off_goal_keeper = std::make_shared<roles::RoleKickOffGoalKeeper>();
+
+    std::map<role, std::shared_ptr<roles::RoleBase>> role_map = {
+        {unknown, role_halted},
+        {halted, role_halted},
+        {defender, role_defender},
+        {striker, role_striker},
+        {goal_keeper, role_goal_keeper},
+        {mid_field, role_mid_field},
+        {kickoff_kicker, role_kick_off_kicker},
+        {kickoff_support, role_kick_off_support},
+        {kickoff_goal_keeper, role_kick_off_goal_keeper}
+    };
+
 
     enum sides {
         left,

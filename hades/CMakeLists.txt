@@ -45,22 +45,31 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/tactics/keep_a_location.cpp
         src/team/tactics/keep_x_line.cpp
         src/team/roles/roles.h
-        src/team/roles/goal_keeper.cpp
-        src/team/roles/striker.cpp
-        src/team/roles/defender.cpp
-        src/team/roles/mid_field.cpp
         src/team/plays/PlayHalt.cpp
         src/team/plays/PlayHalt.h
-        src/team/roles/halted.cpp
         src/team/skills/stop.cpp
         src/team/plays/PlayOurKickOff.cpp
         src/team/plays/PlayOurKickOff.h
-        src/team/roles/kickoff_goal_keeper.cpp
-        src/team/roles/kickoff_kicker.cpp
-        src/team/roles/kickoff_support.cpp
         src/team/plays/PlayBase.cpp
         src/team/plays/PlayBase.h
-        src/team/plays/plays.h
+        src/team/roles/RoleBase.cpp
+        src/team/roles/RoleBase.h
+        src/team/roles/RoleHalted.cpp
+        src/team/roles/RoleHalted.h
+        src/team/roles/RoleMidField.cpp
+        src/team/roles/RoleMidField.h
+        src/team/roles/RoleGoalKeeper.cpp
+        src/team/roles/RoleGoalKeeper.h
+        src/team/roles/RoleDefender.cpp
+        src/team/roles/RoleDefender.h
+        src/team/roles/RoleKickOffGoalKeeper.cpp
+        src/team/roles/RoleKickOffGoalKeeper.h
+        src/team/roles/RoleKickOffKicker.cpp
+        src/team/roles/RoleKickOffKicker.h
+        src/team/roles/RoleKickOffSupport.cpp
+        src/team/roles/RoleKickOffSupport.h
+        src/team/roles/RoleStriker.cpp
+        src/team/roles/RoleStriker.h
 )
 
 target_include_directories(${PROJECT_NAME}

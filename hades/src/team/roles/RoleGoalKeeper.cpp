@@ -1,13 +1,12 @@
 //
-// Created by caiu on 06/08/25.
-//robot.mWorld.our_goal[0][0]
+// Created by caiu on 18/08/25.
+//
 
+#include "RoleGoalKeeper.h"
 #include "../RobotController.h"
-#include "roles.h"
 
 namespace roles {
-
-    void goal_keeper(RobotController& robot) {
+    void RoleGoalKeeper::act(RobotController& robot) {
         //TODO melhorar goal_keeper_role
         if (!robot.mWorld.isBallOnOurArea() || robot.mWorld.ball_speed_module != 0) {
             robot.mState = 0;
@@ -18,4 +17,4 @@ namespace roles {
             tactics::position_and_kick_to_destination(robot, goal);
         }
     }
-}
+} // roles
