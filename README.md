@@ -1,8 +1,49 @@
 # Core
 
+
+
+```mermaid
+flowchart LR
+    %% --- Entradas ---
+    subgraph Inputs
+        direction TB
+        vision("SSL Vision")
+        GC("Game Controller")
+        grsim("GrSim")
+    end
+
+    %% --- Núcleo ---
+    subgraph Core
+        direction LR
+        Caronte["Caronte"] --> Hades["Hades"]
+        Caronte --> Iris["Iris"]
+        Hades --> Hermes["Hermes"]
+        Iris --> Hades
+        Iris --> Hermes
+        Iris --> Caronte
+    end
+
+    %% --- Saídas ---
+    subgraph Outputs
+        direction TB
+        radio[/Radio\]
+        grsim_out("GrSim")
+    end
+
+    %% Conexões externas
+    vision --> Caronte
+    GC --> Caronte
+    grsim --> Caronte
+
+    Hermes --> grsim_out
+    Hermes --> radio
+
+```
+
+
 ## Instruções para instalação
 
-### Primeiro(instalação):
+### Instalação:
 
 Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, porém instale as dependências deles em seu dispostivo.
 
