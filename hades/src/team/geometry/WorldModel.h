@@ -32,21 +32,10 @@ public:
     double left_fisical_right_goal[2][2] = {{6000, -950}, {6100, -900}}; //{-6300, -1000}, {-6000, 1000}};
     double right_fisical_right_goal[2][2] = {{6000, 900}, {6100, 950}};
 
-    double outside_field_x_minus[2][2] = {{-8000, -4800}, {-6000, 4800}};
-    double outside_field_x_plus[2][2] = {{6000, -4800}, {8000, 4800}};
-    double outside_field_y_minus[2][2] = {{-6000, -6000}, {6000, -4700}};
-    double outside_field_y_plus[2][2] = {{-6000, 4700}, {6000, 6000}};
-
-    //TODO organizar nesse formato
-    enum position {
-        top,
-        right,
-        bottom,
-        left
-    };
-    std::map<enum position, Rectangle> field_boundaries;
-    std::map<enum position, Rectangle> fisical_barrier_left_goal;
-    std::map<enum position, Rectangle> fisical_barrier_right_goal;
+    double outside_field_x_minus[2][2] = {{0, 0}, {0, 0}};//{{-8000, -4800}, {-6000, 4800}};
+    double outside_field_x_plus[2][2] = {{0, 0}, {0, 0}};//{{6000, -4800}, {8000, 4800}};
+    double outside_field_y_minus[2][2] = {{0, 0}, {0, 0}};//{{-6000, -6000}, {6000, -4700}};
+    double outside_field_y_plus[2][2] = {{0, 0}, {0, 0}};//{{-6000, 4700}, {6000, 6000}};
 
 
     std::vector<Robot> allies = {};

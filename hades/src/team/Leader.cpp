@@ -193,6 +193,10 @@ void Leader::receive_vision() {
 
 void Leader::receive_field_geometry() {
     //TODO implementar urgente
+    world.boundariesMinor[0] = -han.new_vision.field.field_length/2;
+    world.boundariesMinor[1] = -han.new_vision.field.field_width/2;
+    world.boundariesMajor[0] = han.new_vision.field.field_length/2;
+    world.boundariesMajor[1] = han.new_vision.field.field_width/2;
     team.striker_max_dislocation = fabs(world.their_defese_area[0][0] + world.their_defese_area[1][0]) / 2;
     team.mid_field_max_dislocation = std::min(fabs(world.their_defese_area[0][0]), fabs(world.their_defese_area[1][0]));
 }

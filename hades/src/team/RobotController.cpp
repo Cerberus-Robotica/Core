@@ -44,6 +44,7 @@ void RobotController::loop() {
 
         //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
         receive_vision();
+        receive_field_geometry();
         check_connection();
         select_behavior();
         publish();
@@ -68,24 +69,12 @@ void RobotController::select_behavior() {
         mtarget_vyaw = 0;
     }
 
-    if (mTeam->roles[mId] == TeamInfo::goal_keeper) {
-        roles::goal_keeper(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::striker) {
-        roles::striker(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::mid_field) {
-        roles::mid_field(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::defender) {
-        roles::defender(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::halted) {
-        roles::halted(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::kickoff_kicker) {
-        roles::kickoff_kicker(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::kickoff_goal_keeper) {
-        roles::kickoff_goal_keeper(*this);
-    } else if (mTeam->roles[mId] == TeamInfo::kickoff_support) {
-        roles::kickoff_support(*this);
+    try {
+        mTeam->role_map[mTeam->roles[mId]]->act(*this);
     }
-
+    catch (...) {
+        //when role inst on role_map
+    }
 
     if (mTeam->roles[mId] == TeamInfo::debug_circular_trajectory) {
         if (size(mCurrent_trajectory) == 0) {
@@ -261,7 +250,43 @@ void RobotController::receive_vision() {
     }
 }
 
+void RobotController::receive_field_geometry() {
+    //TODO implementar urgente
+    mWorld.boundariesMinor[0] = -han.new_vision.field.field_length/2;
+    mWorld.boundariesMinor[1] = -han.new_vision.field.field_width/2;
+    mWorld.boundariesMajor[0] = han.new_vision.field.field_length/2;
+    mWorld.boundariesMajor[1] = han.new_vision.field.field_width/2;
 
+    constexpr double INF = 9e8;
+
+    // X- (esquerda): x ∈ (-INF, xmin), y ∈ (ymin, ymax)
+    mWorld.outside_field_x_minus[0][0] = -INF;
+    mWorld.outside_field_x_minus[0][1] = mWorld.boundariesMinor[1];
+    mWorld.outside_field_x_minus[1][0] = mWorld.boundariesMinor[0];
+    mWorld.outside_field_x_minus[1][1] = mWorld.boundariesMajor[1];
+
+    mWorld.outside_field_x_plus[0][0] = mWorld.boundariesMajor[0];
+    mWorld.outside_field_x_plus[0][1] = mWorld.boundariesMinor[1];
+    mWorld.outside_field_x_plus[1][0] = INF;
+    mWorld.outside_field_x_plus[1][1] = mWorld.boundariesMajor[1];
+
+    mWorld.outside_field_y_minus[0][0] = mWorld.boundariesMinor[0];
+    mWorld.outside_field_y_minus[0][1] = -INF;
+    mWorld.outside_field_y_minus[1][0] = mWorld.boundariesMajor[0];
+    mWorld.outside_field_y_minus[1][1] = mWorld.boundariesMinor[1];
+
+    mWorld.outside_field_y_plus[0][0] = mWorld.boundariesMinor[0];
+    mWorld.outside_field_y_plus[0][1] = mWorld.boundariesMajor[1];
+    mWorld.outside_field_y_plus[1][0] = mWorld.boundariesMajor[0];
+    mWorld.outside_field_y_plus[1][1] = INF;
+
+    /**if (mTeam->our_side == TeamInfo::left) {
+        mWorld.our_defese_area[0][0] = han.new_vision.field.defense_area_height;
+        mWorld.our_defese_area[1][0] = han.new_vision.field.defense_area_height - han.new_vision.field.field_length/2;
+        mWorld.our_defese_area[0][1] = han.new_vision.field.defense_area_width;
+        mWorld.our_defese_area[0][1] = han.new_vision.field.defense_area_width - han.new_vision.field.field_width/2;
+    }**/
+}
 
 void RobotController::loadCalibration() {
     //TODO

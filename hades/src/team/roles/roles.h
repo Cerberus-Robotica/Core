@@ -2,22 +2,18 @@
 // Created by caiu on 06/08/25.
 //
 
+#pragma once
 #ifndef ROLES_H
 #define ROLES_H
 
-class RobotController;
-
-#include <cmath>
-
-namespace roles {
-    void goal_keeper(RobotController& robot);
-    void mid_field(RobotController& robot);
-    void striker(RobotController& robot);
-    void defender(RobotController& robot);
-    void halted(RobotController& robot);
-    void kickoff_goal_keeper(RobotController& robot);
-    void kickoff_support(RobotController& robot);
-    void kickoff_kicker(RobotController& robot);
-}
+#include "RoleBase.h"
+#include "RoleDefender.h"
+#include "RoleHalted.h"
+#include "RoleStriker.h"
+#include "RoleGoalKeeper.h"
+#include "RoleMidField.h"
+#include "RoleKickOffKicker.h"
+#include "RoleKickOffSupport.h"
+#include "RoleKickOffGoalKeeper.h"
 
 #endif //ROLES_H
