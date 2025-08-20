@@ -20,8 +20,8 @@ struct vision
     int64_t timestamp;
     int16_t robots_yellow_size;
     int16_t robots_blue_size;
-    detection_robots robots_yellow[robots_yellow_size];
-    detection_robots robots_blue[robots_blue_size];
+    detection_robots robots_yellow[16];
+    detection_robots robots_blue[16];
     detection_balls balls;
 	detection_geometry field;
 }

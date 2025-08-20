@@ -22,7 +22,7 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
     //std::cout << "Received message on channel \"" << chan << "\"" << std::endl;
     this->new_ia.timestamp = msg_vision->timestamp;
 
-    const std::vector<data::detection_robots>& robots_source = this->new_GC.team_blue
+    const data::detection_robots* robots_source = this->new_GC.team_blue
     ? msg_vision->robots_blue
     : msg_vision->robots_yellow;
 
@@ -32,7 +32,7 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
 
     
 
-    for (int i = 0; i < size(robots_source); ++i) {
+    for (int i = 0; i < 16; ++i) {
         data::robot robots_ia;
         const data::detection_robots& robots_sour = robots_source[i];
 

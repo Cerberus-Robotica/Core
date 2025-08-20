@@ -25,7 +25,7 @@ void recebe_dados_vision() {
 
     bool ssl_vision_atual;
     int cameras;
-    
+
     std::cout << "Connecting to sslvision..." << std::endl;
     while(true){
         struct sockaddr_in sender_addr;
@@ -53,44 +53,48 @@ void recebe_dados_vision() {
                     if (detection.robots_blue_size() > 0) {
                         for (int i = 0; i < detection.robots_blue_size(); i++) {
                             int id = detection.robots_blue(i).robot_id();
-                    
-                            // Caso o ID seja encontrado em .find(), ele retorna um iterador que aponta para o id atual, caso contrário, retorna blue_ids.end()
-                            if (blue_ids.find(id) == blue_ids.end()) { 
-                                new_robot.robot_id = id;
-                                new_robot.position_x = detection.robots_blue(i).x();
-                                new_robot.position_y = detection.robots_blue(i).y();
-                                new_robot.orientation = detection.robots_blue(i).orientation();
-                                
-                                my_vision_data.robots_blue.push_back(new_robot);
-                                blue_ids.insert(id); // Adiciona o ID ao conjunto para evitar duplicatas
-                            }
+
+                            my_vision_data.robots_blue[i].robot_id = id;
+                            my_vision_data.robots_blue[i].position_x = detection.robots_blue(i).x();
+                            my_vision_data.robots_blue[i].position_y = detection.robots_blue(i).y();
+                            my_vision_data.robots_blue[i].orientation = detection.robots_blue(i).orientation();
                         }
                         
-                        my_vision_data.robots_blue_size = my_vision_data.robots_blue.size(); // Atualizar tamanho real
+                        my_vision_data.robots_blue_size = detection.robots_blue_size(); // Atualizar tamanho real
                     }
                     else {
-                        //my_vision_data.robots_blue_size = 0; // Se não houver robôs azuis, definir o tamanho como 0
+                        for (int i = 0; i < 16; i++) {
+
+                            my_vision_data.robots_blue[i].robot_id = 0;
+                            my_vision_data.robots_blue[i].position_x = 0;
+                            my_vision_data.robots_blue[i].position_y = 0;
+                            my_vision_data.robots_blue[i].orientation = 0;
+                        }
+                        my_vision_data.robots_blue_size = detection.robots_blue_size();
                     }
                     
                     // Para os robôs amarelos, repita o mesmo processo
                     if (detection.robots_yellow_size() > 0) {
                         for (int i = 0; i < detection.robots_yellow_size(); i++) {
                             int id = detection.robots_yellow(i).robot_id();
-                    
-                            if (yellow_ids.find(id) == yellow_ids.end()) {   
-                                new_robot.robot_id = id;
-                                new_robot.position_x = detection.robots_yellow(i).x();
-                                new_robot.position_y = detection.robots_yellow(i).y();
-                                new_robot.orientation = detection.robots_yellow(i).orientation();
-                                my_vision_data.robots_yellow.push_back(new_robot);
-                                yellow_ids.insert(id);
-                            }
+
+                            my_vision_data.robots_yellow[i].robot_id = id;
+                            my_vision_data.robots_yellow[i].position_x = detection.robots_yellow(i).x();
+                            my_vision_data.robots_yellow[i].position_y = detection.robots_yellow(i).y();
+                            my_vision_data.robots_yellow[i].orientation = detection.robots_yellow(i).orientation();
                         }
                     
-                        my_vision_data.robots_yellow_size = my_vision_data.robots_yellow.size();
+                        my_vision_data.robots_yellow_size = detection.robots_yellow_size();
                     }
                     else {
-                        //my_vision_data.robots_yellow_size = 0; // Se não houver robôs amarelos, definir o tamanho como 0
+                        for (int i = 0; i < 16; i++) {
+
+                            my_vision_data.robots_yellow[i].robot_id = 0;
+                            my_vision_data.robots_yellow[i].position_x = 0;
+                            my_vision_data.robots_yellow[i].position_y = 0;
+                            my_vision_data.robots_yellow[i].orientation = 0;
+                        }
+                        my_vision_data.robots_yellow_size = detection.robots_yellow_size();
                     }
 
                     
@@ -122,34 +126,32 @@ void recebe_dados_vision() {
             }
         }
 
-    for(int i = 0; i < my_vision_data.robots_blue_size; i++){
-        std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
-        std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
-        std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
-        std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
-    }
+        for(int i = 0; i < my_vision_data.robots_blue_size; i++){
+            std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
+            std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
+            std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
+            std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
+        }
 
-    for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
-        std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
-        std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
-        std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
-        std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
-    }
+        for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
+            std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
+            std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
+            std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
+            std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+        }
 
-    //std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
-    std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
-    std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
-    std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
-    std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
+        //std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
+        std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
+        std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
+        std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
+        std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
 
-    // Publica os dados no tópico "vision"
-    //std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
-    lcm.publish("vision", &my_vision_data);
+        // Publica os dados no tópico "vision"
+        //std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
+        lcm.publish("vision", &my_vision_data);
 
-    yellow_ids.clear();
-	blue_ids.clear();
-	my_vision_data.robots_blue.clear();
-	my_vision_data.robots_yellow.clear();
+        yellow_ids.clear();
+	    blue_ids.clear();
     }  
 }

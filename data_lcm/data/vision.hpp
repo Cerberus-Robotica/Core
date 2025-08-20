@@ -9,7 +9,6 @@
 
 #include <lcm/lcm_coretypes.h>
 
-#include <vector>
 #include "detection_robots.hpp"
 #include "detection_robots.hpp"
 #include "detection_balls.hpp"
@@ -29,14 +28,14 @@ class vision
         int16_t    robots_blue_size;
 
         /**
-         * LCM Type: data.detection_robots[robots_yellow_size]
+         * LCM Type: data.detection_robots[16]
          */
-        std::vector< data::detection_robots > robots_yellow;
+        data::detection_robots robots_yellow[16];
 
         /**
-         * LCM Type: data.detection_robots[robots_blue_size]
+         * LCM Type: data.detection_robots[16]
          */
-        std::vector< data::detection_robots > robots_blue;
+        data::detection_robots robots_blue[16];
 
         data::detection_balls balls;
 
@@ -147,12 +146,12 @@ int vision::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->robots_blue_size, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    for (int a0 = 0; a0 < this->robots_yellow_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots_yellow[a0]._encodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
 
-    for (int a0 = 0; a0 < this->robots_blue_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots_blue[a0]._encodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
@@ -179,22 +178,12 @@ int vision::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->robots_blue_size, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    try {
-        this->robots_yellow.resize(this->robots_yellow_size);
-    } catch (...) {
-        return -1;
-    }
-    for (int a0 = 0; a0 < this->robots_yellow_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots_yellow[a0]._decodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
 
-    try {
-        this->robots_blue.resize(this->robots_blue_size);
-    } catch (...) {
-        return -1;
-    }
-    for (int a0 = 0; a0 < this->robots_blue_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         tlen = this->robots_blue[a0]._decodeNoHash(buf, offset + pos, maxlen - pos);
         if(tlen < 0) return tlen; else pos += tlen;
     }
@@ -214,10 +203,10 @@ int vision::_getEncodedSizeNoHash() const
     enc_size += __int64_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
-    for (int a0 = 0; a0 < this->robots_yellow_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         enc_size += this->robots_yellow[a0]._getEncodedSizeNoHash();
     }
-    for (int a0 = 0; a0 < this->robots_blue_size; a0++) {
+    for (int a0 = 0; a0 < 16; a0++) {
         enc_size += this->robots_blue[a0]._getEncodedSizeNoHash();
     }
     enc_size += this->balls._getEncodedSizeNoHash();
@@ -233,7 +222,7 @@ uint64_t vision::_computeHash(const __lcm_hash_ptr *p)
             return 0;
     const __lcm_hash_ptr cp = { p, vision::getHash };
 
-    uint64_t hash = 0xb27b48fcf3d90b9bLL +
+    uint64_t hash = 0xca1da1a57eca12f6LL +
          data::detection_robots::_computeHash(&cp) +
          data::detection_robots::_computeHash(&cp) +
          data::detection_balls::_computeHash(&cp) +
