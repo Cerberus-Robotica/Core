@@ -82,10 +82,24 @@ classDiagram
     Point --o WorldModel
     Point --o Area
     
+    class LineSegment {
+        -start : Point
+        -end : Point
+        +getPointProjection(Point)
+        +isPointAligned(Point, tolerance)
+        +getLenght()
+    }
+    LineSegment --* Point
+    LineSegment --o WorldModel
+    LineSegment --o Area
+    
     class Area {
         <<abstract>>
         +detectIfContains(Point)
         +detectIfIntercepts(Point, Point)
+        +detectIfIntercepts(LineSegment)
+        +getInterceptionPoints(Point, Point)
+        +getInterceptionPoints(LineSegment)
     }
     Area --o WorldModel
     
@@ -94,6 +108,9 @@ classDiagram
         -majorPoint
         +detectIfContains(Point)
         +detectIfIntercepts(Point, Point)
+        +detectIfIntercepts(LineSegment)
+        +getInterceptionPoints(Point, Point)
+        +getInterceptionPoints(LineSegment)
     }
     RectangularArea --|> Area
     
@@ -102,6 +119,8 @@ classDiagram
         -radius
         +detectIfContains(Point)
         +detectIfIntercepts(Point, Point)
+        +getInterceptionPoints(Point, Point)
+        +getInterceptionPoints(LineSegment)
     }
     CircularArea --|> Area
     
