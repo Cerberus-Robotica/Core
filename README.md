@@ -18,6 +18,7 @@ flowchart LR
         Caronte["Caronte"] --> Hades["Hades"]
         Caronte --> Iris["Iris"]
         Hades --> Hermes["Hermes"]
+        Hades --> Iris
         Iris --> Hades
         Iris --> Hermes
         Iris --> Caronte
