@@ -9,6 +9,7 @@ struct detection_robots_tracked
     float vel_y;
     float vel_angular;      //  The angular velocity [rad/s] in the ssl-vision coordinate system
 	float orientation;	    //  rad
+    boolean detected;
 }
 
 struct detection_balls_tracked

@@ -30,6 +30,11 @@ class detection_robots
          */
         float      orientation;
 
+        /**
+         * rad
+         */
+        int8_t     detected;
+
     public:
         /**
          * Encode a message into binary form.
@@ -138,6 +143,9 @@ int detection_robots::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->orientation, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->detected, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -157,6 +165,9 @@ int detection_robots::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->orientation, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->detected, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -167,12 +178,13 @@ int detection_robots::_getEncodedSizeNoHash() const
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t detection_robots::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x5cefce394113435cLL;
+    uint64_t hash = 0xf171c0a79224a2e3LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

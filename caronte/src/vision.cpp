@@ -53,24 +53,18 @@ void recebe_dados_vision() {
                     if (detection.robots_blue_size() > 0) {
                         for (int i = 0; i < detection.robots_blue_size(); i++) {
                             int id = detection.robots_blue(i).robot_id();
-
-                            my_vision_data.robots_blue[i].robot_id = id;
-                            my_vision_data.robots_blue[i].position_x = detection.robots_blue(i).x();
-                            my_vision_data.robots_blue[i].position_y = detection.robots_blue(i).y();
-                            my_vision_data.robots_blue[i].orientation = detection.robots_blue(i).orientation();
+                            if(my_vision_data.robots_blue[id].detected == false) {
+                                my_vision_data.robots_blue[id].detected = true;
+                                my_vision_data.robots_blue[id].robot_id = id;
+                                my_vision_data.robots_blue[id].position_x = detection.robots_blue(i).x();
+                                my_vision_data.robots_blue[id].position_y = detection.robots_blue(i).y();
+                                my_vision_data.robots_blue[id].orientation = detection.robots_blue(i).orientation();
+                                blue_ids.insert(id);
+                            }
                         }
-                        
-                        my_vision_data.robots_blue_size = detection.robots_blue_size(); // Atualizar tamanho real
                     }
                     else {
-                        for (int i = 0; i < 16; i++) {
 
-                            my_vision_data.robots_blue[i].robot_id = 0;
-                            my_vision_data.robots_blue[i].position_x = 0;
-                            my_vision_data.robots_blue[i].position_y = 0;
-                            my_vision_data.robots_blue[i].orientation = 0;
-                        }
-                        my_vision_data.robots_blue_size = detection.robots_blue_size();
                     }
                     
                     // Para os robôs amarelos, repita o mesmo processo
@@ -78,23 +72,18 @@ void recebe_dados_vision() {
                         for (int i = 0; i < detection.robots_yellow_size(); i++) {
                             int id = detection.robots_yellow(i).robot_id();
 
-                            my_vision_data.robots_yellow[i].robot_id = id;
-                            my_vision_data.robots_yellow[i].position_x = detection.robots_yellow(i).x();
-                            my_vision_data.robots_yellow[i].position_y = detection.robots_yellow(i).y();
-                            my_vision_data.robots_yellow[i].orientation = detection.robots_yellow(i).orientation();
+                            if(my_vision_data.robots_yellow[id].detected == false) {
+                                my_vision_data.robots_yellow[id].detected = true;
+                                my_vision_data.robots_yellow[id].robot_id = id;
+                                my_vision_data.robots_yellow[id].position_x = detection.robots_yellow(i).x();
+                                my_vision_data.robots_yellow[id].position_y = detection.robots_yellow(i).y();
+                                my_vision_data.robots_yellow[id].orientation = detection.robots_yellow(i).orientation();
+                                yellow_ids.insert(id);
+                            }
                         }
-                    
-                        my_vision_data.robots_yellow_size = detection.robots_yellow_size();
                     }
                     else {
-                        for (int i = 0; i < 16; i++) {
 
-                            my_vision_data.robots_yellow[i].robot_id = 0;
-                            my_vision_data.robots_yellow[i].position_x = 0;
-                            my_vision_data.robots_yellow[i].position_y = 0;
-                            my_vision_data.robots_yellow[i].orientation = 0;
-                        }
-                        my_vision_data.robots_yellow_size = detection.robots_yellow_size();
                     }
 
                     
@@ -125,24 +114,30 @@ void recebe_dados_vision() {
                 }
             }
         }
+        my_vision_data.robots_yellow_size = yellow_ids.size();
+        my_vision_data.robots_blue_size = blue_ids.size();
+        for(int i = 0; i < 16; i++){
+            if(my_vision_data.robots_blue[i].detected == true) {
+                std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
+                std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
+                std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
+                std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
+            }
 
-        for(int i = 0; i < my_vision_data.robots_blue_size; i++){
-            std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
-            std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
-            std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
-            std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
         }
 
-        for(int i = 0; i < my_vision_data.robots_yellow_size; i++){
-            std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
-            std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
-            std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
-            std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+        for(int i = 0; i < 16; i++){
+            if(my_vision_data.robots_yellow[i].detected == true) {
+                std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
+                std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
+                std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
+                std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+            }
         }
 
         //std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
         std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
-        std::cout << "Robos azuis: " << my_vision_data.robots_blue_size;
+        std::cout << "Robos azuis: " << blue_ids.size() << std::endl;
         std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
         std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
 
@@ -150,6 +145,9 @@ void recebe_dados_vision() {
         //std::this_thread::sleep_for(std::chrono::milliseconds(16));
         //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
         lcm.publish("vision", &my_vision_data);
+
+        memset(my_vision_data.robots_blue, 0, sizeof(my_vision_data.robots_blue));
+        memset(my_vision_data.robots_yellow, 0, sizeof(my_vision_data.robots_yellow));
 
         yellow_ids.clear();
 	    blue_ids.clear();
