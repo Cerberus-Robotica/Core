@@ -6,6 +6,7 @@ struct detection_robots
 	float position_x;	//mm
 	float position_y;	//mm
 	float orientation;	//rad
+    boolean detected;
 }
 
 struct detection_balls

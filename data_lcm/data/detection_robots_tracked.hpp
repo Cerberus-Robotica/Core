@@ -45,6 +45,11 @@ class detection_robots_tracked
          */
         float      orientation;
 
+        /**
+         * rad
+         */
+        int8_t     detected;
+
     public:
         /**
          * Encode a message into binary form.
@@ -162,6 +167,9 @@ int detection_robots_tracked::_encodeNoHash(void *buf, int offset, int maxlen) c
     tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->orientation, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->detected, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -190,6 +198,9 @@ int detection_robots_tracked::_decodeNoHash(const void *buf, int offset, int max
     tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->orientation, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->detected, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -203,12 +214,13 @@ int detection_robots_tracked::_getEncodedSizeNoHash() const
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t detection_robots_tracked::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0xcde03e1163900431LL;
+    uint64_t hash = 0x343fe898c3f0cb7fLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 
