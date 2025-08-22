@@ -22,18 +22,18 @@ std::vector<double> WorldModel::getKickingPosition(std::vector<double> pos_0, st
 }
 
 bool WorldModel::isBallOnOurSide() {
-    if (ball_pos[0] == 0) {
+    if (ball.getPosition().getX() == 0) {
         return false;
     }
-    else if (ball_pos[0]/fabs(ball_pos[0]) == our_goal[0][0]/fabs(our_goal[0][0])) {
+    else if (ball.getPosition().getX()/fabs(ball.getPosition().getX()) == our_goal[0][0]/fabs(our_goal[0][0])) {
         return true;
     }
     return false;
 }
 
 bool WorldModel::isBallOnOurArea() {
-    if (ball_pos[0] > our_defese_area[0][0] && ball_pos[0] < our_defese_area[1][0]) {
-        if (ball_pos[1] > our_defese_area[0][1] && ball_pos[1] < our_defese_area[1][1]) {
+    if (ball.getPosition().getX() > our_defese_area[0][0] && ball.getPosition().getX() < our_defese_area[1][0]) {
+        if (ball.getPosition().getY() > our_defese_area[0][1] && ball.getPosition().getY() < our_defese_area[1][1]) {
             return true;
         }
     }
@@ -41,8 +41,8 @@ bool WorldModel::isBallOnOurArea() {
 }
 
 bool WorldModel::isBallOnTheirArea() {
-    if (ball_pos[0] > their_defese_area[0][0] && ball_pos[0] < their_defese_area[1][0]) {
-        if (ball_pos[1] > their_defese_area[0][1] && ball_pos[1] < their_defese_area[1][1]) {
+    if (ball.getPosition().getX() > their_defese_area[0][0] && ball.getPosition().getX() < their_defese_area[1][0]) {
+        if (ball.getPosition().getY() > their_defese_area[0][1] && ball.getPosition().getY() < their_defese_area[1][1]) {
             return true;
         }
     }
@@ -55,7 +55,7 @@ std::vector<int> WorldModel::getAlliesIdsAccordingToDistanceToBall() {
 
     for (int i = 0; i < allies.size(); i++) {
         if (allies[i].detected) {
-            distances_from_ball.push_back(distance_point(allies[i].pos, ball_pos));
+            distances_from_ball.push_back(ball.getPosition().getDistanceTo(allies[i].getPosition()));
             allies_ids.push_back(i);
         }
     }
@@ -90,14 +90,15 @@ int WorldModel::findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id) 
 void WorldModel::generateBallStopPosition() {
     //FIXME gambiarra
     //FIXME calcula mal (provavel culpa da ball_speed
-    ball_stop_position[0] = std::clamp(ball_pos[0] + 1000*ball_speed[0]*ball_speed[0]/(2*ball_disacceleration), outside_field_x_minus[1][0] + 400, outside_field_x_plus[0][0] - 400);
-    ball_stop_position[1] = std::clamp(ball_pos[1] + 1000*ball_speed[1]*ball_speed[1]/(2*ball_disacceleration), outside_field_y_minus[0][1] + 400, outside_field_y_plus[0][1] - 400);
+    ball.findStopPosition();
+    //ball_stop_position[0] = std::clamp(ball_pos[0] + 1000*ball_speed[0]*ball_speed[0]/(2*ball_disacceleration), outside_field_x_minus[1][0] + 400, outside_field_x_plus[0][0] - 400);
+    //ball_stop_position[1] = std::clamp(ball_pos[1] + 1000*ball_speed[1]*ball_speed[1]/(2*ball_disacceleration), outside_field_y_minus[0][1] + 400, outside_field_y_plus[0][1] - 400);
 }
 
 int WorldModel::getIdOfTheBallInterceptor() {
     double a = 10000;
-    if (ball_speed[0] != 0) a = ball_speed[1]/ball_speed[0];
-    double c = ball_pos[1] - a*ball_pos[0];
+    if (ball.getVelocity().getX() != 0) a = ball.getVelocity().getY()/ball.getVelocity().getX();
+    double c = ball.getPosition().getY() - a*ball.getPosition().getX();
 
     int closest_id = 0;
     double smallest_distance = 1000000;
@@ -128,6 +129,6 @@ int WorldModel::getIdOfTheBallInterceptor() {
 }
 
 bool WorldModel::isBallMovingIdDirection(int id) {
-    return angle_vectors_small({ball_speed[0], ball_speed[1]},
-        {allies[id].pos[0] - ball_pos[0], allies[id].pos[1] - ball_pos[1]}) < M_PI/2;
+    return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
+        {allies[id].pos[0] - ball.getPosition().getX(), allies[id].pos[1] - ball.getPosition().getY()}) < M_PI/2;
 }
