@@ -8,25 +8,11 @@
 #include <memory>
 
 #include "roles/roles.h"
-
-
+#include "Robot.h"
+#include "RobotController.h"
 
 class TeamInfo {
 public:
-
-    enum role {
-        unknown = -1,
-        goal_keeper,
-        striker,
-        mid_field,
-        defender,
-        halted,
-        kickoff_kicker,
-        kickoff_goal_keeper,
-        kickoff_support,
-        debug_circular_trajectory,
-        debug_squared_trajectory
-    };
 
     std::shared_ptr<roles::RoleHalted> role_halted = std::make_shared<roles::RoleHalted>();
     std::shared_ptr<roles::RoleDefender> role_defender = std::make_shared<roles::RoleDefender>();
@@ -37,16 +23,16 @@ public:
     std::shared_ptr<roles::RoleKickOffSupport> role_kick_off_support = std::make_shared<roles::RoleKickOffSupport>();
     std::shared_ptr<roles::RoleKickOffGoalKeeper> role_kick_off_goal_keeper = std::make_shared<roles::RoleKickOffGoalKeeper>();
 
-    std::map<role, std::shared_ptr<roles::RoleBase>> role_map = {
-        {unknown, role_halted},
-        {halted, role_halted},
-        {defender, role_defender},
-        {striker, role_striker},
-        {goal_keeper, role_goal_keeper},
-        {mid_field, role_mid_field},
-        {kickoff_kicker, role_kick_off_kicker},
-        {kickoff_support, role_kick_off_support},
-        {kickoff_goal_keeper, role_kick_off_goal_keeper}
+    std::map<Robot::role, std::shared_ptr<roles::RoleBase>> role_map = {
+        {Robot::unknown, role_halted},
+        {Robot::halted, role_halted},
+        {Robot::defender, role_defender},
+        {Robot::striker, role_striker},
+        {Robot::goal_keeper, role_goal_keeper},
+        {Robot::mid_field, role_mid_field},
+        {Robot::kickoff_kicker, role_kick_off_kicker},
+        {Robot::kickoff_support, role_kick_off_support},
+        {Robot::kickoff_goal_keeper, role_kick_off_goal_keeper}
     };
 
 
@@ -116,18 +102,22 @@ public:
     bool debug = false;
     enum Command current_command = FORCE_START;
     double central_line_x = 0;
-    int play = -1;
     color color = yellow;
-    int game_state = -1;
-    std::array<role, 16> roles = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
-    std::array<role, 16> enemy_roles = {unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown};
+    std::array<Robot::role, 16> roles = {Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown};
+    std::array<Robot::role, 16> enemy_roles = {Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown};
     //std::map<role, int> enemy_roles;
 
     double striker_max_dislocation = 1500;
     double mid_field_max_dislocation = 0;
     double defender_min_dislocation = 1500;
 
-    //int roles[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    RobotController robots[16] = {
+        RobotController(0), RobotController(1), RobotController(2), RobotController(3),
+        RobotController(4), RobotController(5), RobotController(6), RobotController(7),
+        RobotController(8), RobotController(9), RobotController(10), RobotController(11),
+        RobotController(12), RobotController(13), RobotController(14), RobotController(15)
+    };
+
     std::array<int, 16> active_robots = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int num_of_active_robots = 0;
     bool positioned[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};

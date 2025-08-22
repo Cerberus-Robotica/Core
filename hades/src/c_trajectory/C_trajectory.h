@@ -33,7 +33,7 @@ class C_trajectory {
             this->k = k;
         }
 
-        std::vector<std::vector<double>> path_find(std::vector<double>& start, std::vector<double>& goal,
+        std::vector<std::vector<double>> path_find(std::vector<double> start, std::vector<double> goal,
                                                    std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular);
 
         std::vector<std::vector<double>> path_connect(std::vector<double>& start, std::vector<double>& goal,

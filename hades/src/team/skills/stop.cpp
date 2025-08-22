@@ -8,8 +8,7 @@
 
 namespace skills {
     void stop(RobotController& robot) {
-        robot.mtarget_vel[0] = 0;
-        robot.mtarget_vel[1] = 0;
+        robot.mtarget_vel = {0, 0};
         robot.mtarget_vyaw = 0;
     }
 }

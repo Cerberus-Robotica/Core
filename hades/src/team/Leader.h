@@ -17,13 +17,6 @@ class Leader {
 public:
     TeamInfo team;
 
-    RobotController robots[16] = {
-        RobotController(0), RobotController(1), RobotController(2), RobotController(3),
-        RobotController(4), RobotController(5), RobotController(6), RobotController(7),
-        RobotController(8), RobotController(9), RobotController(10), RobotController(11),
-        RobotController(12), RobotController(13), RobotController(14), RobotController(15)
-    };
-
 
 
     double ball_pos[2] = {0, 0};

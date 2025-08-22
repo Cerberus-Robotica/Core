@@ -11,15 +11,14 @@
 
 class PlayHalt : public PlayBase{
 public:
-    std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
+    std::array<Robot::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<Robot::role, 16> roles) override;
     int calc_score(WorldModel world, TeamInfo team) override;
 
     PlayHalt() {
         name = "halt";
         required_robots = 16;
-        required_roles = {TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
-        , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted
-        , TeamInfo::halted, TeamInfo::halted, TeamInfo::halted, TeamInfo::halted};
+        required_roles = {Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted,
+        Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, Robot::halted, };
     }
 };
 

@@ -9,13 +9,13 @@
 #include <vector>
 
 #include "../../c_trajectory/geometry/Rectangle.h"
-#include "../TeamInfo.h"
 #include "../Robot.h"
 #include "Ball.h"
 #include "Field.h"
 
 class WorldModel {
 public:
+    WorldModel() : field() {}
     double field_size[2][2] = {{-6000, -4500}, {6000, 4500}};
     double boundariesMinor[2] = {-6300, -4800};
     double boundariesMajor[2] = {6300, 4800};
@@ -43,13 +43,13 @@ public:
 
     std::vector<Robot> allies = {};
     std::vector<Robot> enemies = {};
-    Ball ball;
+    Ball ball = {false, {0, 0}, {0, 0}};
 
 
 
 
 
-    std::vector<double> getKickingPosition(std::vector<double> pos_0, std::vector<double> pos_1, double distance);
+    Point getKickingPosition(Point pos_0, Point pos_1, double distance);
     bool isBallOnOurSide();
     bool isBallOnOurArea();
     bool isBallOnTheirArea();

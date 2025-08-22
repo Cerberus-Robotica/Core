@@ -10,13 +10,13 @@
 
 
 class PlayAttack : public PlayBase{
-    std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) override;
+    std::array<Robot::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<Robot::role, 16> roles) override;
     int calc_score(WorldModel world, TeamInfo team) override;
 public:
     PlayAttack() {
         name = "attack";
         required_robots = 3;
-        required_roles = {TeamInfo::goal_keeper, TeamInfo::mid_field, TeamInfo::striker};
+        required_roles = {Robot::goal_keeper, Robot::mid_field, Robot::striker};
     }
 };
 

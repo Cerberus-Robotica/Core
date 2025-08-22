@@ -15,6 +15,7 @@ private:
 
 public:
 	Vector2d(double x = 0.0, double y = 0.0) : x(x), y(y) {}
+	Vector2d(Point p1, Point p0) : x(p1.getX() - p0.getX()), y(p1.getY() - p0.getY()) {}
 
 	void setXY(double x, double y);
 	void setX(double x);
@@ -24,6 +25,10 @@ public:
 	double getY() const;
 	std::vector<double> getVector() const;
 	double getNorm() const;
+	Vector2d getNormalized(double alpha) const;
+	double getDotProduct(Vector2d v) const;
+	double getAngleBetween(Vector2d v) const;
+	Vector2d getRotated(double ang) const;
 };
 
 #endif // VECTOR2D_H

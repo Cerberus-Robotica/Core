@@ -12,14 +12,14 @@
 class PlayBase {
 public:
     virtual int calc_score(WorldModel world, TeamInfo team) = 0;
-    virtual std::array<TeamInfo::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) = 0;
+    virtual std::array<Robot::role, 16> role_assign(WorldModel& world, TeamInfo& team, std::array<Robot::role, 16> roles) = 0;
     int get_score();
 
 protected:
     std::string name;
     int score = 0;
     int required_robots;
-    std::vector<TeamInfo::role> required_roles;
+    std::vector<Robot::role> required_roles;
 };
 
 

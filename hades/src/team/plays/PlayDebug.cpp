@@ -15,7 +15,7 @@ int PlayDebug::calc_score(WorldModel world, TeamInfo team) {
     return score;
 }
 
-std::array<TeamInfo::role, 16> PlayDebug::role_assign(WorldModel& world, TeamInfo& team, std::array<TeamInfo::role, 16> roles) {
+std::array<Robot::role, 16> PlayDebug::role_assign(WorldModel& world, TeamInfo& team, std::array<Robot::role, 16> roles) {
     int num_active_robots = 0;
     std::vector<int> active_allies_ids = {};
 
@@ -33,7 +33,7 @@ std::array<TeamInfo::role, 16> PlayDebug::role_assign(WorldModel& world, TeamInf
     }
 
     //role assign
-    for (TeamInfo::role selected_role : required_roles) {
+    for (Robot::role selected_role : required_roles) {
         if (active_allies_ids.empty()) {
             return roles;
         }

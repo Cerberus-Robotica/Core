@@ -8,40 +8,35 @@
 #include <lcm/lcm-cpp.hpp>
 
 #include "Robot.h"
-#include "TeamInfo.h"
 #include "geometry/WorldModel.h"
 #include "skills/skills.h"
 #include "tactics/tactics.h"
 #include "roles/roles.h"
 
-class RobotController {
+class TeamInfo;
+
+class RobotController : public Robot{
 
 public:
-
-
-    RobotController(int new_id){
-        mId = new_id;
+    RobotController(int new_id): Robot(new_id), mWorld() {
+        id = new_id;
     }
 
     void start(TeamInfo* team_ads);
     void stop();
     void loop();
+    bool isActive();
 
-    int mId = -1; //id; -1 unsigned
+    bool active = false;
+
     double mRadius = 160;
     double mBall_avoidance_radius = 0;
 
-    //observed status
-    double mpos[2] = {0, 0};
-    double myaw = 0;
-    double mvel[2] = {0, 0};
-    double mvyaw = 0;
-
     //target movimentation
     double mtarget_yaw = 0;
-    double mtarget_vel[2] = {0, 0};
+    Vector2d mtarget_vel = {0, 0};
     double mtarget_vyaw = 0;
-    double mlast_target_vel[2] = {0, 0};
+    Vector2d mlast_target_vel = {0, 0};
 
     //actuators activation
     double mkicker_x = 0;
@@ -50,18 +45,16 @@ public:
 
     //strategy status
     TeamInfo* mTeam;  //role; -1 unsigned
-    TeamInfo::role lastRole = TeamInfo::unknown;
 
     int mState = 0;  //estado
 
     double mDelta_time = 0;
     double mTimer = 0;
-    std::vector<std::vector<double>> mCurrent_trajectory = {};
+    std::vector<Point> mCurrent_trajectory = {};
 
 
 
     //on-field detection
-    bool mDetected = true;
     int mOffline_counter = 0;
     int mMax_offline_counter = 100;
     bool mTerminate = false;
@@ -110,11 +103,13 @@ public:
     WorldModel mWorld;
     int64_t mLast_time_stamp = 0;
 
+    enum role lastRole = unknown;
+
 private:
 
     void check_connection();
     void dynamic_calculations();
-
+    void setActive(bool active);
 
     void receive_vision();
     void receive_field_geometry();

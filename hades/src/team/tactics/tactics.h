@@ -6,18 +6,20 @@
 #define TACTICS_H
 #include <vector>
 
+#include "../geometry/LineSegment.h"
+
 class RobotController;
 
 #include <cmath>
 
 namespace tactics {
-    void keep_a_location(RobotController& robot, double keep[2]);
-    void keep_x_line(RobotController& robot, double x_line, const double y_segment[2], double y_rest);
-    void position_and_kick_to_destination(RobotController& robot, double goal[2]);
+    void keep_a_location(RobotController& robot, Point keep);
+    void keep_x_line(RobotController& robot, LineSegment y_segment, double y_rest);
+    void position_and_kick_to_destination(RobotController& robot, Point goal);
     void position_and_kick_to_robot(RobotController& robot, int id);
-    void follow_trajectory(RobotController& robot, std::vector<std::vector<double>>& trajectory);
+    void follow_trajectory(RobotController& robot, std::vector<Point>& trajectory);
     namespace aux {
-        std::vector<std::vector<double>> find_ball_trajectory(RobotController& robot, double start[2], double goal[2]);
+        std::vector<Point> find_ball_trajectory(RobotController& robot, Point start, Point goal);
     }
 }
 

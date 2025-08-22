@@ -6,12 +6,13 @@
 #define SKILLS_H
 
 class RobotController;
+class Point;
 
 #include <cmath>
 
 namespace skills {
-    void move_to(RobotController& robot, double goal[2], bool avoid_ball = true);
-    void turn_to(RobotController& robot, double goal[2]);
+    void move_to(RobotController& robot, Point goal, bool avoid_ball = true);
+    void turn_to(RobotController& robot, Point goal);
     void kick(RobotController& robot);
     void stop(RobotController& robot);
 }

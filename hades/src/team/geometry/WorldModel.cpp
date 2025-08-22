@@ -11,14 +11,12 @@
 
 #include "../c_trajectory/geometry/Vetop.h"
 
-std::vector<double> WorldModel::getKickingPosition(std::vector<double> pos_0, std::vector<double> pos_1, double distance) {
-    std::vector<double> pos_f = {0, 0};
-    pos_f[0] = -pos_1[0] + pos_0[0];
-    pos_f[1] = -pos_1[1] + pos_0[1];
-    pos_f = normalize(distance, pos_f);
-    pos_f[0] += pos_0[0];
-    pos_f[1] += pos_0[1];
-    return pos_f;
+Point WorldModel::getKickingPosition(Point pos_0, Point pos_1, double distance) {
+    Vector2d direction = {0, 0};
+    direction.setX(-pos_1.getX() + pos_0.getX());
+    direction.setY(-pos_1.getY() + pos_0.getY());
+    direction = direction.getNormalized(distance);
+    return {direction.getX() + pos_0.getX(), direction.getY() + pos_0.getY()};
 }
 
 bool WorldModel::isBallOnOurSide() {
@@ -54,7 +52,7 @@ std::vector<int> WorldModel::getAlliesIdsAccordingToDistanceToBall() {
     std::vector<int> allies_ids = {};
 
     for (int i = 0; i < allies.size(); i++) {
-        if (allies[i].detected) {
+        if (allies[i].isDetected()) {
             distances_from_ball.push_back(ball.getPosition().getDistanceTo(allies[i].getPosition()));
             allies_ids.push_back(i);
         }
@@ -76,8 +74,8 @@ int WorldModel::findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id) 
     double smallest_distance = 100000;
     int closest_id = -1;
     for (int i = 0; i < allies.size(); i++) {
-        if (allies[i].detected && i != id && i != goalkeeper_id) {
-            double this_distance = distance_point(allies[i].pos, allies[id].pos);
+        if (allies[i].isDetected() && i != id && i != goalkeeper_id) {
+            double this_distance = allies[i].getPosition().getDistanceTo(allies[id].getPosition());
             if (this_distance < smallest_distance) {
                 smallest_distance = this_distance;
                 closest_id = i;
@@ -104,10 +102,10 @@ int WorldModel::getIdOfTheBallInterceptor() {
     double smallest_distance = 1000000;
     bool itsEnemy = false;
     for (int i = 0; i < allies.size(); i++) {
-        if (allies[i].detected) {
+        if (allies[i].isDetected()) {
             if (!isBallMovingIdDirection(i)) continue;
 
-            double this_robot_distance = (fabs(a * allies[i].pos[0] - allies[i].pos[1] + c) / sqrt(pow(a, 2) + 1));
+            double this_robot_distance = (fabs(a * allies[i].getPosition().getX() - allies[i].getPosition().getY() + c) / sqrt(pow(a, 2) + 1));
             if (this_robot_distance < smallest_distance) {
                 smallest_distance = this_robot_distance;
                 closest_id = i;
@@ -115,8 +113,8 @@ int WorldModel::getIdOfTheBallInterceptor() {
         }
     }
     for (int i = 0; i < enemies.size(); i++) {
-        if (enemies[i].detected) {
-            double this_robot_distance = (fabs(a * enemies[i].pos[0] - enemies[i].pos[1] + c) / sqrt(pow(a, 2) + 1));
+        if (enemies[i].isDetected()) {
+            double this_robot_distance = (fabs(a * enemies[i].getPosition().getX() - enemies[i].getPosition().getY() + c) / sqrt(pow(a, 2) + 1));
             if (this_robot_distance < smallest_distance) {
                 smallest_distance = this_robot_distance;
                 closest_id = i;
@@ -130,5 +128,5 @@ int WorldModel::getIdOfTheBallInterceptor() {
 
 bool WorldModel::isBallMovingIdDirection(int id) {
     return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
-        {allies[id].pos[0] - ball.getPosition().getX(), allies[id].pos[1] - ball.getPosition().getY()}) < M_PI/2;
+        {allies[id].getPosition().getX() - ball.getPosition().getX(), allies[id].getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
 }
