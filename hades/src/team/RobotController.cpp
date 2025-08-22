@@ -254,33 +254,13 @@ void RobotController::receive_vision() {
 
 void RobotController::receive_field_geometry() {
     //TODO implementar urgente
-    mWorld.boundariesMinor[0] = -han.new_vision.field.field_length/2;
-    mWorld.boundariesMinor[1] = -han.new_vision.field.field_width/2;
-    mWorld.boundariesMajor[0] = han.new_vision.field.field_length/2;
-    mWorld.boundariesMajor[1] = han.new_vision.field.field_width/2;
+    mWorld.field.inside_dimensions.setMinorPoint({static_cast<double>(-han.new_vision.field.field_length/2), static_cast<double>(-han.new_vision.field.field_width/2)});
+    mWorld.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});
 
     constexpr double INF = 9e8;
 
     // X- (esquerda): x ∈ (-INF, xmin), y ∈ (ymin, ymax)
-    mWorld.outside_field_x_minus[0][0] = -INF;
-    mWorld.outside_field_x_minus[0][1] = mWorld.boundariesMinor[1];
-    mWorld.outside_field_x_minus[1][0] = mWorld.boundariesMinor[0];
-    mWorld.outside_field_x_minus[1][1] = mWorld.boundariesMajor[1];
 
-    mWorld.outside_field_x_plus[0][0] = mWorld.boundariesMajor[0];
-    mWorld.outside_field_x_plus[0][1] = mWorld.boundariesMinor[1];
-    mWorld.outside_field_x_plus[1][0] = INF;
-    mWorld.outside_field_x_plus[1][1] = mWorld.boundariesMajor[1];
-
-    mWorld.outside_field_y_minus[0][0] = mWorld.boundariesMinor[0];
-    mWorld.outside_field_y_minus[0][1] = -INF;
-    mWorld.outside_field_y_minus[1][0] = mWorld.boundariesMajor[0];
-    mWorld.outside_field_y_minus[1][1] = mWorld.boundariesMinor[1];
-
-    mWorld.outside_field_y_plus[0][0] = mWorld.boundariesMinor[0];
-    mWorld.outside_field_y_plus[0][1] = mWorld.boundariesMajor[1];
-    mWorld.outside_field_y_plus[1][0] = mWorld.boundariesMajor[0];
-    mWorld.outside_field_y_plus[1][1] = INF;
 
     /**if (mTeam->our_side == TeamInfo::left) {
         mWorld.our_defese_area[0][0] = han.new_vision.field.defense_area_height;
@@ -296,8 +276,6 @@ void RobotController::loadCalibration() {
 
 
 void RobotController::publish() {
-    std::cout << id << std::endl;
-    std::cout << mtarget_vel.getY() << " " << mtarget_vel.getX() << std::endl;
     han.new_ia.robots[id].id = id;
     han.new_ia.robots[id].vel_normal = mtarget_vel.getY();
     han.new_ia.robots[id].vel_tang = mtarget_vel.getX();

@@ -10,11 +10,11 @@ namespace roles {
         //TODO melhorar goal_keeper_role
         if (!robot.mWorld.isBallOnOurArea() || robot.mWorld.ball.getVelocity().getNorm() != 0) {
             robot.mState = 0;
-            LineSegment line(Point(robot.mWorld.our_goal[0][0], robot.mWorld.our_goal[1][0]), {robot.mWorld.our_goal[0][0], robot.mWorld.our_goal[1][1]});
-            tactics::keep_x_line(robot, line, (robot.mWorld.our_goal[1][0] + robot.mWorld.our_goal[1][1])/2);
+            LineSegment line = robot.mWorld.field.ourGoal;
+            tactics::keep_x_line(robot, line, (robot.mWorld.field.ourGoal.getStart().getY() + robot.mWorld.field.ourGoal.getEnd().getY())/2);
         }
         else {
-            Point goal = {(robot.mWorld.their_goal[0][1] + robot.mWorld.their_goal[0][0])/2, (robot.mWorld.their_goal[1][1] + robot.mWorld.their_goal[1][0])/2};
+            Point goal = {(robot.mWorld.field.theirGoal.getStart().getX() + robot.mWorld.field.theirGoal.getEnd().getX())/2, (robot.mWorld.field.theirGoal.getStart().getY() + robot.mWorld.field.theirGoal.getEnd().getY())/2};
             tactics::position_and_kick_to_destination(robot, goal);
         }
     }

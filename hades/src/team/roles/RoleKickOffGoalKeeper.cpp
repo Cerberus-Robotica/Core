@@ -7,7 +7,7 @@
 
 namespace roles {
     void RoleKickOffGoalKeeper::act(RobotController& robot) {
-        Point goal = {robot.mWorld.our_goal[0][0], ((robot.mWorld.our_goal[1][0] + robot.mWorld.our_goal[1][1])/2)};
-        skills::move_to(robot, goal);
+        Point goal = {(robot.mWorld.field.ourGoal.getStart().getX() + robot.mWorld.field.ourGoal.getEnd().getX())/2, (robot.mWorld.field.ourGoal.getStart().getY() + robot.mWorld.field.ourGoal.getEnd().getY())/2};
+            skills::move_to(robot, goal);
     }
 } // roles

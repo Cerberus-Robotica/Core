@@ -10,16 +10,18 @@
 
 class Field {
 public:
-	Field() : dimensions({0, 0}, {0, 0}),
-				theirGoal({0, 0}, {0, 0}),
-				ourGoal({0, 0}, {0, 0}),
-				theirDefenseArea({0, 0}, {0, 0}),
-				ourDefenseArea({0, 0}, {0, 0}),
-				theirFisicalBarrier({0, 0}, {0, 0}),
-				ourFisicalBarrier({0, 0}, {0, 0})
+	Field() :	full_dimensions({{-6300, -4800}, {6300, 4800}}),
+				inside_dimensions({-6000, -4500}, {6000, 4500}),
+				theirGoal({6000, -900}, {6000, 900}),
+				ourGoal({-6000, -900}, {-6000, 900}),
+				theirDefenseArea({-6000, -1750}, {-4200, 1750}),
+				ourDefenseArea({4200, -1750}, {6000, 1750}),
+				theirFisicalBarrier({6000, -900}, {6300, 900}),
+				ourFisicalBarrier({-6300, -900}, {-6000, 900})
 	{}
 
-  	AreaRectangular dimensions;
+	AreaRectangular full_dimensions;
+	AreaRectangular inside_dimensions;
 	LineSegment theirGoal;
 	LineSegment ourGoal;
 	AreaRectangular theirDefenseArea;

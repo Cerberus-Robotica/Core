@@ -23,15 +23,15 @@ bool WorldModel::isBallOnOurSide() {
     if (ball.getPosition().getX() == 0) {
         return false;
     }
-    else if (ball.getPosition().getX()/fabs(ball.getPosition().getX()) == our_goal[0][0]/fabs(our_goal[0][0])) {
+    else if (ball.getPosition().getX()/fabs(ball.getPosition().getX()) == field.ourGoal.getStart().getX()/fabs(field.ourGoal.getStart().getX())) {
         return true;
     }
     return false;
 }
 
 bool WorldModel::isBallOnOurArea() {
-    if (ball.getPosition().getX() > our_defese_area[0][0] && ball.getPosition().getX() < our_defese_area[1][0]) {
-        if (ball.getPosition().getY() > our_defese_area[0][1] && ball.getPosition().getY() < our_defese_area[1][1]) {
+    if (ball.getPosition().getX() > field.ourGoal.getStart().getX() && ball.getPosition().getX() < field.ourGoal.getEnd().getX()) {
+        if (ball.getPosition().getY() > field.ourGoal.getStart().getY() && ball.getPosition().getY() < field.ourGoal.getEnd().getY()) {
             return true;
         }
     }
@@ -39,8 +39,8 @@ bool WorldModel::isBallOnOurArea() {
 }
 
 bool WorldModel::isBallOnTheirArea() {
-    if (ball.getPosition().getX() > their_defese_area[0][0] && ball.getPosition().getX() < their_defese_area[1][0]) {
-        if (ball.getPosition().getY() > their_defese_area[0][1] && ball.getPosition().getY() < their_defese_area[1][1]) {
+    if (ball.getPosition().getX() > field.theirDefenseArea.getMinorPoint().getX() && ball.getPosition().getX() < field.theirDefenseArea.getMajorPoint().getX()) {
+        if (ball.getPosition().getY() > field.theirDefenseArea.getMinorPoint().getY() && ball.getPosition().getY() < field.theirDefenseArea.getMajorPoint().getY()) {
             return true;
         }
     }

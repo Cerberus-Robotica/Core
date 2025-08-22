@@ -13,7 +13,7 @@ namespace roles {
         //TODO fazer interceptar a bola melhor
         bool isPivot;
         int Pivot_id = -1;
-        Point their_goal = {robot.mWorld.their_goal[0][0], 0};
+        Point their_goal = {robot.mWorld.field.theirGoal.getStart().getX(), 0};
 
         auto interceptor = robot.mWorld.getIdOfTheBallInterceptor();
         if (robot.mWorld.ball.getVelocity().getNorm() != 0 && interceptor < 20 && robot.mTeam->num_of_active_robots > 1) {
@@ -46,9 +46,9 @@ namespace roles {
             double y_position;
             robot.mWorld.allies[Pivot_id].getPosition().getY() != 0 ? y_position = robot.mWorld.ball.getPosition().getY() - delta_y*robot.mWorld.allies[Pivot_id].getPosition().getY()/fabs(robot.mWorld.allies[Pivot_id].getPosition().getY())
                 : y_position = robot.mWorld.ball.getPosition().getY();
-            if (y_position > robot.mWorld.their_defese_area[0][1] - robot.mRadius*2 && y_position < robot.mWorld.their_defese_area[1][1] + robot.mRadius*2) {
-                if (y_position > 0) y_position = robot.mWorld.their_defese_area[1][1] + robot.mRadius*2;
-                else y_position = robot.mWorld.their_defese_area[0][1] - robot.mRadius*2;
+            if (y_position > robot.mWorld.field.theirDefenseArea.getMinorPoint().getY() - robot.mRadius*2 && y_position < robot.mWorld.field.theirDefenseArea.getMajorPoint().getY() + robot.mRadius*2) {
+                if (y_position > 0) y_position = robot.mWorld.field.theirDefenseArea.getMajorPoint().getY() + robot.mRadius*2;
+                else y_position = robot.mWorld.field.theirDefenseArea.getMinorPoint().getY() - robot.mRadius*2;
             }
             Point wait_position = {x_position, y_position};
             tactics::keep_a_location(robot, wait_position);
