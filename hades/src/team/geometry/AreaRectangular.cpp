@@ -87,3 +87,18 @@ std::array<Point, 2> AreaRectangular::getInterceptionPoints(LineSegment l) {
 
     return intersections;
 }
+
+Point AreaRectangular::getMajorPoint() {
+    return majorPoint;
+}
+
+Point AreaRectangular::getMinorPoint() {
+    return minorPoint;
+}
+
+void AreaRectangular::setMajorPoint(Point p) {
+    majorPoint = p;
+}
+void AreaRectangular::setMinorPoint(Point p) {
+    minorPoint = p;
+}

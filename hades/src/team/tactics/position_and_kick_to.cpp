@@ -11,7 +11,9 @@
 namespace tactics {
     namespace aux {
         std::vector<Point> find_ball_trajectory(RobotController& robot, Point start, Point goal) {
-            C_trajectory pf(false, false, 0, 1000, 300, 0, robot.mWorld.boundariesMinor, robot.mWorld.boundariesMajor);
+            double minor[2] = {robot.mWorld.field.full_dimensions.getMinorPoint().getX(), robot.mWorld.field.full_dimensions.getMinorPoint().getY()};
+            double major[2] = {robot.mWorld.field.full_dimensions.getMajorPoint().getX(), robot.mWorld.field.full_dimensions.getMajorPoint().getY()};
+            C_trajectory pf(false, false, 0, 1000, 300, 0, minor, major);
             std::vector<Circle> obs_circular = {};
             std::vector<Rectangle> obs_rectangular = {};
 

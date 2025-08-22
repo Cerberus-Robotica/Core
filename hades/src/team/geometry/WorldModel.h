@@ -16,37 +16,12 @@
 class WorldModel {
 public:
     WorldModel() : field() {}
-    double field_size[2][2] = {{-6000, -4500}, {6000, 4500}};
-    double boundariesMinor[2] = {-6300, -4800};
-    double boundariesMajor[2] = {6300, 4800};
-
-    double their_goal[2][2] = {{6000, 6000}, {1000, -1000}};
-    double our_goal[2][2] = {{-6000, -6000}, {1000, -1000}};
-
-    double our_defese_area[2][2] = {{-6000, -1750}, {-4200, 1750}};
-    double their_defese_area[2][2] = {{4200, -1750}, {6000, 1750}};
-
-    double back_fisical_left_goal[2][2] = {{-6300, -1000}, {-6200, 1000}}; //{-6300, -1000}, {-6000, 1000}};
-    double left_fisical_left_goal[2][2] = {{-6100, -950}, {-6000, -900}}; //{-6300, -1000}, {-6000, 1000}};
-    double right_fisical_left_goal[2][2] = {{-6100, 900}, {-6000, 950}}; //{-6300, -1000}, {-6000, 1000}};
-
-    double back_fisical_right_goal[2][2] = {{6200, -1000}, {6300, 1000}}; //{-6300, -1000}, {-6000, 1000}};
-    double left_fisical_right_goal[2][2] = {{6000, -950}, {6100, -900}}; //{-6300, -1000}, {-6000, 1000}};
-    double right_fisical_right_goal[2][2] = {{6000, 900}, {6100, 950}};
-
-    double outside_field_x_minus[2][2] = {{0, 0}, {0, 0}};//{{-8000, -4800}, {-6000, 4800}};
-    double outside_field_x_plus[2][2] = {{0, 0}, {0, 0}};//{{6000, -4800}, {8000, 4800}};
-    double outside_field_y_minus[2][2] = {{0, 0}, {0, 0}};//{{-6000, -6000}, {6000, -4700}};
-    double outside_field_y_plus[2][2] = {{0, 0}, {0, 0}};//{{-6000, 4700}, {6000, 6000}};
-
+    
     Field field;
 
     std::vector<Robot> allies = {};
     std::vector<Robot> enemies = {};
     Ball ball = {false, {0, 0}, {0, 0}};
-
-
-
 
 
     Point getKickingPosition(Point pos_0, Point pos_1, double distance);

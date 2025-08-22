@@ -90,7 +90,9 @@ namespace skills {
 
 
         std::vector<Point> find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true) {
-            C_trajectory pf(false, false, 0, 100, 50, 0, robot.mWorld.boundariesMinor, robot.mWorld.boundariesMajor);
+            double minor[2] = {robot.mWorld.field.full_dimensions.getMinorPoint().getX(), robot.mWorld.field.full_dimensions.getMinorPoint().getY()};
+            double major[2] = {robot.mWorld.field.full_dimensions.getMajorPoint().getX(), robot.mWorld.field.full_dimensions.getMajorPoint().getY()};
+            C_trajectory pf(false, false, 0, 100, 50, 0, minor, major);
 
             std::vector<Circle> obs_circular = {};
             std::vector<Rectangle> obs_rectangular = {};
@@ -121,57 +123,29 @@ namespace skills {
                 Circle c({robot.mWorld.enemies[i].getPosition().getX(), robot.mWorld.enemies[i].getPosition().getY()}, robot.mRadius);
                 obs_circular.push_back(c);
             }
-
             if (robot.mTeam->roles[robot.getId()] != Robot::goal_keeper) {
-                Rectangle r({robot.mWorld.our_defese_area[0][0] - robot.mRadius, robot.mWorld.our_defese_area[0][1] - robot.mRadius}, {robot.mWorld.our_defese_area[1][0] + robot.mRadius, robot.mWorld.our_defese_area[1][1] + robot.mRadius});
+                Rectangle r({robot.mWorld.field.ourDefenseArea.getMinorPoint().getX() - robot.mRadius, robot.mWorld.field.ourDefenseArea.getMinorPoint().getY() - robot.mRadius}, {robot.mWorld.field.ourDefenseArea.getMajorPoint().getX() + robot.mRadius, robot.mWorld.field.ourDefenseArea.getMajorPoint().getY() + robot.mRadius});
                 obs_rectangular.push_back(r);
             }
 
-            r.minor = {robot.mWorld.their_defese_area[0][0] - robot.mRadius, robot.mWorld.their_defese_area[0][1] - robot.mRadius};
-            r.major = {robot.mWorld.their_defese_area[1][0] + robot.mRadius, robot.mWorld.their_defese_area[1][1] + robot.mRadius};
+            r.minor = {robot.mWorld.field.theirDefenseArea.getMinorPoint().getX() - robot.mRadius, robot.mWorld.field.theirDefenseArea.getMinorPoint().getY() - robot.mRadius};
+            r.major = {robot.mWorld.field.theirDefenseArea.getMajorPoint().getX() + robot.mRadius, robot.mWorld.field.theirDefenseArea.getMajorPoint().getY() + robot.mRadius};
             obs_rectangular.push_back(r);
 
 
             //goal fisical barrier
-
-            r.minor = {robot.mWorld.back_fisical_left_goal[0][0] - robot.mRadius, robot.mWorld.back_fisical_left_goal[0][1] - robot.mRadius};
-            r.major = {robot.mWorld.back_fisical_left_goal[1][0] - robot.mRadius, robot.mWorld.back_fisical_left_goal[1][1] + robot.mRadius};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.left_fisical_left_goal[0][0] - robot.mRadius, robot.mWorld.left_fisical_left_goal[0][1] - robot.mRadius};
-            r.major = {robot.mWorld.left_fisical_left_goal[1][0] - robot.mRadius, robot.mWorld.left_fisical_left_goal[1][1] - robot.mRadius};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.right_fisical_left_goal[0][0] - robot.mRadius, robot.mWorld.right_fisical_left_goal[0][1] + robot.mRadius};
-            r.major = {robot.mWorld.right_fisical_left_goal[1][0] - robot.mRadius, robot.mWorld.right_fisical_left_goal[1][1] + robot.mRadius};
+            r.minor = {robot.mWorld.field.ourFisicalBarrier.getMinorPoint().getX() - robot.mRadius, robot.mWorld.field.ourFisicalBarrier.getMinorPoint().getY() + robot.mRadius};
+            r.major = {robot.mWorld.field.ourFisicalBarrier.getMajorPoint().getX() - robot.mRadius, robot.mWorld.field.ourFisicalBarrier.getMajorPoint().getY() + robot.mRadius};
             obs_rectangular.push_back(r);
 
-
-            r.minor = {robot.mWorld.back_fisical_right_goal[0][0] + robot.mRadius, robot.mWorld.back_fisical_right_goal[0][1] - robot.mRadius};
-            r.major = {robot.mWorld.back_fisical_right_goal[1][0] + robot.mRadius, robot.mWorld.back_fisical_right_goal[1][1] + robot.mRadius};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.left_fisical_right_goal[0][0] + robot.mRadius, robot.mWorld.left_fisical_right_goal[0][1] - robot.mRadius};
-            r.major = {robot.mWorld.left_fisical_right_goal[1][0] + robot.mRadius, robot.mWorld.left_fisical_right_goal[1][1] - robot.mRadius};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.right_fisical_right_goal[0][0] + robot.mRadius, robot.mWorld.right_fisical_right_goal[0][1] + robot.mRadius};
-            r.major = {robot.mWorld.right_fisical_right_goal[1][0] + robot.mRadius, robot.mWorld.right_fisical_right_goal[1][1] + robot.mRadius};
+            r.minor = {robot.mWorld.field.theirFisicalBarrier.getMinorPoint().getX() - robot.mRadius, robot.mWorld.field.theirFisicalBarrier.getMinorPoint().getY() + robot.mRadius};
+            r.major = {robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getX() - robot.mRadius, robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getY() + robot.mRadius};
             obs_rectangular.push_back(r);
 
-            r.minor = {robot.mWorld.outside_field_x_minus[0][0], robot.mWorld.outside_field_x_minus[0][1]};
-            r.major = {robot.mWorld.outside_field_x_minus[1][0], robot.mWorld.outside_field_x_minus[1][1]};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.outside_field_x_plus[0][0], robot.mWorld.outside_field_x_plus[0][1]};
-            r.major = {robot.mWorld.outside_field_x_plus[1][0], robot.mWorld.outside_field_x_plus[1][1]};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.outside_field_y_minus[0][0], robot.mWorld.outside_field_y_minus[0][1]};
-            r.major = {robot.mWorld.outside_field_y_minus[1][0], robot.mWorld.outside_field_y_minus[1][1]};
-            obs_rectangular.push_back(r);
-            r.minor = {robot.mWorld.outside_field_y_plus[0][0], robot.mWorld.outside_field_y_plus[0][1]};
-            r.major = {robot.mWorld.outside_field_y_plus[1][0], robot.mWorld.outside_field_y_plus[1][1]};
-            obs_rectangular.push_back(r);
-
-            if (goal.getX() > robot.mWorld.boundariesMajor[0]) goal.setX(robot.mWorld.boundariesMajor[0]);
-            if (goal.getX() < robot.mWorld.boundariesMinor[0]) goal.setX(robot.mWorld.boundariesMinor[0]);
-            if (goal.getY() > robot.mWorld.boundariesMajor[1]) goal.setY(robot.mWorld.boundariesMajor[1]);
-            if (goal.getY() < robot.mWorld.boundariesMinor[1]) goal.setY(robot.mWorld.boundariesMinor[1]);
+            if (goal.getX() > robot.mWorld.field.full_dimensions.getMajorPoint().getX()) goal.setX(robot.mWorld.field.full_dimensions.getMajorPoint().getX());
+            if (goal.getX() < robot.mWorld.field.full_dimensions.getMinorPoint().getX()) goal.setX(robot.mWorld.field.full_dimensions.getMinorPoint().getX());
+            if (goal.getY() > robot.mWorld.field.full_dimensions.getMajorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMajorPoint().getY());
+            if (goal.getY() < robot.mWorld.field.full_dimensions.getMinorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMinorPoint().getY());
 
             auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
             std::vector<Point> trajectory = {};
