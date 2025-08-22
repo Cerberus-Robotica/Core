@@ -11,6 +11,8 @@
 #include "../../c_trajectory/geometry/Rectangle.h"
 #include "../TeamInfo.h"
 #include "../Robot.h"
+#include "Ball.h"
+#include "Field.h"
 
 class WorldModel {
 public:
@@ -37,16 +39,12 @@ public:
     double outside_field_y_minus[2][2] = {{0, 0}, {0, 0}};//{{-6000, -6000}, {6000, -4700}};
     double outside_field_y_plus[2][2] = {{0, 0}, {0, 0}};//{{-6000, 4700}, {6000, 6000}};
 
+    Field field;
 
     std::vector<Robot> allies = {};
     std::vector<Robot> enemies = {};
-    double ball_pos[2] = {0, 0};
-    double ball_speed[2] = {0, 0}; //m/s"2
-    double ball_speed_module = 0;
-    double ball_stop_position[2] = {0, 0};
-    double ball_disacceleration = 0.2;
+    Ball ball;
 
-    std::vector<std::vector<double>> support_areas = {};
 
 
 

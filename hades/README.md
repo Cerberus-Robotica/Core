@@ -93,6 +93,13 @@ classDiagram
     LineSegment --o WorldModel
     LineSegment --o Area
     
+    class Vector2d {
+        -x
+        -y
+        +get_norm
+    }
+    Vector2d --o WorldModel
+    
     class Area {
         <<abstract>>
         +detectIfContains(Point)

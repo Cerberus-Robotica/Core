@@ -67,7 +67,7 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
     std::string serialized_packet = packet_grsim.SerializeAsString();
     sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
     std::cout << "Sending to grSim..." << std::endl << std::endl;
-        
+
 
 }
 
@@ -158,7 +158,7 @@ void robots_sender::send_control() { // global function to send control commands
                             r->vel_tang = pct.Vy;
                             r->vel_normal = pct.Vx;
                             r->vel_ang = pct.Vang;
-                            std::cout << "Controlled robot - " << "Robot ID: " << (int)r->id << " Vy: " << r->vel_tang << " Vx: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+                            std::cout << "Controlled robot - " << "Robot I: " << (int)r->id << " Vy: " << r->vel_tang << " Vx: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
                         }
                         else {
                             r->vel_tang = 0;
@@ -169,8 +169,6 @@ void robots_sender::send_control() { // global function to send control commands
                 }
 
                 send_to_grsim();
-                sleep(0.05); // Sleep for a short time to avoid flooding the network
-
             }
         } else {
             stm_connect();
@@ -190,15 +188,12 @@ void robots_sender::send_control() { // global function to send control commands
                         pct.Vang = -han.data_ia_copy.robots[i].vel_ang;
                         pct.kicker = han.data_ia_copy.robots[i].kick_speed_x;
                     }
-                    std::cout << "Controlled robot - Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
+                    std::cout << "Controlled robot - Robot I: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
                     memcpy(&msg[2], &pct, sizeof(Pacote));
                     write(serial_port, msg, sizeof(msg));
-                	usleep(500);
                 }
-                usleep(5000);
             }
         }
-        sleep(1); // Sleep for a while before sending again
         
     }
     close(serial_port);
