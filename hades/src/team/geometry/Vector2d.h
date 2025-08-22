@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cmath>
+#include "Point.h"
 
 class Vector2d {
 private:
