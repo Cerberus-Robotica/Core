@@ -9,30 +9,27 @@
 #include "../RobotController.h"
 #include "../c_trajectory/C_trajectory.h"
 #include "skills.h"
+#include "../TeamInfo.h"
 
 namespace skills {
     namespace {
-        std::vector<double> motion_planner(RobotController& robot, std::vector<std::vector<double>> trajectory) {
-            std::vector<double> delta = {trajectory[1][0] - robot.mpos[0], trajectory[1][1] - robot.mpos[1]};
-            double dist = norm(delta) / 1000.0; // metros
-            std::vector<double> direction = normalize(1, delta);
+        Vector2d motion_planner(RobotController& robot, std::vector<Point> trajectory) {
+            Vector2d delta = {trajectory[1].getX() - robot.getPosition().getX(), trajectory[1].getY() - robot.getPosition().getY()};
+            double dist = delta.getNorm() / 1000.0; // metros
+            auto direction = delta.getNormalized(1);
 
             double curve_safe_speed = robot.mVxy_min;
             double v_target_magnitude = robot.mVxy_max;
             if (trajectory.size() > 2) {
-                std::vector<double> p0 = {robot.mpos[0], robot.mpos[1]};
-                std::vector<double> p1 = {trajectory[1][0], trajectory[1][1]};
-                std::vector<double> p2 = {trajectory[2][0], trajectory[2][1]};
+                Point p0 = robot.getPosition();
+                Point p1 = trajectory[1];
+                Point p2 = trajectory[2];
 
-                std::vector<double> v1 = {p1[0] - p0[0], p1[1] - p0[1]};
-                std::vector<double> v2 = {p2[0] - p1[0], p2[1] - p1[1]};
+                Vector2d v1 = {p1 , p0};
+                Vector2d v2 = {p2, p1};
 
-                double dot_product = v1[0] * v2[0] + v1[1] * v2[1];
-                double norm_v1 = sqrt(v1[0]*v1[0] + v1[1]*v1[1]);
-                double norm_v2 = sqrt(v2[0]*v2[0] + v2[1]*v2[1]);
-                double angle_between = acos(std::clamp(dot_product / (norm_v1 * norm_v2 + 1e-6), -1.0, 1.0));
-
-                double chord_length = sqrt(pow(p2[0] - p0[0], 2) + pow(p2[1] - p0[1], 2)); // mm
+                double angle_between = v1.getAngleBetween(v2);
+                double chord_length = p2.getDistanceTo(p1); // mm
                 chord_length /= 1000.0; // Para metros
 
                 double radius = chord_length / (2.0 * sin(std::max(angle_between/2, 1e-3)));
@@ -46,7 +43,7 @@ namespace skills {
 
             }
 
-            double current_speed = sqrt(robot.mvel[0]*robot.mvel[0] + robot.mvel[1]*robot.mvel[1]);
+            double current_speed = robot.getVelocity().getNorm();
 
             double brake_distance = (robot.mVxy_max*robot.mVxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * robot.mA_xy_brake);
             brake_distance = std::max(brake_distance, 0.0);
@@ -57,49 +54,43 @@ namespace skills {
             }
 
             v_target_magnitude = std::clamp(v_target_magnitude, -robot.mVxy_max, robot.mVxy_max);
-            std::vector<double> v_target = {v_target_magnitude * direction[0], v_target_magnitude * direction[1]};
-            std::vector<double> error = {v_target[0] - robot.mlast_target_vel[0], v_target[1] - robot.mlast_target_vel[1]};
+            std::vector<double> v_target = {v_target_magnitude * direction.getX(), v_target_magnitude * direction.getY()};
+            std::vector<double> error = {v_target[0] - robot.mlast_target_vel.getX(), v_target[1] - robot.mlast_target_vel.getY()};
             std::vector<double> acceleration = {0, 0};
 
-            if (fabs(v_target[0]) > fabs(robot.mlast_target_vel[0])) {
+            if (fabs(v_target[0]) > fabs(robot.mlast_target_vel.getX())) {
                 acceleration[0] = std::clamp(error[0] / robot.mDelta_time, -robot.mA_xy_max, robot.mA_xy_max);
             } else {
                 acceleration[0] = std::clamp(error[0] / robot.mDelta_time, -robot.mA_xy_brake, robot.mA_xy_brake);
             }
 
-            if (fabs(v_target[1]) > fabs(robot.mlast_target_vel[1])) {
+            if (fabs(v_target[1]) > fabs(robot.mlast_target_vel.getY())) {
                 acceleration[1] = std::clamp(error[1] / robot.mDelta_time, -robot.mA_xy_max, robot.mA_xy_max);
             } else {
                 acceleration[1] = std::clamp(error[1] / robot.mDelta_time, -robot.mA_xy_brake, robot.mA_xy_brake);
             }
 
 
-            std::vector<double> vel_cmd = {robot.mlast_target_vel[0] + acceleration[0]*robot.mDelta_time, robot.mlast_target_vel[1] + acceleration[1]*robot.mDelta_time};
-            if (norm(vel_cmd) > robot.mVxy_max) {
-                vel_cmd = normalize(robot.mVxy_max, vel_cmd);
+            Vector2d vel_cmd = {robot.mlast_target_vel.getX() + acceleration[0]*robot.mDelta_time, robot.mlast_target_vel.getY() + acceleration[1]*robot.mDelta_time};
+            if (vel_cmd.getNorm() > robot.mVxy_max) {
+                vel_cmd = vel_cmd.getNormalized(robot.mVxy_max);
             }
 
-            if (std::isnan(vel_cmd[0])) vel_cmd[0] = 0;
-            if (std::isnan(vel_cmd[1])) vel_cmd[1] = 0;
+            if (std::isnan(vel_cmd.getX())) vel_cmd.setX(0);
+            if (std::isnan(vel_cmd.getY())) vel_cmd.setY(0);
 
-            robot.mlast_target_vel[0] = vel_cmd[0];
-            robot.mlast_target_vel[1] = vel_cmd[1];
+            robot.mlast_target_vel = vel_cmd;
             return vel_cmd;
         }
 
-        std::vector<double> motion_control(std::vector<double> v_vet, double yaw) {
+        Vector2d motion_control(Vector2d v_vet, double yaw) {
             const double ang = yaw;
-            double x = v_vet[0];
-            double y = v_vet[1];
-            v_vet = {x * cos(ang) - y * sin(ang), x * sin(ang) + y * cos(ang)};
-            return v_vet;
+            return v_vet.getRotated(ang);
         }
 
 
-        std::vector<std::vector<double>> find_trajectory( RobotController& robot, double start[2], double goal[2], bool avoid_ball = true) {
+        std::vector<Point> find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true) {
             C_trajectory pf(false, false, 0, 100, 50, 0, robot.mWorld.boundariesMinor, robot.mWorld.boundariesMajor);
-            std::vector<double> double_start = {start[0], start[1]};
-            std::vector<double> double_goal = {goal[0], goal[1]};
 
             std::vector<Circle> obs_circular = {};
             std::vector<Rectangle> obs_rectangular = {};
@@ -109,29 +100,29 @@ namespace skills {
 
             //add static ball to obstacles according to avoidance radius
             if (avoid_ball) {
-                Circle c({robot.mWorld.ball_pos[0], robot.mWorld.ball_pos[1]}, robot.mBall_avoidance_radius + robot.mRadius);
+                Circle c({robot.mWorld.ball.getPosition().getX(), robot.mWorld.ball.getPosition().getY()}, robot.mBall_avoidance_radius + robot.mRadius);
                 obs_circular.push_back(c);
             }
 
             //add static allies to obstacles
             for (int i = 0; i < size(robot.mWorld.allies) ; i++) {
-                if (!robot.mWorld.allies[i].detected || i == robot.mId) {
+                if (!robot.mWorld.allies[i].isDetected() || i == robot.getId()) {
                     continue;
                 }
-                Circle c({robot.mWorld.allies[i].pos[0], robot.mWorld.allies[i].pos[1]}, robot.mRadius);
+                Circle c({robot.mWorld.allies[i].getPosition().getX(), robot.mWorld.allies[i].getPosition().getY()}, robot.mRadius);
                 obs_circular.push_back(c);
             }
 
             //add static enemies to obstacles
             for (int i = 0; i < size(robot.mWorld.enemies) ; i++) {
-                if (!robot.mWorld.enemies[i].detected) {
+                if (!robot.mWorld.enemies[i].isDetected()) {
                     continue;
                 }
-                Circle c({robot.mWorld.enemies[i].pos[0], robot.mWorld.enemies[i].pos[1]}, robot.mRadius);
+                Circle c({robot.mWorld.enemies[i].getPosition().getX(), robot.mWorld.enemies[i].getPosition().getY()}, robot.mRadius);
                 obs_circular.push_back(c);
             }
 
-            if (robot.mTeam->roles[robot.mId] != TeamInfo::goal_keeper) {
+            if (robot.mTeam->roles[robot.getId()] != Robot::goal_keeper) {
                 Rectangle r({robot.mWorld.our_defese_area[0][0] - robot.mRadius, robot.mWorld.our_defese_area[0][1] - robot.mRadius}, {robot.mWorld.our_defese_area[1][0] + robot.mRadius, robot.mWorld.our_defese_area[1][1] + robot.mRadius});
                 obs_rectangular.push_back(r);
             }
@@ -177,36 +168,38 @@ namespace skills {
             r.major = {robot.mWorld.outside_field_y_plus[1][0], robot.mWorld.outside_field_y_plus[1][1]};
             obs_rectangular.push_back(r);
 
-            if (double_goal[0] > robot.mWorld.boundariesMajor[0]) double_goal[0] = robot.mWorld.boundariesMajor[0];
-            if (double_goal[0] < robot.mWorld.boundariesMinor[0]) double_goal[0] = robot.mWorld.boundariesMinor[0];
-            if (double_goal[1] > robot.mWorld.boundariesMajor[1]) double_goal[1] = robot.mWorld.boundariesMajor[1];
-            if (double_goal[1] < robot.mWorld.boundariesMinor[1]) double_goal[1] = robot.mWorld.boundariesMinor[1];
+            if (goal.getX() > robot.mWorld.boundariesMajor[0]) goal.setX(robot.mWorld.boundariesMajor[0]);
+            if (goal.getX() < robot.mWorld.boundariesMinor[0]) goal.setX(robot.mWorld.boundariesMinor[0]);
+            if (goal.getY() > robot.mWorld.boundariesMajor[1]) goal.setY(robot.mWorld.boundariesMajor[1]);
+            if (goal.getY() < robot.mWorld.boundariesMinor[1]) goal.setY(robot.mWorld.boundariesMinor[1]);
 
-            auto trajectory = pf.path_find(double_start, double_goal, obs_circular, obs_rectangular);
+            auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
+            std::vector<Point> trajectory = {};
+            for (int i = 0; i < trajectory_vector.size(); i++) {
+                trajectory.emplace_back(trajectory_vector[i][0], trajectory_vector[i][1]);
+            }
 
             return trajectory;
         }
     }
 
-    void move_to(RobotController& robot, double goal[2], bool avoid_ball) {
-        if (sqrt(pow(goal[0] - robot.mpos[0], 2) + pow(goal[1] - robot.mpos[1], 2)) < robot.mStatic_position_tolarance) {
-            robot.mtarget_vel[0] = 0;
-            robot.mtarget_vel[1] = 0;
-            robot.mtarget_vyaw = 0;
+    void move_to(RobotController& robot, Point goal, bool avoid_ball) {
+        if (robot.getPosition().getDistanceTo(goal) < robot.mStatic_position_tolarance) {
+            robot.mtarget_vel = {0, 0};
+            robot.mtarget_vyaw = 0; //TODO verificar
             robot.mPositioned = true;
-            robot.mTeam->positioned[robot.mId] = true;
+            robot.mTeam->positioned[robot.getId()] = true;
             return;
         }
         robot.mPositioned = false;
-        robot.mTeam->positioned[robot.mId] = false;
-        std::vector<double> v_vet;
-        auto trajectory = find_trajectory(robot, robot.mpos, goal, avoid_ball);
+        robot.mTeam->positioned[robot.getId()] = false;
+        Vector2d v_vet;
+        auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
         std::size(trajectory) > 0 ? v_vet = motion_planner(robot, trajectory) : v_vet = {0, 0};
 
 
-        v_vet = motion_control(v_vet, -robot.myaw);
-        robot.mtarget_vel[0] = v_vet[0];
-        robot.mtarget_vel[1] = v_vet[1];
+        v_vet = motion_control(v_vet, -robot.getYaw());
+        robot.mtarget_vel = v_vet;
         robot.mkicker_x = 0;
     }
 }

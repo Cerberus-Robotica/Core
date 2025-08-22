@@ -74,18 +74,19 @@ void Leader::receive_vision() {
             double new_yaw = blue_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (delta_time > 0) {
-                world.allies[rb_id].stored_speed_x.push_back((blue_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000));
-                world.allies[rb_id].stored_speed_y.push_back((blue_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000));
-                if (size(world.allies[rb_id].stored_speed_x) > 10) {
-                    world.allies[rb_id].stored_speed_x.pop_front();
-                    world.allies[rb_id].stored_speed_y.pop_front();
+                //TODO logica quebrada na troca de estrutura, refazer.
+                Vector2d v = {((blue_robot.position_x - world.allies[rb_id].getPosition().getX())/(delta_time*1000)), ((blue_robot.position_y - world.allies[rb_id].getPosition().getY())/(delta_time*1000))};
+                auto velocities = world.allies[rb_id].getStoredVelocities();
+                velocities.push_back(v);
+                if (size(world.allies[rb_id].getStoredVelocities()) > 10) {
+                    velocities.pop_front();
                 }
-                world.allies[rb_id].vel[0] = std::accumulate(world.allies[rb_id].stored_speed_x.begin(), world.allies[rb_id].stored_speed_x.end(), 0.0)/10;
-                world.allies[rb_id].vel[1] = std::accumulate(world.allies[rb_id].stored_speed_y.begin(), world.allies[rb_id].stored_speed_y.end(), 0.0)/10;
+                world.allies[rb_id].getVelocity().setX(v.getX()); // <<< aqui!
+                world.allies[rb_id].getVelocity().setY(v.getY()); // <<< e aqui!
+                world.allies[rb_id].setStoredVelocities(velocities);
             }
-            world.allies[rb_id].yaw = new_yaw;
-            world.allies[rb_id].pos[0] = blue_robot.position_x;
-            world.allies[rb_id].pos[1] = blue_robot.position_y;
+            world.allies[rb_id].setYaw(new_yaw);
+            world.allies[rb_id].setPosition({blue_robot.position_x, blue_robot.position_y});
             allies_detected.insert(rb_id);
         }
         else {
@@ -99,18 +100,19 @@ void Leader::receive_vision() {
             double new_yaw = blue_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (delta_time > 0) {
-                world.enemies[rb_id].stored_speed_x.push_back((blue_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000));
-                world.enemies[rb_id].stored_speed_y.push_back((blue_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000));
-                if (size(world.enemies[rb_id].stored_speed_x) > 10) {
-                    world.enemies[rb_id].stored_speed_x.pop_front();
-                    world.enemies[rb_id].stored_speed_y.pop_front();
+                //TODO
+                Vector2d v = {((blue_robot.position_x - world.enemies[rb_id].getPosition().getX())/(delta_time*1000)), ((blue_robot.position_y - world.allies[rb_id].getPosition().getY())/(delta_time*1000))};
+                auto velocities = world.enemies[rb_id].getStoredVelocities();
+                velocities.push_back(v);
+                if (size(world.enemies[rb_id].getStoredVelocities()) > 10) {
+                    velocities.pop_front();
                 }
-                world.enemies[rb_id].vel[0] = std::accumulate(world.enemies[rb_id].stored_speed_x.begin(), world.enemies[rb_id].stored_speed_x.end(), 0.0)/10;
-                world.enemies[rb_id].vel[1] = std::accumulate(world.enemies[rb_id].stored_speed_y.begin(), world.enemies[rb_id].stored_speed_y.end(), 0.0)/10;
+                world.enemies[rb_id].getVelocity().setX(v.getX()); // <<< aqui!
+                world.enemies[rb_id].getVelocity().setY(v.getY()); // <<< e aqui!
+                world.enemies[rb_id].setStoredVelocities(velocities);
             }
-            world.enemies[rb_id].yaw = new_yaw;
-            world.enemies[rb_id].pos[0] = blue_robot.position_x;
-            world.enemies[rb_id].pos[1] = blue_robot.position_y;
+            world.enemies[rb_id].setYaw(new_yaw);
+            world.enemies[rb_id].setPosition({blue_robot.position_x, blue_robot.position_y});
             enemies_detected.insert(rb_id);
         }
     }
@@ -131,18 +133,19 @@ void Leader::receive_vision() {
             double new_yaw = yellow_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (delta_time > 0) {
-                world.allies[rb_id].stored_speed_x.push_back((yellow_robot.position_x - world.allies[rb_id].pos[0])/(delta_time*1000));
-                world.allies[rb_id].stored_speed_y.push_back((yellow_robot.position_y - world.allies[rb_id].pos[1])/(delta_time*1000));
-                if (size(world.allies[rb_id].stored_speed_x) > 10) {
-                    world.allies[rb_id].stored_speed_x.pop_front();
-                    world.allies[rb_id].stored_speed_y.pop_front();
+                //TODO logica quebrada na troca de estrutura, refazer.
+                Vector2d v = {((yellow_robot.position_x - world.allies[rb_id].getPosition().getX())/(delta_time*1000)), ((yellow_robot.position_y - world.allies[rb_id].getPosition().getY())/(delta_time*1000))};
+                auto velocities = world.allies[rb_id].getStoredVelocities();
+                velocities.push_back(v);
+                if (size(world.allies[rb_id].getStoredVelocities()) > 10) {
+                    velocities.pop_front();
                 }
-                world.allies[rb_id].vel[0] = std::accumulate(world.allies[rb_id].stored_speed_x.begin(), world.allies[rb_id].stored_speed_x.end(), 0.0)/10;
-                world.allies[rb_id].vel[1] = std::accumulate(world.allies[rb_id].stored_speed_y.begin(), world.allies[rb_id].stored_speed_y.end(), 0.0)/10;
+                world.allies[rb_id].getVelocity().setX(v.getX()); // <<< aqui!
+                world.allies[rb_id].getVelocity().setY(v.getY()); // <<< e aqui!
+                world.allies[rb_id].setStoredVelocities(velocities);
             }
-            world.allies[rb_id].yaw = new_yaw;
-            world.allies[rb_id].pos[0] = yellow_robot.position_x;
-            world.allies[rb_id].pos[1] = yellow_robot.position_y;
+            world.allies[rb_id].setYaw(new_yaw);
+            world.allies[rb_id].setPosition({yellow_robot.position_x, yellow_robot.position_y});
             allies_detected.insert(rb_id);
         }
         else {
@@ -152,42 +155,41 @@ void Leader::receive_vision() {
                     world.enemies.push_back(Robot(i));
                 }
             }
+
             double new_yaw = yellow_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (delta_time > 0) {
-                world.enemies[rb_id].stored_speed_x.push_back((yellow_robot.position_x - world.enemies[rb_id].pos[0])/(delta_time*1000));
-                world.enemies[rb_id].stored_speed_y.push_back((yellow_robot.position_y - world.enemies[rb_id].pos[1])/(delta_time*1000));
-                if (size(world.enemies[rb_id].stored_speed_x) > 10) {
-                    world.enemies[rb_id].stored_speed_x.pop_front();
-                    world.enemies[rb_id].stored_speed_y.pop_front();
+                //TODO
+                Vector2d v = {((yellow_robot.position_x - world.enemies[rb_id].getPosition().getX())/(delta_time*1000)), ((yellow_robot.position_y - world.allies[rb_id].getPosition().getY())/(delta_time*1000))};
+                auto velocities = world.enemies[rb_id].getStoredVelocities();
+                velocities.push_back(v);
+                if (size(world.enemies[rb_id].getStoredVelocities()) > 10) {
+                    velocities.pop_front();
                 }
-                world.enemies[rb_id].vel[0] = std::accumulate(world.enemies[rb_id].stored_speed_x.begin(), world.enemies[rb_id].stored_speed_x.end(), 0.0)/10;
-                world.enemies[rb_id].vel[1] = std::accumulate(world.enemies[rb_id].stored_speed_y.begin(), world.enemies[rb_id].stored_speed_y.end(), 0.0)/10;
+                world.enemies[rb_id].getVelocity().setX(v.getX()); // <<< aqui!
+                world.enemies[rb_id].getVelocity().setY(v.getY()); // <<< e aqui!
+                world.enemies[rb_id].setStoredVelocities(velocities);
             }
-            world.enemies[rb_id].yaw = new_yaw;
-            world.enemies[rb_id].pos[0] = yellow_robot.position_x;
-            world.enemies[rb_id].pos[1] = yellow_robot.position_y;
+            world.enemies[rb_id].setYaw(new_yaw);
+            world.enemies[rb_id].setPosition({yellow_robot.position_x, yellow_robot.position_y});
             enemies_detected.insert(rb_id);
         }
     }
 
     for (int i = 0; i < size(world.allies); i++) {
-        if (allies_detected.find(i) != allies_detected.end()) world.allies[i].detected = true;
-        else world.allies[i].detected = false;
+        if (allies_detected.find(i) != allies_detected.end()) world.allies[i].setDetected(true);
+        else world.allies[i].setDetected(false);
     }
 
     for (int i = 0; i < size(world.enemies); i++) {
-        if (enemies_detected.find(i) != enemies_detected.end()) world.enemies[i].detected = true;
-        else world.enemies[i].detected = false;
+        if (enemies_detected.find(i) != enemies_detected.end()) world.enemies[i].setDetected(true);
+        else world.enemies[i].setDetected(false);
     }
 
     if (delta_time != 0) {
-        world.ball_speed[0] = (han.new_vision.balls.position_x - world.ball_pos[0])/(delta_time*1000);
-        world.ball_speed[1] = (han.new_vision.balls.position_y - world.ball_pos[1])/(delta_time*1000);
+        world.ball.setVelocity({(han.new_vision.balls.position_x - world.ball.getPosition().getX())/(delta_time*1000), (han.new_vision.balls.position_y - world.ball.getPosition().getY())/(delta_time*1000)});
     }
-    world.ball_pos[0] = han.new_vision.balls.position_x;
-    world.ball_pos[1] = han.new_vision.balls.position_y;
-
+    world.ball.setPosition({han.new_vision.balls.position_x, han.new_vision.balls.position_y});
     last_time_stamp = han.new_vision.timestamp;
 }
 
@@ -226,12 +228,10 @@ void Leader::receive_config() {
 }
 
 void Leader::world_analysis() {
-    world.ball_pos[0] != 0 ? team.central_line_x = world.ball_pos[0]
-        : team.central_line_x = 0;
+    world.ball.getPosition().getX() != 0 ? team.central_line_x = world.ball.getPosition().getX()
+    : team.central_line_x = 0;
     //std::cout << team.central_line_x << std::endl;
 }
-
-
 
 
 void Leader::add_robot(int id) {
@@ -240,7 +240,7 @@ void Leader::add_robot(int id) {
     }
     if (team.active_robots[id] == 0) {
         team.active_robots[id] = 1;
-        robots[id].start(&team);
+        team.robots[id].start(&team);
     }
 }
 
@@ -257,8 +257,8 @@ void Leader::select_plays() {
               });
 
     // Criar lista inicial de roles
-    std::array<TeamInfo::role, 16> roles;
-    roles.fill(TeamInfo::unknown);
+    std::array<Robot::role, 16> roles;
+    roles.fill(Robot::unknown);
 
     // Aplicar roles de todas as plays em ordem de score
     for (auto& p : plays) {
@@ -279,16 +279,16 @@ void Leader::inspect_enemy_team() {
     std::vector<double> distances_enemies_from_ball = {};
     if (size(world.enemies) == 0) return;
     for (int i = 0; i < size(world.enemies) ; i++) {
-        if (world.enemies[i].detected) {
+        if (world.enemies[i].isDetected()) {
             active_enemies_ids.push_back(i);
-            distances_enemies_from_ball.push_back(sqrt(pow(world.enemies[i].pos[0] - world.ball_pos[0],2) + pow(world.enemies[i].pos[1] - world.ball_pos[1],2)));
+            distances_enemies_from_ball.push_back(world.enemies[i].getPosition().getDistanceTo(world.ball.getPosition()));
         }
     }
     if (team.color == TeamInfo::blue) {
-        team.enemy_roles[han.new_GC.yellow.goalkeeper_id] = TeamInfo::goal_keeper;
+        team.enemy_roles[han.new_GC.yellow.goalkeeper_id] = Robot::goal_keeper;
     }
     else {
-        team.enemy_roles[han.new_GC.blue.goalkeeper_id] = TeamInfo::goal_keeper;
+        team.enemy_roles[han.new_GC.blue.goalkeeper_id] = Robot::goal_keeper;
     }
     unsigned int closest_idx = 0;
     for (int idx = 0; idx < active_enemies_ids.size(); idx++) {
@@ -296,13 +296,10 @@ void Leader::inspect_enemy_team() {
                 closest_idx = idx;
             }
     }
-    unsigned int id = world.enemies[closest_idx].id;
-    team.enemy_roles[id] = TeamInfo::striker;
+    unsigned int id = world.enemies[closest_idx].getId();
+    team.enemy_roles[id] = Robot::striker;
 
 }
-
-
-
 
 
 

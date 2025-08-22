@@ -7,9 +7,9 @@
 
 namespace skills {
     namespace {
-        double find_angle_error(RobotController robot, double goal[2]) {
-            double theta_final = atan2(goal[1] - robot.mpos[1], goal[0] - robot.mpos[0]);
-            double orientation = robot.myaw;
+        double find_angle_error(RobotController robot, Point goal) {
+            double theta_final = atan2(goal.getY() - robot.getPosition().getY(), goal.getX() - robot.getPosition().getX());
+            double orientation = robot.getYaw();
             double delta = theta_final - orientation;
             if (delta > M_PI) delta -= 2 * M_PI;
             if (delta < -M_PI) delta += 2 * M_PI;
@@ -33,7 +33,7 @@ namespace skills {
             return PID_vyaw;
         }
     }
-    void turn_to(RobotController& robot, double goal[2]) {
+    void turn_to(RobotController& robot, Point goal) {
         double delta = find_angle_error(robot, goal);
         if (fabs(delta) < robot.mStatic_angle_tolarance) {
             robot.mtarget_vyaw = 0;

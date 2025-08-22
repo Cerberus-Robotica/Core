@@ -4,30 +4,66 @@
 
 #ifndef ROBOT_H
 #define ROBOT_H
-#include <deque>
 
+#include <deque>
+#include "geometry/Point.h"
+#include "geometry/Vector2d.h"
 
 class Robot {
 public:
+    enum role {
+        unknown = -1,
+        goal_keeper,
+        striker,
+        mid_field,
+        defender,
+        halted,
+        kickoff_kicker,
+        kickoff_goal_keeper,
+        kickoff_support,
+        debug_circular_trajectory,
+        debug_squared_trajectory
+    };
+
+protected:
+    bool ally = true;
     int id = -1;
-    double old_pos[2] = {0, 0};
-    double pos[2] = {0, 0};
-    double yaw = 0;
-    double vel[2] = {0, 0};
-    double vyaw = 0;
-    std::deque<double> stored_speed_x = {};
-    std::deque<double> stored_speed_y = {};
+    Point old_pos = {0, 0};
+    Point pos = {0, 0};
+    double yaw = 0.0;
+    Vector2d vel = Vector2d(0,0);
+    std::deque<Vector2d> stored_velocities = {};
+    double vyaw = 0.0;
     bool detected = false;
+    enum role this_role = unknown;
 
+public:
+    // Construtor
+    Robot(int id) : id(id) {}
 
+    // --- Getters ---
+    bool isAlly() const;
+    int getId() const;
+    Point getOldPosition() const;
+    Point getPosition() const;
+    double getYaw() const;
+    Vector2d& getVelocity();
+    double getVyaw() const;
+    bool isDetected() const;
+    enum role getRole() const;
+    const std::deque<Vector2d>& getStoredVelocities() const;
 
-    int role = -1;
+    // --- Setters ---
+    void setAlly(bool is);
+    void setId(int id);
+    void setPosition(const Point& p);
+    void setYaw(double y);
+    void setVelocity(const Vector2d& v);
+    void setVyaw(double v);
+    void setDetected(bool d);
+    void setRole(enum role r);
+    void setStoredVelocities(const std::deque<Vector2d>& vels);
 
-    Robot(int id) {
-        this->id = id;
-    }
 };
-
-
 
 #endif //ROBOT_H

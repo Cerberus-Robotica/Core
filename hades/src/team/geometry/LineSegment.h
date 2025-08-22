@@ -13,7 +13,7 @@ private:
     Point end = {0, 0};
 
 public:
-    LineSegment(const Point& start, const Point& end) : start(start), end(end) {};
+    LineSegment(const Point start, const Point end) : start(start), end(end) {};
 
     Point getStart() const;
     Point getEnd() const;

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-vector<vector<double>> C_trajectory::path_find(std::vector<double>& start, std::vector<double>& goal,
+vector<vector<double>> C_trajectory::path_find(std::vector<double> start, std::vector<double> goal,
             std::vector<Circle>& obs_circular, std::vector<Rectangle>& obs_retangular) {
 
 /*Encontra uma trajetoria a partir de 3 estratégias.

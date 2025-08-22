@@ -4,18 +4,18 @@
 
 #include "RoleStriker.h"
 #include "../RobotController.h"
+#include "../TeamInfo.h"
 
 namespace roles {
     void RoleStriker::act(RobotController& robot) {
         //TODO melhorar striker_role para chutar para o passe
         //TODO fazer interceptar a bola melhor
-        double goal[2] = {(robot.mWorld.their_goal[0][1] + robot.mWorld.their_goal[0][0])/2, (robot.mWorld.their_goal[1][1] + robot.mWorld.their_goal[1][0])/2};
         bool isPivot;
         int Pivot_id = -1;
-        double their_goal[2] = {robot.mWorld.their_goal[0][0], 0};
+        Point their_goal = {robot.mWorld.their_goal[0][0], 0};
 
         auto interceptor = robot.mWorld.getIdOfTheBallInterceptor();
-        if (robot.mWorld.ball_speed_module != 0 && interceptor < 20 && robot.mTeam->num_of_active_robots > 1) {
+        if (robot.mWorld.ball.getVelocity().getNorm() != 0 && interceptor < 20 && robot.mTeam->num_of_active_robots > 1) {
             Pivot_id = interceptor;
         } else{
             auto closest_allies_to_ball = robot.mWorld.getAlliesIdsAccordingToDistanceToBall();
@@ -25,33 +25,33 @@ namespace roles {
                 } else if (robot.mTeam->num_of_active_robots > 1) {
                     Pivot_id = closest_allies_to_ball[1];
                 }
-            } else Pivot_id = robot.mId;
+            } else Pivot_id = robot.getId();
         }
 
-        if (Pivot_id == robot.mId || Pivot_id == -1) {
-            if (tactics::aux::find_ball_trajectory(robot, robot.mWorld.ball_pos, their_goal).size() == 2 && distance_point(robot.mWorld.ball_pos, their_goal) < robot.mKick_distance) {
+        if (Pivot_id == robot.getId() || Pivot_id == -1) {                                                                                      //TODO resolver aqui VVVVVVV
+            if (tactics::aux::find_ball_trajectory(robot, robot.mWorld.ball.getPosition(), their_goal).size() == 2 && robot.mWorld.ball.getPosition().getDistanceTo(their_goal) < robot.mKick_distance) {
                 tactics::position_and_kick_to_destination(robot, their_goal);
             }
             else {
-                int nearest_ally_id = robot.mWorld.findNearestAllyThatIsntTheGoalKeeper(robot.mId, robot.mTeam->goal_keeper_id);
+                int nearest_ally_id = robot.mWorld.findNearestAllyThatIsntTheGoalKeeper(robot.getId(), robot.mTeam->goal_keeper_id);
                 nearest_ally_id != -1 ? tactics::position_and_kick_to_robot(robot, nearest_ally_id) : tactics::position_and_kick_to_destination(robot, their_goal);
             }
         }
         else {
 
-            double striker_dislocation = fabs(robot.mWorld.ball_pos[0]) + 1000;
+            double striker_dislocation = fabs(robot.mWorld.ball.getPosition().getX()) + 1000;
             double x_position = std::clamp(robot.mTeam->central_line_x + (striker_dislocation)*robot.mTeam->our_side_sign, -robot.mTeam->striker_max_dislocation, robot.mTeam->striker_max_dislocation);
-            double delta_y = sqrt(fabs(pow(robot.mKick_distance, 2) - pow(x_position - robot.mWorld.ball_pos[0], 2)));
+            double delta_y = sqrt(fabs(pow(robot.mKick_distance, 2) - pow(x_position - robot.mWorld.ball.getPosition().getX(), 2)));
             double y_position;
-            robot.mWorld.allies[Pivot_id].pos[1] != 0 ? y_position = robot.mWorld.ball_pos[1] - delta_y*robot.mWorld.allies[Pivot_id].pos[1]/fabs(robot.mWorld.allies[Pivot_id].pos[1])
-                : y_position = robot.mWorld.ball_pos[1];
+            robot.mWorld.allies[Pivot_id].getPosition().getY() != 0 ? y_position = robot.mWorld.ball.getPosition().getY() - delta_y*robot.mWorld.allies[Pivot_id].getPosition().getY()/fabs(robot.mWorld.allies[Pivot_id].getPosition().getY())
+                : y_position = robot.mWorld.ball.getPosition().getY();
             if (y_position > robot.mWorld.their_defese_area[0][1] - robot.mRadius*2 && y_position < robot.mWorld.their_defese_area[1][1] + robot.mRadius*2) {
                 if (y_position > 0) y_position = robot.mWorld.their_defese_area[1][1] + robot.mRadius*2;
                 else y_position = robot.mWorld.their_defese_area[0][1] - robot.mRadius*2;
             }
-            double wait_position[2] = {x_position, y_position};
+            Point wait_position = {x_position, y_position};
             tactics::keep_a_location(robot, wait_position);
-            skills::turn_to(robot, robot.mWorld.ball_pos);
+            skills::turn_to(robot, robot.mWorld.ball.getPosition());
         }
     }
 } // roles
