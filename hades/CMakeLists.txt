@@ -31,6 +31,24 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/TeamInfo.h
         src/team/geometry/WorldModel.cpp
         src/team/geometry/WorldModel.h
+        src/team/geometry/Point.cpp
+        src/team/geometry/Point.h
+        src/team/geometry/LineSegment.cpp
+        src/team/geometry/LineSegment.h
+        src/team/geometry/Area.cpp
+        src/team/geometry/Area.h
+        src/team/geometry/AreaCircular.cpp
+        src/team/geometry/AreaCircular.h
+        src/team/geometry/AreaRectangular.cpp
+        src/team/geometry/AreaRectangular.h
+        src/team/geometry/Ball.cpp
+        src/team/geometry/Ball.h
+        src/team/geometry/Field.cpp
+        src/team/geometry/Field.h
+        src/team/geometry/Vector2d.cpp
+        src/team/geometry/Vector2d.h
+        src/team/geometry/geometry.h
+
         src/team/plays/PlayAttack.cpp
         src/team/plays/PlayAttack.h
         src/team/plays/PlayDebug.cpp

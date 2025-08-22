@@ -51,7 +51,7 @@ bool AreaRectangular::detectIfIntercepts(LineSegment l) {
 
     // Checar interseção com cada lado do retângulo
     for (int i = 0; i < 4; i++) {
-        Point inter;
+        Point inter = {0, 0};
         if (segmentsIntersect(l.getStart(), l.getEnd(), rectPts[i], rectPts[(i + 1) % 4], inter)) {
             return true;
         }
@@ -76,7 +76,7 @@ std::array<Point, 2> AreaRectangular::getInterceptionPoints(LineSegment l) {
     };
 
     for (int i = 0; i < 4; i++) {
-        Point inter;
+        Point inter = {0 ,0};
         if (segmentsIntersect(l.getStart(), l.getEnd(), rectPts[i], rectPts[(i + 1) % 4], inter)) {
             if (found < 2) {
                 intersections[found] = inter;

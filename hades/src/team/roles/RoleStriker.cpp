@@ -5,6 +5,7 @@
 #include "RoleStriker.h"
 #include "../RobotController.h"
 #include "../TeamInfo.h"
+#include "../geometry/Point.h"
 
 namespace roles {
     void RoleStriker::act(RobotController& robot) {

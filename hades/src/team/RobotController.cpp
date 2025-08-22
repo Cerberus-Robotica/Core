@@ -296,6 +296,8 @@ void RobotController::loadCalibration() {
 
 
 void RobotController::publish() {
+    std::cout << id << std::endl;
+    std::cout << mtarget_vel.getY() << " " << mtarget_vel.getX() << std::endl;
     han.new_ia.robots[id].id = id;
     han.new_ia.robots[id].vel_normal = mtarget_vel.getY();
     han.new_ia.robots[id].vel_tang = mtarget_vel.getX();

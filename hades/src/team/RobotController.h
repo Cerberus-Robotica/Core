@@ -9,6 +9,7 @@
 
 #include "Robot.h"
 #include "geometry/WorldModel.h"
+#include "geometry/geometry.h"
 #include "skills/skills.h"
 #include "tactics/tactics.h"
 #include "roles/roles.h"
