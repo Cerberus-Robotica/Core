@@ -55,7 +55,7 @@ void Robot::setId(int id) {
 }
 
 void Robot::setPosition(const Point& p) {
-	old_pos = p;
+	old_pos = pos;
 	pos = p;
 }
 
