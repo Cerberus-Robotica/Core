@@ -2,6 +2,9 @@
 // Created by caiu on 06/08/25.
 //
 
+#include <iostream>
+#include <ostream>
+
 #include "../RobotController.h"
 #include "../../c_trajectory/C_trajectory.h"
 #include "tactics.h"
@@ -11,8 +14,6 @@ namespace tactics {
     void keep_x_line(RobotController& robot, LineSegment y_segment, double y_rest) {
         std::vector<int> enemies_ids = {};
         int enemy_stricker_id = 0;
-
-
 
         for (int i = 0; i < enemies_ids.size(); i++) {
             if (robot.mTeam->enemy_roles[i] == Robot::striker) {
@@ -45,7 +46,6 @@ namespace tactics {
                 meet.setY(y_rest);
             }
         }
-
 
         skills::move_to(robot, meet, false);
         robot.mkicker_x = 0;

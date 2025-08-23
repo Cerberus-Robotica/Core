@@ -175,7 +175,7 @@ void RobotController::receive_vision() {
             int rb_id = yellow_robot.robot_id;
             if (rb_id >= size(mWorld.allies)) {
                 for (int i = size(mWorld.allies); i <= rb_id; i++) {
-                    mWorld.allies.push_back(Robot(i));
+                    mWorld.allies.emplace_back(i);
                 }
             }
             double new_yaw = yellow_robot.orientation;
@@ -260,14 +260,24 @@ void RobotController::receive_field_geometry() {
     constexpr double INF = 9e8;
 
     // X- (esquerda): x ∈ (-INF, xmin), y ∈ (ymin, ymax)
+    AreaRectangular leftDefenseArea = {{-han.new_vision.field.field_width/2, -han.new_vision.field.defense_area_height/2},{-han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width, han.new_vision.field.defense_area_height/2}};
+    AreaRectangular rightDefenseArea = {{han.new_vision.field.field_width/2 - han.new_vision.field.defense_area_width, -han.new_vision.field.defense_area_height/2}, {han.new_vision.field.field_width/2, han.new_vision.field.defense_area_height/2}};
+    if (id == 0) {
+        std::cout << "AA" << std::endl;
+        std::cout << -han.new_vision.field.field_width/2 << ", " << -han.new_vision.field.defense_area_height/2 << std::endl;
+        std::cout << -han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width << ", " << han.new_vision.field.defense_area_height/2 << std::endl;
+        std::cout << han.new_vision.field.defense_area_width << std::endl;
+    }
 
-
-    /**if (mTeam->our_side == TeamInfo::left) {
-        mWorld.our_defese_area[0][0] = han.new_vision.field.defense_area_height;
-        mWorld.our_defese_area[1][0] = han.new_vision.field.defense_area_height - han.new_vision.field.field_length/2;
-        mWorld.our_defese_area[0][1] = han.new_vision.field.defense_area_width;
-        mWorld.our_defese_area[0][1] = han.new_vision.field.defense_area_width - han.new_vision.field.field_width/2;
-    }**/
+    return;
+    if (mTeam->our_side == TeamInfo::left) {
+        mWorld.field.ourDefenseArea = leftDefenseArea;
+        mWorld.field.theirDefenseArea = rightDefenseArea;
+    }
+    if (mTeam->our_side == TeamInfo::right) {
+        mWorld.field.ourDefenseArea = rightDefenseArea;
+        mWorld.field.theirDefenseArea = leftDefenseArea;
+    }
 }
 
 void RobotController::loadCalibration() {

@@ -3,6 +3,9 @@
 //
 
 #include "RoleStriker.h"
+
+#include <iostream>
+
 #include "../RobotController.h"
 #include "../TeamInfo.h"
 #include "../geometry/Point.h"
