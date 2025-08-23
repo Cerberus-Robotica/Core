@@ -72,19 +72,36 @@ int main()
     std::thread lcm_thread(lcm_thread_func);
     crow::App<CORS> app;
 
-    CROW_ROUTE(app, "/data").methods("GET"_method)([]
-                                                   {
+    // ============================
+    // GET /data
+    // ============================
+    CROW_ROUTE(app, "/data").methods("GET"_method)([] {
         std::lock_guard<std::mutex> lock(data_mutex);
 
         crow::json::wvalue data;
 
-        // GC
+        // ---- Status principais ----
+        data["ssl_vision"] = latest_data.ssl_vision;
+        data["autoreferee"] = latest_data.autoreferee;
+        data["competition_mode"] = latest_data.competition_mode;
+        data["bool_controller"] = latest_data.bool_controller;
         data["team_blue"] = latest_data.team_blue;
+        data["team_blue_status"] = latest_data.team_blue_status;
+
+        // ---- Configuração de portas ----
+        data["stm_port"] = latest_data.stm_port;
+        data["mcast_port_gc"] = latest_data.mcast_port_gc;
+        data["mcast_port_vision_grsim"] = latest_data.mcast_port_vision_grsim;
+        data["mcast_port_vision_sslvision"] = latest_data.mcast_port_vision_sslvision;
+        data["mcast_port_vision_tracked"] = latest_data.mcast_port_vision_tracked;
+
+        // ---- Game Controller ----
         data["designated_position_x"] = latest_data.designated_position_x;
         data["designated_position_y"] = latest_data.designated_position_y;
         data["current_command"] = latest_data.current_command;
         data["game_event"] = latest_data.game_event;
 
+        // ---- Times ----
         data["blue"]["name"] = latest_data.blue.name;
         data["blue"]["score"] = latest_data.blue.score;
         data["blue"]["fouls"] = latest_data.blue.fouls;
@@ -95,7 +112,7 @@ int main()
         data["yellow"]["fouls"] = latest_data.yellow.fouls;
         data["yellow"]["goalkeeper_id"] = latest_data.yellow.goalkeeper_id;
 
-        // IA
+        // ---- IA Robots ----
         for (size_t i = 0; i < latest_data.robots.size(); ++i) {
             const auto& r = latest_data.robots[i];
             crow::json::wvalue robot;
@@ -115,7 +132,7 @@ int main()
             data["robots"][i] = std::move(robot);
         }
 
-        // Vision - Yellow
+        // ---- Vision Robots Yellow ----
         for (size_t i = 0; i < latest_data.robots_yellow.size(); ++i) {
             const auto& r = latest_data.robots_yellow[i];
             crow::json::wvalue robot;
@@ -126,7 +143,7 @@ int main()
             data["robots_yellow"][i] = std::move(robot);
         }
 
-        // Vision - Blue
+        // ---- Vision Robots Blue ----
         for (size_t i = 0; i < latest_data.robots_blue.size(); ++i) {
             const auto& r = latest_data.robots_blue[i];
             crow::json::wvalue robot;
@@ -137,44 +154,39 @@ int main()
             data["robots_blue"][i] = std::move(robot);
         }
 
-        // Ball
+        // ---- Bola ----
         data["balls"]["position_x"] = latest_data.balls.position_x;
         data["balls"]["position_y"] = latest_data.balls.position_y;
 
-        // Field
+        // ---- Campo ----
         const auto& f = latest_data.field;
         data["field"]["field_length"] = f.field_length;
         data["field"]["field_width"] = f.field_width;
         data["field"]["goal_width"] = f.goal_width;
         data["field"]["goal_depth"] = f.goal_depth;
+        data["field"]["goal_height"] = f.goal_height;
         data["field"]["boundary_width"] = f.boundary_width;
         data["field"]["center_circle_radius"] = f.center_circle_radius;
         data["field"]["defense_area_width"] = f.defense_area_width;
         data["field"]["defense_area_height"] = f.defense_area_height;
         data["field"]["line_thickness"] = f.line_thickness;
         data["field"]["goal_center_to_penalty_mark"] = f.goal_center_to_penalty_mark;
-        data["field"]["goal_height"] = f.goal_height;
         data["field"]["ball_radius"] = f.ball_radius;
         data["field"]["max_robot_radius"] = f.max_robot_radius;
 
-        // Extras
+        // ---- Extras ----
         data["processo"] = latest_data.processo;
         data["estrategia"] = latest_data.estrategia;
         data["timestamp"] = latest_data.timestamp;
         data["robots_size"] = latest_data.robots_size;
-        data["ssl_vision"] = latest_data.ssl_vision;
-        data["autoreferee"] = latest_data.autoreferee;
-        data["team_blue_status"] = latest_data.team_blue_status;
-        data["competition_mode"] = latest_data.competition_mode;
-        data["bool_controller"] = latest_data.bool_controller;
-        data["stm_port"] = latest_data.stm_port;
-        data["controller_port"] = latest_data.controller_port;
 
-        return crow::response{data}; });
+        return crow::response{data};
+    });
 
-    // POST /command — recebe comandos para atualizar valores manualmente
-    CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req)
-                                                       {
+    // ============================
+    // POST /command
+    // ============================
+    CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req) {
         auto body = crow::json::load(req.body);
         if (!body)
         {
@@ -211,24 +223,17 @@ int main()
             if (body.has("goalkeeper_id") && body["goalkeeper_id"].t() == crow::json::type::Number)
             {
                 int id = body["goalkeeper_id"].i();
-
-                // Bloqueia updates pelo LCM para goalkeeper_id
-                lcm_control.goalkeeper_id_from_lcm = false;
+                lcm_control.goalkeeper_id_from_lcm = false; // bloqueia updates pelo LCM
 
                 if (latest_data.team_blue)
-                {
                     latest_data.blue.goalkeeper_id = id;
-                }
                 else
-                {
                     latest_data.yellow.goalkeeper_id = id;
-                }
+
                 std::cout << "[POST] goalkeeper_id atualizado manualmente para " << id << std::endl;
             }
 
-
-
-
+            // ---- Flags booleanas ----
             if (body.has("ssl_vision") && (body["ssl_vision"].t() == crow::json::type::True || body["ssl_vision"].t() == crow::json::type::False)) {
                 latest_data.ssl_vision = body["ssl_vision"].b();
                 std::cout << "[POST] ssl_vision atualizado para " << (latest_data.ssl_vision ? "true" : "false") << std::endl;
@@ -245,16 +250,30 @@ int main()
                 latest_data.bool_controller = body["bool_controller"].b();
                 std::cout << "[POST] bool_controller atualizado para " << (latest_data.bool_controller ? "true" : "false") << std::endl;
             }
+
+            // ---- Portas ----
             if (body.has("stm_port") && body["stm_port"].t() == crow::json::type::Number) {
                 latest_data.stm_port = body["stm_port"].i();
                 std::cout << "[POST] stm_port atualizado para " << latest_data.stm_port << std::endl;
             }
-            if (body.has("controller_port") && body["controller_port"].t() == crow::json::type::Number) {
-                latest_data.controller_port = body["controller_port"].i();
-                std::cout << "[POST] controller_port atualizado para " << latest_data.controller_port << std::endl;
+            if (body.has("mcast_port_gc") && body["mcast_port_gc"].t() == crow::json::type::Number) {
+                latest_data.mcast_port_gc = body["mcast_port_gc"].i();
+                std::cout << "[POST] mcast_port_gc atualizado para " << latest_data.mcast_port_gc << std::endl;
+            }
+            if (body.has("mcast_port_vision_sslvision") && body["mcast_port_vision_sslvision"].t() == crow::json::type::Number) {
+                latest_data.mcast_port_vision_sslvision = body["mcast_port_vision_sslvision"].i();
+                std::cout << "[POST] mcast_port_vision_sslvision atualizado para " << latest_data.mcast_port_vision_sslvision << std::endl;
+            }
+            if (body.has("mcast_port_vision_grsim") && body["mcast_port_vision_grsim"].t() == crow::json::type::Number) {
+                latest_data.mcast_port_vision_grsim = body["mcast_port_vision_grsim"].i();
+                std::cout << "[POST] mcast_port_vision_grsim atualizado para " << latest_data.mcast_port_vision_grsim << std::endl;
+            }
+            if (body.has("mcast_port_vision_tracked") && body["mcast_port_vision_tracked"].t() == crow::json::type::Number) {
+                latest_data.mcast_port_vision_tracked = body["mcast_port_vision_tracked"].i();
+                std::cout << "[POST] mcast_port_vision_tracked atualizado para " << latest_data.mcast_port_vision_tracked << std::endl;
             }
 
-            // Publicar mensagem tartarus no LCM
+            // ---- Publicar mensagem no LCM ----
             data::tartarus msg;
             msg.ssl_vision = latest_data.ssl_vision;
             msg.autoreferee = latest_data.autoreferee;
@@ -263,14 +282,11 @@ int main()
             msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;
             msg.stm_port = latest_data.stm_port;
             //msg.controller_port = latest_data.controller_port;
+            msg.mcast_port_gc = latest_data.mcast_port_gc;
+            msg.mcast_port_vision_grsim = latest_data.mcast_port_vision_grsim;
+            msg.mcast_port_vision_sslvision = latest_data.mcast_port_vision_sslvision;
+            msg.mcast_port_vision_tracked = latest_data.mcast_port_vision_tracked;
             msg.team_blue = latest_data.team_blue;
-
-            std::cout << "[POST] Enviando goalkeeper_id: " << msg.goalkeeper_id << " para time "
-          << (latest_data.team_blue ? "blue" : "yellow") << std::endl;
-          std::cout << "[handleTartarus] goal_keeper_id_from_lcm: " << lcm_control.goalkeeper_id_from_lcm 
-          << ", goal_keeper_id recebido do LCM: " << msg.goalkeeper_id << std::endl;
-
-
 
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
@@ -284,7 +300,8 @@ int main()
         crow::response res("{\"status\":\"ok\"}");
         res.code = 200;
         res.add_header("Content-Type", "application/json");
-        return res; });
+        return res;
+    });
 
     app.port(5000).multithreaded().run();
     lcm_thread.join();
