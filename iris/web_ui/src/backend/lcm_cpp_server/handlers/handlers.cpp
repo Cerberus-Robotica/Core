@@ -61,6 +61,7 @@ void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, co
     }
 
     latest_data.ssl_vision = msg->ssl_vision;
+    latest_data.autoreferee = msg->autoreferee;
     latest_data.competition_mode = msg->competition_mode;
     latest_data.bool_controller = msg->bool_controller;
     latest_data.stm_port = msg->stm_port;

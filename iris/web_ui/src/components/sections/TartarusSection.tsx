@@ -69,6 +69,19 @@ export default function TartarusSection({
 
       <RowWrapper>
         <p>
+          Auto Referee:{' '}
+          <span className="font-mono">
+            {data.tartarus.autoreferee ? 'Sim' : 'Não'}
+          </span>
+        </p>
+        <ActionButton
+          onClick={() => toggleBoolean('autoreferee', data.tartarus.autoreferee)}
+          label="Alternar"
+        />
+      </RowWrapper>
+
+      <RowWrapper>
+        <p>
           Modo Competição:{' '}
           <span className="font-mono">
             {data.tartarus.competition_mode ? 'Sim' : 'Não'}

@@ -14,9 +14,10 @@ export function MenuBar({
   const [active, setActive] = useState<string | null>(null);
 
   return (
-  <nav className="bg-[#3B3B3B] text-white flex items-center justify-between px-4 py-2 shadow-md relative">
+  <nav className="w-full bg-[#3B3B3B] text-white flex items-center justify-between px-1 py-1 shadow-md relative">
     {/* Bloco Esquerda */}
-    <div className="flex space-x-6 flex-1">
+    <div className="flex items-center justify-center space-x-4 flex-1 max-w-xs">
+
       {/* Botão Dados + Dropdown */}
       <div className="relative">
         <MenuButton
@@ -80,7 +81,7 @@ export function MenuBar({
     </div>
 
     {/* Bloco Direito */}
-    <div className="flex space-x-4 flex-1 justify-end">
+    <div className="flex items-center justify-center space-x-4 flex-1 max-w-xs">
       {/* Diagrama */}
       <div className="relative">
         <MenuButton

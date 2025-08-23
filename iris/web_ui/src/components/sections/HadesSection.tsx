@@ -52,7 +52,7 @@ export default function IASection({ data }: Props) {
       <p className="text-center font-semibold text-white">
         Time selecionado: {teamLabel}
       </p>
-      <div className="mt-2 max-h-[250px] overflow-y-auto space-y-2 border-3 border-[#6805F2] rounded-[5px] p-2 bg-[#545454] shadow-inner">
+      <div className="mt-2 overflow-y-auto space-y-2 border-3 border-[#6805F2] rounded-[5px] p-2 bg-[#545454] shadow-inner">
         {filteredRobots.length > 0 ? (
           filteredRobots.map((robot) => (
             <div
@@ -64,8 +64,8 @@ export default function IASection({ data }: Props) {
                 alt={`Robô ${robot.id}`}
                 className="w-14 h-14 object-contain shrink-0"
               />
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                <p className="col-span-2 font-bold">ID: {robot.id}</p>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-1">
+                <p className="col-span-4 font-bold">ID: {robot.id}</p>
                 <p>Spinner: {robot.spinner ? 'Sim' : 'Não'}</p>
                 <p>Kick: {robot.kick ? 'Sim' : 'Não'}</p>
                 <p>Vel. Tangencial: {robot.vel_tang.toFixed(2)}</p>

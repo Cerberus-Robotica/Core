@@ -65,6 +65,7 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
           },
           tartarus: {
             ssl_vision: json.ssl_vision ?? false,
+            autoreferee: json.autoreferee ?? false,
             team_blue_status: json.team_blue_status ?? false,
             competition_mode: json.competition_mode,
             team_blue: json.team_blue,

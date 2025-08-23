@@ -5,6 +5,7 @@
 #ifndef TEAM_H
 #define TEAM_H
 #include <map>
+#include <array>
 
 
 class TeamInfo {

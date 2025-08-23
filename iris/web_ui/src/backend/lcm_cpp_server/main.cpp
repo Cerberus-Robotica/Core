@@ -163,6 +163,7 @@ int main()
         data["timestamp"] = latest_data.timestamp;
         data["robots_size"] = latest_data.robots_size;
         data["ssl_vision"] = latest_data.ssl_vision;
+        data["autoreferee"] = latest_data.autoreferee;
         data["team_blue_status"] = latest_data.team_blue_status;
         data["competition_mode"] = latest_data.competition_mode;
         data["bool_controller"] = latest_data.bool_controller;
@@ -232,6 +233,10 @@ int main()
                 latest_data.ssl_vision = body["ssl_vision"].b();
                 std::cout << "[POST] ssl_vision atualizado para " << (latest_data.ssl_vision ? "true" : "false") << std::endl;
             }
+            if (body.has("autoreferee") && (body["autoreferee"].t() == crow::json::type::True || body["autoreferee"].t() == crow::json::type::False)) {
+                latest_data.autoreferee = body["autoreferee"].b();
+                std::cout << "[POST] autoreferee atualizado para " << (latest_data.autoreferee ? "true" : "false") << std::endl;
+            }
             if (body.has("competition_mode") && (body["competition_mode"].t() == crow::json::type::True || body["competition_mode"].t() == crow::json::type::False)) {
                 latest_data.competition_mode = body["competition_mode"].b();
                 std::cout << "[POST] competition_mode atualizado para " << (latest_data.competition_mode ? "true" : "false") << std::endl;
@@ -252,6 +257,7 @@ int main()
             // Publicar mensagem tartarus no LCM
             data::tartarus msg;
             msg.ssl_vision = latest_data.ssl_vision;
+            msg.autoreferee = latest_data.autoreferee;
             msg.competition_mode = latest_data.competition_mode;
             msg.bool_controller = latest_data.bool_controller;
             msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;

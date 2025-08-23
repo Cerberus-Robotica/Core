@@ -98,6 +98,7 @@ export type VisionData = {
 
 export type TartarusData = {
   ssl_vision: boolean;
+  autoreferee: boolean;
   team_blue_status: boolean;
   competition_mode: boolean;
   team_blue: boolean;

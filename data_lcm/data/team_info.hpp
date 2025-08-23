@@ -10,6 +10,8 @@
 #include <lcm/lcm_coretypes.h>
 
 #include <string>
+#include <array>
+
 
 namespace data
 {

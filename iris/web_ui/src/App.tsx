@@ -55,7 +55,7 @@ export default function App() {
   return (
     <div className="bg-[#311A52] h-screen w-screen overflow-hidden">
       <div className="flex flex-col h-screen w-screen">
-        <div className="h-[35px]">
+        <div className="h-auto">
           <MenuBar
             onSelectSoftware={setSelectedSoftware}
             onSelectDivision={setSelectedDivision}

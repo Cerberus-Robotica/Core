@@ -53,6 +53,7 @@ export const initialData: DataType = {
   tartarus: {
     team_blue_status: false,
     ssl_vision: false,
+    autoreferee: false,
     competition_mode: false,
     team_blue: false,
     bool_controller: false,

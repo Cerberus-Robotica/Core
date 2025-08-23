@@ -37,6 +37,7 @@ struct LatestData {
     data::detection_geometry field;
 
     // Tartarus
+    bool autoreferee = false;
     bool ssl_vision = false;
     bool competition_mode = false;
     bool bool_controller = false;
