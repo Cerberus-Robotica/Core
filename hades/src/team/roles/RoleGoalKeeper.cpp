@@ -3,6 +3,10 @@
 //
 
 #include "RoleGoalKeeper.h"
+
+#include <iostream>
+#include <ostream>
+
 #include "../RobotController.h"
 
 namespace roles {

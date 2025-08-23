@@ -15,6 +15,19 @@ public:
     this->x = x;
     this->y = y;
   }
+  Point(int x, int y){
+    this->x = x;
+    this->y = y;
+  }
+  Point(double x, int y){
+    this->x = x;
+    this->y = y;
+  }
+  Point(int x, double y){
+    this->x = x;
+    this->y = y;
+  }
+
   void setXY(double x, double y);
   void setX(double x);
   void setY(double y);
