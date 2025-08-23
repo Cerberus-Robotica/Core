@@ -36,6 +36,35 @@ function ActionButton({
   );
 }
 
+type NumberInputRowProps = {
+  label: string;
+  value: number;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+  onSubmit: () => void;
+};
+
+function NumberInputRow({
+  label,
+  value,
+  setValue,
+  onSubmit,
+}: NumberInputRowProps) {
+  return (
+    <RowWrapper>
+      <p>{label}</p>
+      <div className="flex">
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => setValue(Number(e.target.value))}
+          className="border rounded px-2 py-1 mr-2 w-24"
+        />
+        <ActionButton onClick={onSubmit} label="Alterar" />
+      </div>
+    </RowWrapper>
+  );
+}
+
 export default function TartarusSection({
   data,
   toggleBoolean,
@@ -46,8 +75,16 @@ export default function TartarusSection({
   receptDimensions,
 }: Props) {
   const [stmPort, setStmPort] = useState(data.tartarus.stm_port);
-  const [controllerPort, setControllerPort] = useState(
-    data.tartarus.controller_port,
+  const [mcast_port_gc, setMcast_port_gc] = useState(
+    data.tartarus.mcast_port_gc,
+  );
+  const [mcast_port_vision_sslvision, setMcast_port_vision_sslvision] =
+    useState(data.tartarus.mcast_port_vision_sslvision);
+  const [mcast_port_vision_grsim, setMcast_port_vision_grsim] = useState(
+    data.tartarus.mcast_port_vision_grsim,
+  );
+  const [mcast_port_vision_tracked, setMcast_port_vision_tracked] = useState(
+    data.tartarus.mcast_port_vision_tracked,
   );
 
   return (
@@ -75,7 +112,9 @@ export default function TartarusSection({
           </span>
         </p>
         <ActionButton
-          onClick={() => toggleBoolean('autoreferee', data.tartarus.autoreferee)}
+          onClick={() =>
+            toggleBoolean('autoreferee', data.tartarus.autoreferee)
+          }
           label="Alternar"
         />
       </RowWrapper>
@@ -121,37 +160,36 @@ export default function TartarusSection({
 
       <h2 className="text-lg font-bold mb-4">Portas</h2>
 
-      <RowWrapper>
-        <p>STM Port:</p>
-        <div className="flex">
-          <input
-            type="number"
-            value={stmPort}
-            onChange={(e) => setStmPort(Number(e.target.value))}
-            className="border rounded px-2 py-1 mr-2 w-24"
-          />
-          <ActionButton
-            onClick={() => updateNumber('stm_port', stmPort)}
-            label="Alterar"
-          />
-        </div>
-      </RowWrapper>
-
-      <RowWrapper>
-        <p>Controller Port:</p>
-        <div className="flex">
-          <input
-            type="number"
-            value={controllerPort}
-            onChange={(e) => setControllerPort(Number(e.target.value))}
-            className="border rounded px-2 py-1 mr-2 w-24"
-          />
-          <ActionButton
-            onClick={() => updateNumber('controller_port', controllerPort)}
-            label="Alterar"
-          />
-        </div>
-      </RowWrapper>
+      <NumberInputRow
+        label="STM Port:"
+        value={stmPort}
+        setValue={setStmPort}
+        onSubmit={() => updateNumber('stm_port', stmPort)}
+      />
+      <NumberInputRow
+        label="GC Port:"
+        value={mcast_port_gc}
+        setValue={setMcast_port_gc}
+        onSubmit={() => updateNumber('mcast_port_gc', mcast_port_gc)}
+      />
+      <NumberInputRow
+        label="SSL Vision Port:"
+        value={mcast_port_vision_sslvision}
+        setValue={setMcast_port_vision_sslvision}
+        onSubmit={() => updateNumber('mcast_port_vision_sslvision', mcast_port_vision_sslvision)}
+      />
+      <NumberInputRow
+        label="GrSim Port:"
+        value={mcast_port_vision_grsim}
+        setValue={setMcast_port_vision_grsim}
+        onSubmit={() => updateNumber('mcast_port_vision_grsim', mcast_port_vision_grsim)}
+      />
+      <NumberInputRow
+        label="AutoReferee Port:"
+        value={mcast_port_vision_tracked}
+        setValue={setMcast_port_vision_tracked}
+        onSubmit={() => updateNumber('mcast_port_vision_tracked', mcast_port_vision_tracked)}
+      />
 
       <h2 className="text-lg font-bold mb-4">Campo</h2>
 

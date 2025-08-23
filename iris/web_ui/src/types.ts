@@ -104,7 +104,10 @@ export type TartarusData = {
   team_blue: boolean;
   bool_controller: boolean;
   stm_port: number;
-  controller_port: number;
+  mcast_port_gc: number;// default 10003
+	mcast_port_vision_sslvision: number; // default 10006
+	mcast_port_vision_grsim: number; // default 10020
+	mcast_port_vision_tracked: number;
   goalkeeper_id: number;
 };
 
