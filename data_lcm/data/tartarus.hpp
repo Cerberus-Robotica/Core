@@ -9,7 +9,8 @@
 
 #include <lcm/lcm_coretypes.h>
 
-#include <string>
+#include "robot_parameters.hpp"
+#include "game_controller.hpp"
 
 namespace data
 {
@@ -30,47 +31,47 @@ class tartarus
         int8_t     competition_mode;
 
         /**
-         * alternates between the competition_mode or debug(controller mode will be activated)
-         */
-        int8_t     team_blue;
-
-        /**
-         * changes the team (not recommended for use in competitions)
+         * when activated will change every variable to competition mode 
          */
         int8_t     bool_controller;
 
         /**
          * turn on or off the controller mode
          */
-        int16_t    stm_port;
+        int8_t     debug_mode;
 
         /**
-         * changes the stm connected port via UI
+         * turn on or off the debug mode
          */
-        int16_t    controller_port;
+        int8_t     half_field;
 
         /**
-         * changes the controller port via UI
+         * turn on or off using the half of the field
+         */
+        int8_t     iris_as_GC;
+
+        /**
+         * turn iris as a game-controller
          */
         int16_t    goalkeeper_id;
 
         /**
          * changes keeper id
          */
-        std::string mcast_grp_gc;
+        int16_t    cams_number;
 
         /**
-         * default "224.5.23.1"
+         * says the number of cameras in the vision system [0,4]
+         */
+        int16_t    stm_port;
+
+        /**
+         * changes the stm connected port via UI
          */
         int16_t    mcast_port_gc;
 
         /**
          * default 10003
-         */
-        std::string mcast_grp_vision;
-
-        /**
-         * default "224.5.23.2"
          */
         int16_t    mcast_port_vision_sslvision;
 
@@ -83,6 +84,19 @@ class tartarus
          * default 10020
          */
         int16_t    mcast_port_vision_tracked;
+
+        /**
+         * default 10010 "we use the tigers autoreferee"
+         */
+        int8_t     team_blue;
+
+        /**
+         * changes the team (not recommended for use in competitions)
+         * LCM Type: data.robot_parameters[16]
+         */
+        data::robot_parameters robots[16];
+
+        data::game_controller iris_gc;
 
     public:
         /**
@@ -189,32 +203,28 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
     tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->bool_controller, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->debug_mode, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->controller_port, 1);
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->half_field, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->iris_as_GC, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    char* mcast_grp_gc_cstr = const_cast<char*>(this->mcast_grp_gc.c_str());
-    tlen = __string_encode_array(
-        buf, offset + pos, maxlen - pos, &mcast_grp_gc_cstr, 1);
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->cams_number, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_gc, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    char* mcast_grp_vision_cstr = const_cast<char*>(this->mcast_grp_vision.c_str());
-    tlen = __string_encode_array(
-        buf, offset + pos, maxlen - pos, &mcast_grp_vision_cstr, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_sslvision, 1);
@@ -224,6 +234,17 @@ int tartarus::_encodeNoHash(void *buf, int offset, int maxlen) const
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_encode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_tracked, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    for (int a0 = 0; a0 < 16; a0++) {
+        tlen = this->robots[a0]._encodeNoHash(buf, offset + pos, maxlen - pos);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
+
+    tlen = this->iris_gc._encodeNoHash(buf, offset + pos, maxlen - pos);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -242,41 +263,29 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->competition_mode, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-
     tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->bool_controller, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->debug_mode, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->controller_port, 1);
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->half_field, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->iris_as_GC, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->goalkeeper_id, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    int32_t __mcast_grp_gc_len__;
-    tlen = __int32_t_decode_array(
-        buf, offset + pos, maxlen - pos, &__mcast_grp_gc_len__, 1);
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->cams_number, 1);
     if(tlen < 0) return tlen; else pos += tlen;
-    if(__mcast_grp_gc_len__ > maxlen - pos) return -1;
-    this->mcast_grp_gc.assign(
-        static_cast<const char*>(buf) + offset + pos, __mcast_grp_gc_len__ - 1);
-    pos += __mcast_grp_gc_len__;
+
+    tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->stm_port, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_gc, 1);
     if(tlen < 0) return tlen; else pos += tlen;
-
-    int32_t __mcast_grp_vision_len__;
-    tlen = __int32_t_decode_array(
-        buf, offset + pos, maxlen - pos, &__mcast_grp_vision_len__, 1);
-    if(tlen < 0) return tlen; else pos += tlen;
-    if(__mcast_grp_vision_len__ > maxlen - pos) return -1;
-    this->mcast_grp_vision.assign(
-        static_cast<const char*>(buf) + offset + pos, __mcast_grp_vision_len__ - 1);
-    pos += __mcast_grp_vision_len__;
 
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_sslvision, 1);
     if(tlen < 0) return tlen; else pos += tlen;
@@ -285,6 +294,17 @@ int tartarus::_decodeNoHash(const void *buf, int offset, int maxlen)
     if(tlen < 0) return tlen; else pos += tlen;
 
     tlen = __int16_t_decode_array(buf, offset + pos, maxlen - pos, &this->mcast_port_vision_tracked, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->team_blue, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
+    for (int a0 = 0; a0 < 16; a0++) {
+        tlen = this->robots[a0]._decodeNoHash(buf, offset + pos, maxlen - pos);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
+
+    tlen = this->iris_gc._decodeNoHash(buf, offset + pos, maxlen - pos);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -298,21 +318,35 @@ int tartarus::_getEncodedSizeNoHash() const
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
-    enc_size += this->mcast_grp_gc.size() + 4 + 1;
-    enc_size += __int16_t_encoded_array_size(NULL, 1);
-    enc_size += this->mcast_grp_vision.size() + 4 + 1;
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
     enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __int16_t_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
+    for (int a0 = 0; a0 < 16; a0++) {
+        enc_size += this->robots[a0]._getEncodedSizeNoHash();
+    }
+    enc_size += this->iris_gc._getEncodedSizeNoHash();
     return enc_size;
 }
 
-uint64_t tartarus::_computeHash(const __lcm_hash_ptr *)
+uint64_t tartarus::_computeHash(const __lcm_hash_ptr *p)
 {
-    uint64_t hash = 0x7c5bbeb22ee8ee8eLL;
+    const __lcm_hash_ptr *fp;
+    for(fp = p; fp != NULL; fp = fp->parent)
+        if(fp->v == tartarus::getHash)
+            return 0;
+    const __lcm_hash_ptr cp = { p, tartarus::getHash };
+
+    uint64_t hash = 0x7702ca0f0831802dLL +
+         data::robot_parameters::_computeHash(&cp) +
+         data::game_controller::_computeHash(&cp);
+
     return (hash<<1) + ((hash>>63)&1);
 }
 

@@ -15,6 +15,7 @@ struct robot
     float wheel_fl; //wheel front left;
     float wheel_bl; //wheel back left;
     float wheel_br; //wheel back right;
+    boolean has_kicker;
 }
 
 struct ia

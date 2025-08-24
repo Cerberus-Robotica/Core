@@ -51,6 +51,11 @@ class robot
          */
         float      wheel_br;
 
+        /**
+         * wheel back right;
+         */
+        int8_t     has_kicker;
+
     public:
         /**
          * Encode a message into binary form.
@@ -186,6 +191,9 @@ int robot::_encodeNoHash(void *buf, int offset, int maxlen) const
     tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->wheel_br, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_encode_array(buf, offset + pos, maxlen - pos, &this->has_kicker, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -232,6 +240,9 @@ int robot::_decodeNoHash(const void *buf, int offset, int maxlen)
     tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->wheel_br, 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
+    tlen = __boolean_decode_array(buf, offset + pos, maxlen - pos, &this->has_kicker, 1);
+    if(tlen < 0) return tlen; else pos += tlen;
+
     return pos;
 }
 
@@ -251,12 +262,13 @@ int robot::_getEncodedSizeNoHash() const
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
     enc_size += __float_encoded_array_size(NULL, 1);
+    enc_size += __boolean_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t robot::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x86049ef78a47a59cLL;
+    uint64_t hash = 0xcdb827186eb2fbfcLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 
