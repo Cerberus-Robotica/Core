@@ -51,7 +51,14 @@ Não utilize o software [game-controller](https://github.com/RoboCup-SSL/ssl-gam
 Utilize Docker para rodar os softwares da competição(comandos em [Rodar os softwares da SSL](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl) para rodar manualmente);
 
 Tutorial de instalação da bilioteca Docker e de todos os softwares da SSL utilizados nesse framework em "Programação/Frameworks da SSL/Tutorial para instalar os softwares da SSL" no drive da equipe Cerberus.
-	
+
+## Frameworks utilizados:
+
+* [GrSim](https://github.com/RoboCup-SSL/grSim) ou [GrSim para a Entry-Level](https://github.com/Cerberus-Robotica/grSim_for_EL) (simulador)
+* [SSL-Vision](https://github.com/RoboCup-SSL/ssl-vision/tree/master) (sistema de visão)
+* [SSL-Game-Controller](https://github.com/RoboCup-SSL/ssl-game-controller) (controlador de jogo)
+### Opcional:
+* [Tigers AutoReferee](https://github.com/TIGERs-Mannheim/AutoReferee)
 	
 Instalar dependências do Core:
 
