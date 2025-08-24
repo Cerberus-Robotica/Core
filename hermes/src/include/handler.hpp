@@ -2,8 +2,8 @@
 #define HANDLER_HPP
 
 #include <lcm/lcm-cpp.hpp>
-#include "../../data_lcm/data/ia.hpp"
-#include "../../data_lcm/data/tartarus.hpp"
+#include "../../data_lcm/ia.hpp"
+#include "../../data_lcm/tartarus.hpp"
 #include "../../build/grSim_Packet.pb.h"
 
 class handler {

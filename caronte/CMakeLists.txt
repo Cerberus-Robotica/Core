@@ -4,6 +4,8 @@ project(caronte)
 
 find_package(Protobuf REQUIRED)
 
+set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
+
 set(lcm_DIR "${CMAKE_SOURCE_DIR}/../external/lcm/cmake")
 #set(lcm_DIR "/usr/local/lib/lcm/cmake") #outra opção de diretorio
 #list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/../cmake")

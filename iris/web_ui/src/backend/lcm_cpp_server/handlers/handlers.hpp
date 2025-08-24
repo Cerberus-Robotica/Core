@@ -4,10 +4,10 @@
 #include <string>
 #include <lcm/lcm-cpp.hpp>
 
-#include "../../../../../../data_lcm/data/game_controller.hpp"
-#include "../../../../../../data_lcm/data/vision.hpp"
-#include "../../../../../../data_lcm/data/tartarus.hpp"
-#include "../../../../../../data_lcm/data/ia.hpp"
+#include "../../../../../../data_lcm/game_controller.hpp"
+#include "../../../../../../data_lcm/vision.hpp"
+#include "../../../../../../data_lcm/tartarus.hpp"
+#include "../../../../../../data_lcm/ia.hpp"
 
 // Agora LatestData utiliza diretamente as structs LCM, sem redefini-las
 

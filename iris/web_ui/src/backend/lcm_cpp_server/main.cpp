@@ -262,7 +262,7 @@ int main()
             msg.bool_controller = latest_data.bool_controller;
             msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;
             msg.stm_port = latest_data.stm_port;
-            msg.controller_port = latest_data.controller_port;
+            //msg.controller_port = latest_data.controller_port;
             msg.team_blue = latest_data.team_blue;
 
             std::cout << "[POST] Enviando goalkeeper_id: " << msg.goalkeeper_id << " para time "

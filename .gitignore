@@ -8,3 +8,5 @@ __pycache__/
 *.pyc
 build/
 iris/src/data/__pycache__/*.cpython-310.pyc
+data_lcm/*.hpp
+data_lcm/data/**

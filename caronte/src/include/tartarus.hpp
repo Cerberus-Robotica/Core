@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <lcm/lcm-cpp.hpp>
-#include "../../data_lcm/data/tartarus.hpp"
+#include "../../data_lcm/tartarus.hpp"
 
 class Handler {
     public:

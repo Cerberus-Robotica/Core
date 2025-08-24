@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <lcm/lcm-cpp.hpp>
-#include "../../data_lcm/data/game_controller.hpp"
-#include "../../data_lcm/data/vision.hpp"
-#include "../../data_lcm/data/ia.hpp"
-#include "../../data_lcm/data/tartarus.hpp"
-#include "../../data_lcm/data/autoref.hpp"
+#include "../../data_lcm/game_controller.hpp"
+#include "../../data_lcm/vision.hpp"
+#include "../../data_lcm/ia.hpp"
+#include "../../data_lcm/tartarus.hpp"
+#include "../../data_lcm/autoref.hpp"
 
 class handlers {
     public:

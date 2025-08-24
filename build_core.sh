@@ -3,9 +3,11 @@ set -e
 
 git submodule update --init --recursive
 
+cd data_lcm && make
+
 echo " Instalando Caronte... 🛶"
 
-cd caronte && mkdir -p build && cd build && cmake .. && make -j4
+cd ../caronte && mkdir -p build && cd build && cmake .. && make -j4
 
 echo " Instalando Hermes... ⚚"
 

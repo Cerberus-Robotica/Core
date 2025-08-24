@@ -2,7 +2,7 @@
 #define VISION_HPP
 
 #include <lcm/lcm-cpp.hpp>
-#include "../../data_lcm/data/vision.hpp"
+#include "../../data_lcm/vision.hpp"
 #include "../../build/ssl_vision_wrapper.pb.h"
 
 extern data::vision my_vision_data;
