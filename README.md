@@ -44,8 +44,6 @@ flowchart LR
 
 ## Instruções para instalação
 
-### Instalação:
-
 Não utilize o software [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller) instalado localmente, porém instale as dependências dele em seu dispostivo.
 
 Utilize Docker para rodar os softwares da competição(comandos em [Rodar os softwares da SSL](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl) para rodar manualmente);
@@ -60,7 +58,7 @@ Tutorial de instalação da bilioteca Docker e de todos os softwares da SSL util
 ### Opcional:
 * [Tigers AutoReferee](https://github.com/TIGERs-Mannheim/AutoReferee)
 	
-Instalar dependências do Core:
+### Primeiro (instalar dependências do Core):
 
 	./install_packages.sh
 		
