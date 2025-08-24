@@ -46,7 +46,7 @@ flowchart LR
 
 ### Instalação:
 
-Não utilize os softwares da SSL, como o [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision) e o [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller), instalados localmente, porém instale as dependências deles em seu dispostivo.
+Não utilize o software [game-controller](https://github.com/RoboCup-SSL/ssl-game-controller) instalado localmente, porém instale as dependências dele em seu dispostivo.
 
 Utilize Docker para rodar os softwares da competição(comandos em [Rodar os softwares da SSL](https://github.com/CerberusRobotica/Core?tab=readme-ov-file#rodar-os-softwares-da-ssl) para rodar manualmente);
 
