@@ -9,6 +9,6 @@
 namespace roles {
     void RoleKickOffSupport::act(RobotController& robot) {
         Point goal = {robot.mTeam->our_side_sign*robot.mRadius , 1000};
-        skills::move_to(robot, goal);
+        moveTo.act(robot, goal, true);
     }
 } // roles

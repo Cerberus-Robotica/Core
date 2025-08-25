@@ -23,6 +23,8 @@ public:
     std::shared_ptr<roles::RoleKickOffKicker> role_kick_off_kicker = std::make_shared<roles::RoleKickOffKicker>();
     std::shared_ptr<roles::RoleKickOffSupport> role_kick_off_support = std::make_shared<roles::RoleKickOffSupport>();
     std::shared_ptr<roles::RoleKickOffGoalKeeper> role_kick_off_goal_keeper = std::make_shared<roles::RoleKickOffGoalKeeper>();
+    std::shared_ptr<roles::RoleCircularTrajectory> role_circular_trajectory = std::make_shared<roles::RoleCircularTrajectory>();
+    std::shared_ptr<roles::RoleSquaredTrajectory> role_squared_trajectory = std::make_shared<roles::RoleSquaredTrajectory>();
 
     std::map<Robot::role, std::shared_ptr<roles::RoleBase>> role_map = {
         {Robot::unknown, role_halted},
@@ -33,7 +35,9 @@ public:
         {Robot::mid_field, role_mid_field},
         {Robot::kickoff_kicker, role_kick_off_kicker},
         {Robot::kickoff_support, role_kick_off_support},
-        {Robot::kickoff_goal_keeper, role_kick_off_goal_keeper}
+        {Robot::kickoff_goal_keeper, role_kick_off_goal_keeper},
+        {Robot::debug_circular_trajectory, role_circular_trajectory},
+        {Robot::debug_squared_trajectory, role_squared_trajectory}
     };
 
 

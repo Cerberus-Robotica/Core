@@ -1,19 +1,18 @@
 //
-// Created by caiu on 05/08/25.
+// Created by caiu on 25/08/25.
 //
 
-#include <cmath>
+#include <stdio.h>
+#include "SkillMoveTo.h"
+
 #include <iostream>
-#include <vector>
-#include <bits/stl_algo.h>
+
 #include "../RobotController.h"
-#include "../c_trajectory/C_trajectory.h"
-#include "skills.h"
 #include "../TeamInfo.h"
+#include "../c_trajectory/C_trajectory.h"
 
 namespace skills {
-    namespace {
-        Vector2d motion_planner(RobotController& robot, std::vector<Point> trajectory) {
+    Vector2d SkillMoveTo::motion_planner(RobotController& robot, std::vector<Point> trajectory) {
             Vector2d delta = {trajectory[1].getX() - robot.getPosition().getX(), trajectory[1].getY() - robot.getPosition().getY()};
             double dist = delta.getNorm() / 1000.0; // metros
             auto direction = delta.getNormalized(1);
@@ -83,13 +82,13 @@ namespace skills {
             return vel_cmd;
         }
 
-        Vector2d motion_control(Vector2d v_vet, double yaw) {
+        Vector2d SkillMoveTo::motion_control(Vector2d v_vet, double yaw) {
             const double ang = yaw;
             return v_vet.getRotated(ang);
         }
 
 
-        std::vector<Point> find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true) {
+        std::vector<Point> SkillMoveTo::find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true) {
             double minor[2] = {robot.mWorld.field.full_dimensions.getMinorPoint().getX(), robot.mWorld.field.full_dimensions.getMinorPoint().getY()};
             double major[2] = {robot.mWorld.field.full_dimensions.getMajorPoint().getX(), robot.mWorld.field.full_dimensions.getMajorPoint().getY()};
             C_trajectory pf(false, false, 0, 100, 50, 0, minor, major);
@@ -155,9 +154,9 @@ namespace skills {
 
             return trajectory;
         }
-    }
 
-    void move_to(RobotController& robot, Point goal, bool avoid_ball) {
+
+    void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball) {
         if (robot.getPosition().getDistanceTo(goal) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
             robot.mtarget_vyaw = 0; //TODO verificar
@@ -176,4 +175,8 @@ namespace skills {
         robot.mtarget_vel = v_vet;
         robot.mkicker_x = 0;
     }
-}
+
+    void SkillMoveTo::act(RobotController& robot) {
+    	std::cout << "Dummy method" << std::endl;
+    }
+} // skills

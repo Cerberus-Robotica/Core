@@ -7,6 +7,6 @@
 
 namespace roles {
     void RoleHalted::act(RobotController& robot) {
-        skills::stop(robot);
+        stop.act(robot);
     }
-} // roles
+} // rolesSkillKick
