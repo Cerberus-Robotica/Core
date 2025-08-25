@@ -10,6 +10,6 @@ namespace roles {
         Point their_goal = {(robot.mWorld.field.theirGoal.getStart().getX() + robot.mWorld.field.theirGoal.getEnd().getX())/2, (robot.mWorld.field.theirGoal.getStart().getY() + robot.mWorld.field.theirGoal.getEnd().getY())/2};
         Point center = {0, 0};
         auto kickposition = robot.mWorld.getKickingPosition(center, their_goal, robot.mBall_avoidance_radius + robot.mRadius);
-        skills::move_to(robot, kickposition);
+        moveTo.act(robot, kickposition, true);
     }
 } // roles

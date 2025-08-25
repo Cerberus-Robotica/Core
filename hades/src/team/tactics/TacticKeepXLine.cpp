@@ -1,17 +1,16 @@
 //
-// Created by caiu on 06/08/25.
+// Created by caiu on 25/08/25.
 //
 
+#include "TacticKeepXLine.h"
+
 #include <iostream>
-#include <ostream>
 
 #include "../RobotController.h"
-#include "../../c_trajectory/C_trajectory.h"
-#include "tactics.h"
 #include "../TeamInfo.h"
 
 namespace tactics {
-    void keep_x_line(RobotController& robot, LineSegment y_segment, double y_rest) {
+void TacticKeepXLine::act(RobotController& robot, LineSegment y_segment, double y_rest) {
         std::vector<int> enemies_ids = {};
         int enemy_stricker_id = 0;
 
@@ -47,8 +46,11 @@ namespace tactics {
             }
         }
 
-        skills::move_to(robot, meet, false);
+        moveTo.act(robot, meet, false);
         robot.mkicker_x = 0;
-        skills::turn_to(robot, robot.mWorld.ball.getPosition());
+        turnTo.act(robot, robot.mWorld.ball.getPosition());
     }
-}
+    void TacticKeepXLine::act(RobotController& robot) {
+        std::cout << "this is a dummy method" << std::endl;
+    }
+} // tactics

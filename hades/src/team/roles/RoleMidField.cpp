@@ -37,14 +37,14 @@ namespace roles {
 
         if (Pivot_id == robot.getId() || Pivot_id == -1) {
             if (robot.mWorld.ball.getVelocity().getNorm() != 0) {
-                tactics::keep_a_location(robot, robot.getPosition());
+                keepLocation.act(robot, robot.getPosition());
             }
-            if (tactics::aux::find_ball_trajectory(robot, robot.mWorld.ball.getPosition(), their_goal).size() == 2 && robot.mWorld.ball.getPosition().getDistanceTo(their_goal) < robot.mKick_distance) {
-                tactics::position_and_kick_to_destination(robot, their_goal);
+            if (positionAndKick.find_ball_trajectory(robot, robot.mWorld.ball.getPosition(), their_goal).size() == 2 && robot.mWorld.ball.getPosition().getDistanceTo(their_goal) < robot.mKick_distance) {
+                positionAndKick.act(robot, their_goal);
             }
             else {
                 int nearest_ally_id = robot.mWorld.findNearestAllyThatIsntTheGoalKeeper(robot.getId(), robot.mTeam->goal_keeper_id);
-                nearest_ally_id != -1 ? tactics::position_and_kick_to_robot(robot, nearest_ally_id) : tactics::position_and_kick_to_destination(robot, their_goal);
+                nearest_ally_id != -1 ? positionAndKick.act(robot, nearest_ally_id) : positionAndKick.act(robot, their_goal);
             }
         }
         else {
@@ -59,8 +59,8 @@ namespace roles {
                 else y_position = robot.mWorld.field.theirDefenseArea.getMinorPoint().getY() - robot.mRadius*2;
             }
             Point wait_position = {x_position, y_position};
-            tactics::keep_a_location(robot, wait_position);
-            skills::turn_to(robot, robot.mWorld.ball.getPosition());
+            positionAndKick.act(robot, wait_position);
+            turnTo.act(robot, robot.mWorld.ball.getPosition());
         }
     }
 } // roles

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <lcm/lcm-cpp.hpp>
-#include "../../data_lcm/game_controller.hpp"
+#include "../../../data_lcm/game_controller.hpp"
 #include "../../data_lcm/vision.hpp"
 #include "../../data_lcm/ia.hpp"
 #include "../../data_lcm/tartarus.hpp"

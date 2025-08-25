@@ -78,25 +78,10 @@ void RobotController::select_behavior() {
         mTeam->role_map[mTeam->roles[id]]->act(*this);
     }
     catch (...) {
+        mTeam->role_map[Robot::halted]->act(*this);
         //when role inst on role_map
     }
 
-    if (mTeam->roles[id] == Robot::debug_circular_trajectory) {
-        if (size(mCurrent_trajectory) == 0) {
-            int resolution = 120;
-            for (int i = 0; i < resolution; i++) {
-                mCurrent_trajectory.emplace_back(1000*sin(2*i*M_PI/resolution + id*2*M_PI/size(mWorld.allies)), 1000*cos(2*i*M_PI/resolution + id*2*M_PI/size(mWorld.allies)));
-            }
-        }
-        tactics::follow_trajectory(*this, mCurrent_trajectory);
-    }
-
-    if (mTeam->roles[id] == Robot::debug_squared_trajectory) {
-        if (size(mCurrent_trajectory) == 0) {
-            mCurrent_trajectory = {{4000, 4000}, {4000, -4000}, {4000, 4000}, {-4000, 4000}};
-        }
-        tactics::follow_trajectory(*this, mCurrent_trajectory);
-    }
 }
 
 void RobotController::check_connection() {
@@ -257,17 +242,8 @@ void RobotController::receive_field_geometry() {
     mWorld.field.inside_dimensions.setMinorPoint({static_cast<double>(-han.new_vision.field.field_length/2), static_cast<double>(-han.new_vision.field.field_width/2)});
     mWorld.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});
 
-    constexpr double INF = 9e8;
-
-    // X- (esquerda): x ∈ (-INF, xmin), y ∈ (ymin, ymax)
     AreaRectangular leftDefenseArea = {{-han.new_vision.field.field_width/2, -han.new_vision.field.defense_area_height/2},{-han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width, han.new_vision.field.defense_area_height/2}};
     AreaRectangular rightDefenseArea = {{han.new_vision.field.field_width/2 - han.new_vision.field.defense_area_width, -han.new_vision.field.defense_area_height/2}, {han.new_vision.field.field_width/2, han.new_vision.field.defense_area_height/2}};
-    if (id == 0) {
-        std::cout << "AA" << std::endl;
-        std::cout << -han.new_vision.field.field_width/2 << ", " << -han.new_vision.field.defense_area_height/2 << std::endl;
-        std::cout << -han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width << ", " << han.new_vision.field.defense_area_height/2 << std::endl;
-        std::cout << han.new_vision.field.defense_area_width << std::endl;
-    }
 
     return;
     if (mTeam->our_side == TeamInfo::left) {

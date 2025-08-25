@@ -15,5 +15,7 @@
 #include "RoleKickOffKicker.h"
 #include "RoleKickOffSupport.h"
 #include "RoleKickOffGoalKeeper.h"
+#include "RoleCircularTrajectory.h"
+#include "RoleSquaredTrajectory.h"
 
 #endif //ROLES_H

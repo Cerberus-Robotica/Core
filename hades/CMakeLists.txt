@@ -55,19 +55,11 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayAttack.h
         src/team/plays/PlayDebug.cpp
         src/team/plays/PlayDebug.h
-        src/team/skills/move_to.cpp
-        src/team/skills/turn_to.cpp
         src/team/skills/skills.h
-        src/team/skills/kick.cpp
         src/team/tactics/tactics.h
-        src/team/tactics/position_and_kick_to.cpp
-        src/team/tactics/follow_trajectory.cpp
-        src/team/tactics/keep_a_location.cpp
-        src/team/tactics/keep_x_line.cpp
         src/team/roles/roles.h
         src/team/plays/PlayHalt.cpp
         src/team/plays/PlayHalt.h
-        src/team/skills/stop.cpp
         src/team/plays/PlayOurKickOff.cpp
         src/team/plays/PlayOurKickOff.h
         src/team/plays/PlayBase.cpp
@@ -90,6 +82,38 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/RoleKickOffSupport.h
         src/team/roles/RoleStriker.cpp
         src/team/roles/RoleStriker.h
+        src/team/roles/RoleSquaredTrajectory.h
+        src/team/roles/RoleSquaredTrajectory.cpp
+        src/team/roles/RoleCircularTrajectory.h
+        src/team/roles/RoleCircularTrajectory.cpp
+
+
+        src/team/tactics/TacticBase.h
+        src/team/tactics/TacticBase.cpp
+        src/team/tactics/TacticKeepXLine.h
+        src/team/tactics/TacticKeepXLine.cpp
+        src/team/tactics/TacticKeepLocation.h
+        src/team/tactics/TacticKeepLocation.cpp
+        src/team/tactics/TacticPositionAndKick.h
+        src/team/tactics/TacticPositionAndKick.cpp
+        src/team/tactics/TacticFollowTrajectory.h
+        src/team/tactics/TacticFollowTrajectory.cpp
+        src/team/tactics/TacticBase.h
+        src/team/tactics/TacticBase.cpp
+        src/team/tactics/tactics.h
+
+        src/team/skills/SkillBase.h
+        src/team/skills/SkillBase.cpp
+        src/team/skills/SkillKick.h
+        src/team/skills/SkillKick.cpp
+        src/team/skills/SkillMoveTo.h
+        src/team/skills/SkillMoveTo.cpp
+        src/team/skills/SkillTurnTo.h
+        src/team/skills/SkillTurnTo.cpp
+        src/team/skills/SkillStop.h
+        src/team/skills/SkillStop.cpp
+        src/team/skills/skills.h
+
 )
 
 target_include_directories(${PROJECT_NAME}
