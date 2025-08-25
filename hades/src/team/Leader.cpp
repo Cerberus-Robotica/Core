@@ -60,6 +60,7 @@ void Leader::receive_vision() {
     std::unordered_set<int> enemies_detected = {};
 
     for (auto blue_robot : han.new_vision.robots_blue) {
+        if (!blue_robot.detected) continue;
         if (team.color == TeamInfo::blue) {
             int rb_id = blue_robot.robot_id;
             if (rb_id >= size(world.allies)) {
@@ -119,6 +120,7 @@ void Leader::receive_vision() {
 
 
     for (auto yellow_robot : han.new_vision.robots_yellow) {
+        if (!yellow_robot.detected) continue;
         if (team.color == TeamInfo::yellow) {
             int rb_id = yellow_robot.robot_id;
             if (rb_id >= size(world.allies)) {
@@ -197,6 +199,7 @@ void Leader::receive_field_geometry() {
     //TODO implementar urgente
     world.field.inside_dimensions.setMinorPoint({static_cast<double>(-han.new_vision.field.field_length/2), static_cast<double>(-han.new_vision.field.field_width/2)});
     world.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});
+
 
     team.striker_max_dislocation = fabs(world.field.theirDefenseArea.getMinorPoint().getX() + world.field.theirDefenseArea.getMajorPoint().getX()) / 2;
     team.mid_field_max_dislocation = std::min(fabs(world.field.theirDefenseArea.getMinorPoint().getX()), fabs(world.field.theirDefenseArea.getMajorPoint().getX()));

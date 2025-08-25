@@ -96,11 +96,11 @@ void RobotController::check_connection() {
     }
 }
 
-
 void RobotController::receive_vision() {
     std::unordered_set<int> allies_detected = {};
     std::unordered_set<int> enemies_detected = {};
     for (auto blue_robot : han.new_vision.robots_blue) {
+        if (!blue_robot.detected) continue;
         if (mTeam->color == TeamInfo::blue) {
             int rb_id = blue_robot.robot_id;
             if (rb_id >= size(mWorld.allies)) {
@@ -156,6 +156,7 @@ void RobotController::receive_vision() {
 
 
     for (auto yellow_robot : han.new_vision.robots_yellow) {
+        if (!yellow_robot.detected) continue;
         if (mTeam->color == TeamInfo::yellow) {
             int rb_id = yellow_robot.robot_id;
             if (rb_id >= size(mWorld.allies)) {
@@ -244,7 +245,6 @@ void RobotController::receive_field_geometry() {
 
     AreaRectangular leftDefenseArea = {{-han.new_vision.field.field_width/2, -han.new_vision.field.defense_area_height/2},{-han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width, han.new_vision.field.defense_area_height/2}};
     AreaRectangular rightDefenseArea = {{han.new_vision.field.field_width/2 - han.new_vision.field.defense_area_width, -han.new_vision.field.defense_area_height/2}, {han.new_vision.field.field_width/2, han.new_vision.field.defense_area_height/2}};
-
     return;
     if (mTeam->our_side == TeamInfo::left) {
         mWorld.field.ourDefenseArea = leftDefenseArea;
