@@ -42,6 +42,7 @@ void recebe_dados_vision() {
         else{
             cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
         }
+        std::cout << "Cameras: " << cameras << std::endl;
         
         for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             
