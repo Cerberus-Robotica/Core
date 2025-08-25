@@ -8,7 +8,7 @@ struct robot_parameters
 	int16_t role;
 }
 
-struct game_controller
+struct iris_controller
 {
 	float designated_position_x;
 	float designated_position_y;
@@ -36,5 +36,5 @@ struct tartarus
 
 	boolean team_blue; //changes the team (not recommended for use in competitions)
 	robot_parameters robots[16];
-	game_controller iris_gc;
+	iris_controller iris_gc;
 }
