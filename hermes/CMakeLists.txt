@@ -35,6 +35,7 @@ add_executable(${PROJECT_NAME}
                 src/include/send_to_robots.cpp
                 src/include/esp_connect.cpp
                 src/include/manual_control.cpp
+                src/include/stm_connect.cpp
                 )
 
 target_include_directories(${PROJECT_NAME}

@@ -3,9 +3,11 @@
 #include "include/esp.hpp"
 #include "include/send_to_robots.hpp"
 #include "include/manual_control.hpp"
+#include "stm.hpp"
 #include <thread>
 
 robots_sender sender;
+stm stm_obj;
 
 int main(int argc, char** argv) {
 
@@ -30,6 +32,6 @@ int main(int argc, char** argv) {
     lcm_thread.join();
 
     close(sock_grsim);
-    close(sender.serial_port);
+    close(stm_obj.serial_port);
     return 0;
 }

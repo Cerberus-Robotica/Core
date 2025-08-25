@@ -1,5 +1,6 @@
 #include "include/GC.hpp"
 #include "include/socket_connect.hpp"
+#include "include/tartarus.hpp"
 #include <iostream>
 
 data::game_controller my_gc_data;
@@ -17,26 +18,11 @@ void recebe_dados_GC() {
         socklen_t addr_len = sizeof(sender_addr);
             // Recebendo os dados do socket GC
         int bytes_received_GC = recvfrom(sock_GC, buffer_GC, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
-        
+
         if (bytes_received_GC > 0) {
             // Parse dos dados recebidos (GC)
             referee.ParseFromArray(buffer_GC, bytes_received_GC);
 
-            if(referee.blue().name() == "Cerberus"){
-                my_gc_data.team_blue = true;
-                //std::cout << "  Time azul " << std::endl;
-            }else{
-                my_gc_data.team_blue = false;
-                //std::cout << "  Time amarelo " << std::endl;
-            }
-
-            if(referee.has_designated_position()){
-                my_gc_data.designated_position_x = referee.designated_position().x();
-                my_gc_data.designated_position_y = referee.designated_position().y();
-            }
-
-            my_gc_data.current_command = referee.command(); // enum command
-            
             my_gc_data.blue.name = referee.blue().name();
             my_gc_data.blue.score = referee.blue().score();
             my_gc_data.blue.red_cards = referee.blue().red_cards();
@@ -52,12 +38,25 @@ void recebe_dados_GC() {
             my_gc_data.yellow.timeouts = referee.yellow().timeouts();
             my_gc_data.yellow.timeout_time = referee.yellow().timeout_time();
             my_gc_data.yellow.goalkeeper_id = referee.yellow().goalkeeper();
+
+            if(referee.has_designated_position()){
+                my_gc_data.designated_position_x = referee.designated_position().x();
+                my_gc_data.designated_position_y = referee.designated_position().y();
+            }
+
+            if(han.new_tartarus.iris_as_GC){
+                my_gc_data.team_blue = han.new_tartarus.team_blue;
+                my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
+            }
+            else{
+                if(referee.blue().name() == "Cerberus"){
+                    my_gc_data.team_blue = true;
+                }else{
+                    my_gc_data.team_blue = false;
+                }
+                my_gc_data.current_command = referee.command(); // enum command
+            }
         }
-        //system("clear"); 
-        //std::cout << "Timestamp: " << referee.packet_timestamp()/1000000 << std::endl;
-        //std::cout << "GOls azuis: " << my_gc_data.blue.score << "\n" << std::endl;
-        //std::cout << "time azul: " << my_gc_data.blue.name << std::endl;
-        //std::cout << "time amarelo: " << my_gc_data.yellow.name << std::endl;
         lcm.publish("GC", &my_gc_data);
     }  
 }
