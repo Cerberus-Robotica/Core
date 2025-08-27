@@ -19,28 +19,28 @@ Point WorldModel::getKickingPosition(Point pos_0, Point pos_1, double distance) 
     return {direction.getX() + pos_0.getX(), direction.getY() + pos_0.getY()};
 }
 
-bool WorldModel::isBallOnOurSide() {
-    if (ball.getPosition().getX() == 0) {
+bool WorldModel::isPointOnOurSide(Point p) {
+    if (p.getX() == 0) {
         return false;
     }
-    else if (ball.getPosition().getX()/fabs(ball.getPosition().getX()) == field.ourGoal.getStart().getX()/fabs(field.ourGoal.getStart().getX())) {
+    else if (p.getX()/fabs(p.getX()) == field.ourGoal.getStart().getX()/fabs(field.ourGoal.getStart().getX())) {
         return true;
     }
     return false;
 }
 
-bool WorldModel::isBallOnOurArea() {
-    if (ball.getPosition().getX() > field.ourGoal.getStart().getX() && ball.getPosition().getX() < field.ourGoal.getEnd().getX()) {
-        if (ball.getPosition().getY() > field.ourGoal.getStart().getY() && ball.getPosition().getY() < field.ourGoal.getEnd().getY()) {
+bool WorldModel::isPointOnOurArea(Point p) {
+    if (p.getX() > field.ourGoal.getStart().getX() && p.getX() < field.ourGoal.getEnd().getX()) {
+        if (p.getY() > field.ourGoal.getStart().getY() && p.getY() < field.ourGoal.getEnd().getY()) {
             return true;
         }
     }
     return false;
 }
 
-bool WorldModel::isBallOnTheirArea() {
-    if (ball.getPosition().getX() > field.theirDefenseArea.getMinorPoint().getX() && ball.getPosition().getX() < field.theirDefenseArea.getMajorPoint().getX()) {
-        if (ball.getPosition().getY() > field.theirDefenseArea.getMinorPoint().getY() && ball.getPosition().getY() < field.theirDefenseArea.getMajorPoint().getY()) {
+bool WorldModel::isPointOnTheirArea(Point p) {
+    if (p.getX() > field.theirDefenseArea.getMinorPoint().getX() && p.getX() < field.theirDefenseArea.getMajorPoint().getX()) {
+        if (p.getY() > field.theirDefenseArea.getMinorPoint().getY() && p.getY() < field.theirDefenseArea.getMajorPoint().getY()) {
             return true;
         }
     }
@@ -83,14 +83,6 @@ int WorldModel::findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id) 
         }
     }
     return closest_id;
-}
-
-void WorldModel::generateBallStopPosition() {
-    //FIXME gambiarra
-    //FIXME calcula mal (provavel culpa da ball_speed
-    ball.findStopPosition();
-    //ball_stop_position[0] = std::clamp(ball_pos[0] + 1000*ball_speed[0]*ball_speed[0]/(2*ball_disacceleration), outside_field_x_minus[1][0] + 400, outside_field_x_plus[0][0] - 400);
-    //ball_stop_position[1] = std::clamp(ball_pos[1] + 1000*ball_speed[1]*ball_speed[1]/(2*ball_disacceleration), outside_field_y_minus[0][1] + 400, outside_field_y_plus[0][1] - 400);
 }
 
 int WorldModel::getIdOfTheBallInterceptor() {

@@ -16,14 +16,14 @@ private:
 	Vector2d velocity;
 	Point stopPosition = Point(0, 0);
 public:
-  	Ball(bool detected, Point position, Vector2d velocity) : detected(detected), position(position), velocity(velocity) {stopPosition = findStopPosition();};
+  	Ball(bool detected, Point position, Vector2d velocity) : detected(detected), position(position), velocity(velocity) {stopPosition = getStopPosition();};
   	void setVelocity(const Vector2d& v);
   	Vector2d getVelocity() const;
   	void setDetected(bool detected);
     bool getDetected();
   	void setPosition(Point position);
   	Point getPosition();
-	Point findStopPosition() const;
+	Point getStopPosition() const;
 };
 
 

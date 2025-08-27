@@ -225,7 +225,6 @@ void RobotController::receive_vision() {
     }
 
     mWorld.ball.setPosition({han.new_vision.balls.position_x, han.new_vision.balls.position_y});
-    mWorld.generateBallStopPosition();
 
     mLast_time_stamp = han.new_vision.timestamp;
 

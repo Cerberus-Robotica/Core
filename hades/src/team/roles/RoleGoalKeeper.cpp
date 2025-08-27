@@ -12,7 +12,7 @@
 namespace roles {
     void RoleGoalKeeper::act(RobotController& robot) {
         //TODO melhorar goal_keeper_role
-        if (!robot.mWorld.isBallOnOurArea() || robot.mWorld.ball.getVelocity().getNorm() != 0) {
+        if (!robot.mWorld.isPointOnOurArea(robot.mWorld.ball.getPosition()) || robot.mWorld.ball.getVelocity().getNorm() != 0) {
             robot.mState = 0;
             LineSegment line = robot.mWorld.field.ourGoal;
             keepXLine.act(robot, line, (robot.mWorld.field.ourGoal.getStart().getY() + robot.mWorld.field.ourGoal.getEnd().getY())/2);

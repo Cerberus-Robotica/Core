@@ -25,12 +25,11 @@ public:
 
 
     Point getKickingPosition(Point pos_0, Point pos_1, double distance);
-    bool isBallOnOurSide();
-    bool isBallOnOurArea();
-    bool isBallOnTheirArea();
+    bool isPointOnOurSide(Point p);
+    bool isPointOnOurArea(Point p);
+    bool isPointOnTheirArea(Point p);
     std::vector<int> getAlliesIdsAccordingToDistanceToBall();
     int findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id);
-    void generateBallStopPosition();
     int getIdOfTheBallInterceptor();
     bool isBallMovingIdDirection(int id);
 };
