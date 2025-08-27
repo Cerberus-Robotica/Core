@@ -77,10 +77,6 @@ Para rodar apenas o Hades, Hermes, Caronte e Íris:
 
 	./run.sh
  
-e, em outro terminal:
-
-	./iris_server.sh
- 
 ou, para rodar com o GrSim e o Game-Controller(necessário docker), apenas rode:
  
  	./run_with_simulator.sh
