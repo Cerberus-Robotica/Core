@@ -32,9 +32,12 @@ void recebe_dados_tracked() {
             ssl_vision_atual = han.new_tartarus.ssl_vision;
         }
 
-        //std::cout << "ssl_vision_atual: " << ssl_vision_atual << std::endl;
-        //std::cout << "han.new_tartarus.ssl_vision: " << (int)han.new_tartarus.ssl_vision << std::endl;
-        cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
+        if(han.new_tartarus.cams_number > 0){
+            cameras = han.new_tartarus.cams_number;
+        }
+        else{
+            cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
+        }
 
         for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             

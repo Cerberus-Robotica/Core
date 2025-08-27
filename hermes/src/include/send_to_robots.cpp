@@ -71,61 +71,6 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
 
 }
 
-
-void robots_sender::stm_connect() { // function to send data to the robots via STM32
-    //pct.id = 0;
-    //pct.Vx = 0;
-    //pct.Vy = 0;
-    //pct.Vang = 0;
-    //pct.kicker = 1000;
-    serial_port = -1;
-
-    while(serial_port < 0) {
-        // Tenta abrir a porta serial até conseguir
-        std::cout << "Tentando abrir a porta serial: " << port << han.data_tartarus_copy.stm_port << "..." << std::endl;
-        sleep(1); // Espera 1 segundo antes de tentar novamente
-        std::string porta_usb = "/dev/ttyUSB" + std::to_string(han.data_tartarus_copy.stm_port);
-        serial_port = open(porta_usb.c_str(), O_RDWR);
-        //std::cout << "ID atual: " << (int)pct.id << std::endl;
-        if(han.data_tartarus_copy.ssl_vision == 0){
-            break;
-        }
-    }
-
-    if (serial_port < 0) {
-        std::cerr << "Erro ao abrir a porta serial " << port << std::endl;
-    }
-
-    // Configurações da UART
-    termios tty;
-    memset(&tty, 0, sizeof tty);
-    if (tcgetattr(serial_port, &tty) != 0) {
-        std::cerr << "Erro ao obter atributos da UART\n";
-    }
-
-    // Baud rate
-    cfsetispeed(&tty, B115200);
-    cfsetospeed(&tty, B115200);
-
-    tty.c_cflag &= ~PARENB; // Sem paridade
-    tty.c_cflag &= ~CSTOPB; // 1 stop bit
-    tty.c_cflag &= ~CSIZE;
-    tty.c_cflag |= CS8;     // 8 bits
-    tty.c_cflag &= ~CRTSCTS;// Sem controle de fluxo
-    tty.c_cflag |= CREAD | CLOCAL;
-
-    tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // Modo raw
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY);
-    tty.c_oflag &= ~OPOST;
-
-    tcsetattr(serial_port, TCSANOW, &tty);
-
-
-    // Envio de mensagem
-    msg[0] = start[0];
-    msg[1] = start[1];
-}
-
 void robots_sender::send_control() { // global function to send control commands
     setupSocket_grsim();
     while(true) {
@@ -140,15 +85,12 @@ void robots_sender::send_control() { // global function to send control commands
         }
         
         if (han.data_tartarus_copy.ssl_vision == 0) {
-            close(serial_port);
-            
+            close(stm_obj.serial_port);
+
             while(han.data_tartarus_copy.ssl_vision == 0 && han.updated_tartarus == sender.updated) {
                 if(han.updated_tartarus != sender.updated) {
                     sender.updated = !sender.updated;
                 }
-
-
-
                 if(han.data_tartarus_copy.competition_mode == 0) {
                     control_obj.control(); // Mantém atualizando
 
@@ -167,11 +109,10 @@ void robots_sender::send_control() { // global function to send control commands
                         }
                     }
                 }
-
                 send_to_grsim();
             }
         } else {
-            stm_connect();
+            stm_obj.stm_connect();
             while(han.data_tartarus_copy.ssl_vision == 1 && han.updated_tartarus == sender.updated) {
                 if(han.updated_tartarus != sender.updated) {
                     sender.updated = !sender.updated;
@@ -181,8 +122,8 @@ void robots_sender::send_control() { // global function to send control commands
                     control_obj.control(); // Mantém atualizando
                     pct.id = control_obj.robot_id; // Use the current robot ID from the controller
                     std::cout << "Controlled robot - Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
-                    memcpy(&msg[2], &pct, sizeof(Pacote));
-                    write(serial_port, msg, sizeof(msg));
+                    memcpy(&stm_obj.msg[2], &pct, sizeof(Pacote));
+                    write(stm_obj.serial_port, stm_obj.msg, sizeof(stm_obj.msg));
                     usleep(5000);
                 }
                 else{
@@ -199,8 +140,8 @@ void robots_sender::send_control() { // global function to send control commands
                             pct.kicker = han.data_ia_copy.robots[i].kick_speed_x;
                         }
                         std::cout << "Controlled robot - Robot ID: " << (int)pct.id << " Vx: " << pct.Vx << " Vy: " << pct.Vy << " Vang: " << pct.Vang << std::endl;
-                        memcpy(&msg[2], &pct, sizeof(Pacote));
-                        write(serial_port, msg, sizeof(msg));
+                        memcpy(&stm_obj.msg[2], &pct, sizeof(Pacote));
+                        write(stm_obj.serial_port, stm_obj.msg, sizeof(stm_obj.msg));
                         usleep(5000);
                     }
                 }
@@ -208,6 +149,6 @@ void robots_sender::send_control() { // global function to send control commands
             sleep(1);
         }
     }
-    close(serial_port);
+    close(stm_obj.serial_port);
     close(sock_grsim);
 }
