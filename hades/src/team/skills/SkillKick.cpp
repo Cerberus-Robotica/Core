@@ -4,18 +4,18 @@
 
 #include "SkillKick.h"
 #include "../RobotController.h"
+#include "../TeamInfo.h"
 
 namespace skills {
 	void SkillKick::act(RobotController& robot) {
-		if (robot.mWorld.ball.getVelocity().getNorm() > robot.mVxy_min) {
+		if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distancethreshold) {
 			robot.mkicker_x = 0;
-			robot.mState += 1;
+			robot.mPositioned = false;
+			robot.mTeam->positioned[robot.getId()] = false;
 		}
-
 		Vector2d v_vet = {robot.mWorld.ball.getPosition(), robot.getPosition()};
 		v_vet = v_vet.getNormalized(robot.mVxy_min);
 		robot.mtarget_vel = v_vet.getRotated(-robot.getYaw());
 		robot.mkicker_x = 3.5;
-		//skills::turn_to(robot, robot.mWorld.ball.getPosition());
 	}
 } // skills

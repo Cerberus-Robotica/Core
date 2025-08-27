@@ -37,7 +37,7 @@ void TacticKeepXLine::act(RobotController& robot, LineSegment y_segment, double 
         double y_max = y_segment.getStart().getY() - robot.mRadius;
         double y_min = y_segment.getEnd().getY() + robot.mRadius;
         y_meet = std::clamp(y_meet, y_min, y_max);
-        double x_meet = y_segment.getStart().getX() - robot.mRadius*y_segment.getStart().getX()/fabs(y_segment.getStart().getX());
+        double x_meet = y_segment.getStart().getX() - (robot.mRadius)*y_segment.getStart().getX()/fabs(y_segment.getStart().getX());
         Point meet = {x_meet, y_meet};
 
         if (robot.mWorld.enemies.size() > 0) {
@@ -45,7 +45,6 @@ void TacticKeepXLine::act(RobotController& robot, LineSegment y_segment, double 
                 meet.setY(y_rest);
             }
         }
-
         moveTo.act(robot, meet, false);
         robot.mkicker_x = 0;
         turnTo.act(robot, robot.mWorld.ball.getPosition());

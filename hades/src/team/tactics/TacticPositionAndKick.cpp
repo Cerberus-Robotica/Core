@@ -12,50 +12,23 @@
 
 namespace tactics {
 	void TacticPositionAndKick::act(RobotController& robot, Point goal) {
-		auto traj = find_ball_trajectory(robot, robot.mWorld.ball.getPosition(), goal);
-		Point kick_pos = robot.mWorld.getKickingPosition(traj[0], traj[1], robot.mBall_avoidance_radius + robot.mRadius);
-		Point next_point = traj[1];
-
-		if (robot.mState == 0) {
+		if (!robot.mPositioned or !robot.mOriented) {
+			Point kick_pos = robot.mWorld.getKickingPosition(robot.mWorld.ball.getPosition(), goal, robot.mBall_avoidance_radius + robot.mRadius);
 			moveTo.act(robot, kick_pos, true);
-			turnTo.act(robot, next_point);
-			if (robot.mPositioned and robot.mOriented) {
-				robot.mState = 1;
-			}
-		}
-		else if (robot.mState == 1) {
+			turnTo.act(robot, goal);
+		} else {
 			kick.act(robot);
-		}
-		else if (robot.mState == 2) {
-			robot.mState = 0;
 		}
 	}
 
 	void TacticPositionAndKick::act(RobotController& robot, int id) {
 		Point goal = robot.mWorld.allies[id].getPosition();
-		auto traj = find_ball_trajectory(robot, robot.mWorld.ball.getPosition(), goal);
-		Point kick_pos = robot.mWorld.getKickingPosition(traj[0], traj[1], robot.mBall_avoidance_radius + robot.mRadius);
-		Point next_point = traj[1];
-
-		if (robot.mState == 0) {
+		if (!robot.mPositioned or !robot.mOriented) {
+			Point kick_pos = robot.mWorld.getKickingPosition(robot.mWorld.ball.getPosition(), goal, robot.mBall_avoidance_radius + robot.mRadius);
 			moveTo.act(robot, kick_pos, true);
-			turnTo.act(robot, next_point);
-			if (robot.mPositioned and robot.mOriented and robot.mTeam->positioned[id]) {
-				robot.mState = 1;
-			}
-		}
-		else if (robot.mState == 1) {
+			turnTo.act(robot, goal);
+		} else {
 			kick.act(robot);
-			robot.mTimer = 3;
-		}
-		else if (robot.mState == 2) {
-			moveTo.act(robot, robot.getPosition(), true);
-			turnTo.act(robot, robot.mWorld.ball.getPosition());
-			robot.mTimer -= robot.mDelta_time;
-			if (robot.mTimer <= 0) {
-				robot.mTimer = 0;
-				robot.mState = 0;
-			}
 		}
 	}
 

@@ -33,13 +33,14 @@ Point Ball::getPosition() {
 }
 
 Point Ball::getStopPosition() const {
-    // Se a bola está parada, posição final é a atual
+    //TODO melhorar precisao
+
     if (velocity.getX() == 0 && velocity.getY() == 0) {
         return position;
     }
 
     // Módulo da velocidade inicial
-    double v0 = std::sqrt(velocity.getX() * velocity.getX() +
+    double v0 = 1000*std::sqrt(velocity.getX() * velocity.getX() +
                           velocity.getY() * velocity.getY());
 
     // Distância até parar (Torricelli)
@@ -52,4 +53,12 @@ Point Ball::getStopPosition() const {
     // Posição final = posição atual + deslocamento
     return Point(position.getX() + dirX * distance,
                  position.getY() + dirY * distance);
+}
+
+bool Ball::isStopped() {
+    return getVelocity().getNorm() < velocityThreshold;
+}
+
+bool Ball::isMoving() {
+    return !isStopped();
 }

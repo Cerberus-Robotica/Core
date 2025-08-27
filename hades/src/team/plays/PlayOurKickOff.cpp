@@ -16,7 +16,7 @@
 
 int PlayOurKickOff::calc_score(WorldModel world, TeamInfo team) {
     int score = 0;
-    if ((team.current_command == TeamInfo::PREPARE_KICKOFF_BLUE)&&(team.color == TeamInfo::blue) || (team.current_command == TeamInfo::PREPARE_KICKOFF_YELLOW)&&(team.color == TeamInfo::yellow)) {
+    if (team.event == TeamInfo::ourKickOff || team.event == TeamInfo::prepareOurKickOff) {
         score += 999992;
     }
     this->score = score;

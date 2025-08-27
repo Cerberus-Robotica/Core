@@ -9,6 +9,8 @@
 namespace skills {
 
 class SkillKick {
+private:
+	double distancethreshold = 300;
 public:
 	void act(RobotController& robot);
 };

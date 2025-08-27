@@ -146,12 +146,13 @@ namespace skills {
             if (goal.getY() > robot.mWorld.field.full_dimensions.getMajorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMajorPoint().getY());
             if (goal.getY() < robot.mWorld.field.full_dimensions.getMinorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMinorPoint().getY());
 
+
+
             auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
             std::vector<Point> trajectory = {};
             for (int i = 0; i < trajectory_vector.size(); i++) {
                 trajectory.emplace_back(trajectory_vector[i][0], trajectory_vector[i][1]);
             }
-
             return trajectory;
         }
 
@@ -169,7 +170,6 @@ namespace skills {
         Vector2d v_vet;
         auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
         std::size(trajectory) > 0 ? v_vet = motion_planner(robot, trajectory) : v_vet = {0, 0};
-
 
         v_vet = motion_control(v_vet, -robot.getYaw());
         robot.mtarget_vel = v_vet;

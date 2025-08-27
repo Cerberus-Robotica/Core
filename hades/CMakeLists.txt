@@ -112,6 +112,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/skills/SkillTurnTo.cpp
         src/team/skills/SkillStop.h
         src/team/skills/SkillStop.cpp
+        src/team/skills/SkillCushion.h
+        src/team/skills/SkillCushion.cpp
         src/team/skills/skills.h
 
 )

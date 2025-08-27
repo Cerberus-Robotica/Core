@@ -39,7 +39,7 @@ public:
     double mtarget_vyaw = 0;
     Vector2d mlast_target_vel = {0, 0};
 
-    //actuators activation
+    //actuators activationstop
     double mkicker_x = 0;
     double mkicker_z = 0;
     double mdribbler = 0;

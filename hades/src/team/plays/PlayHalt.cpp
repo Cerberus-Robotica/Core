@@ -11,7 +11,7 @@
 
 int PlayHalt::calc_score(WorldModel world, TeamInfo team) {
     int score = 0;
-    if (team.current_command == TeamInfo::halt) {
+    if (team.current_command == TeamInfo::HALT) {
         score += 999992;
     }
     this->score = score;

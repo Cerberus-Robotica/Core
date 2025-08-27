@@ -6,6 +6,7 @@
 #define LINESEGMENT_H
 
 #include "Point.h"
+#include "Vector2d.h"
 
 class LineSegment {
 private:
@@ -14,6 +15,11 @@ private:
 
 public:
     LineSegment(const Point start, const Point end) : start(start), end(end) {};
+
+    LineSegment(const Point pt, const Vector2d vect) {
+        start = pt;
+        end.setXY(pt.getX() + vect.getX(), pt.getY() + vect.getY());
+    };
 
     Point getStart() const;
     Point getEnd() const;

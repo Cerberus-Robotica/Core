@@ -10,6 +10,6 @@
 #include "SkillTurnTo.h"
 #include "SkillStop.h"
 #include "SkillKick.h"
-
+#include "SkillCushion.h"
 
 #endif //SKILLS_H

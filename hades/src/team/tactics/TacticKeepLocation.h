@@ -9,6 +9,9 @@
 namespace tactics {
 
 class TacticKeepLocation : public TacticBase {
+private:
+	double distanceThreshold = 400;
+	double angle_tolerance = 3.1415/8;
 public:
 	void act(RobotController& robot);
 	void act(RobotController& robot, Point keep);

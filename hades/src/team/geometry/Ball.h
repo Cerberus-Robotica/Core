@@ -15,6 +15,7 @@ private:
 	Point position;
 	Vector2d velocity;
 	Point stopPosition = Point(0, 0);
+	double velocityThreshold = 0.2;
 public:
   	Ball(bool detected, Point position, Vector2d velocity) : detected(detected), position(position), velocity(velocity) {stopPosition = getStopPosition();};
   	void setVelocity(const Vector2d& v);
@@ -24,6 +25,8 @@ public:
   	void setPosition(Point position);
   	Point getPosition();
 	Point getStopPosition() const;
+	bool isStopped();
+	bool isMoving();
 };
 
 

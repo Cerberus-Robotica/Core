@@ -12,12 +12,16 @@ namespace tactics {
     }
 
 	void TacticKeepLocation::act(RobotController& robot, Point keep){
-		if (robot.mWorld.ball.getVelocity().getNorm() == 0 || !robot.mWorld.isBallMovingIdDirection(robot.getId())) {
+		if (robot.mWorld.ball.isStopped() || !robot.mWorld.isBallMovingIdDirection(robot.getId())) {
 			moveTo.act(robot, keep, true);
 		}
 		else {
-			if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > robot.mRadius*5) moveTo.act(robot, robot.mWorld.ball.getStopPosition(), true);
-			else moveTo.act(robot, robot.mWorld.ball.getPosition(), true);
+			if (robot.mWorld.ball.isMoving()) {
+				LineSegment line = {robot.mWorld.ball.getPosition(), robot.mWorld.ball.getVelocity()};
+				if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) < distanceThreshold && line.isPointAligned(robot.getPosition(), angle_tolerance)) {
+					cushion.act(robot);
+				} else moveTo.act(robot, robot.mWorld.ball.getStopPosition(), false);
+			}
 		}
 	}
 } // tactics
