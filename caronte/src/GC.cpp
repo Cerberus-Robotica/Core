@@ -11,6 +11,7 @@ void recebe_dados_GC() {
     lcm::LCM lcm;
 
     Referee referee;
+    const GameEvent *game_event = nullptr;
     std::cout << "Conectando ao GC..." << std::endl;
     while(true){
         
@@ -42,6 +43,11 @@ void recebe_dados_GC() {
             if(referee.has_designated_position()){
                 my_gc_data.designated_position_x = referee.designated_position().x();
                 my_gc_data.designated_position_y = referee.designated_position().y();
+            }
+            if(referee.game_events_size() > 0) {
+                game_event = &referee.game_events(referee.game_events_size() - 1); // pega o último evento
+                //std::cout << "game_event type: " << game_event->type() << std::endl;
+                my_gc_data.game_event = game_event->type();
             }
 
             if(han.new_tartarus.iris_as_GC){
