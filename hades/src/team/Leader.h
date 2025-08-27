@@ -22,6 +22,7 @@ public:
     double ball_pos[2] = {0, 0};
     int64_t last_time_stamp = 0;
     double delta_time = 0;
+    double GC_timer = 0;
 
     PlayAttack attack;
     PlayDebug debug;
@@ -50,6 +51,7 @@ private:
     void select_plays();
     void inspect_enemy_team();
     void world_analysis();
+    void event_FSM();
 };
 
 
