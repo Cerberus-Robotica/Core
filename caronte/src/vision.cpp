@@ -36,8 +36,14 @@ void recebe_dados_vision() {
             setupVisionSocket();
             ssl_vision_atual = han.new_tartarus.ssl_vision;
         }
-        cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
-
+        if(han.new_tartarus.cams_number > 0){
+            cameras = han.new_tartarus.cams_number;
+        }
+        else{
+            cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
+        }
+        std::cout << "Cameras: " << cameras << std::endl;
+        
         for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
             
             int bytes_received_vision = recvfrom(sock_vision, buffer_vision, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
