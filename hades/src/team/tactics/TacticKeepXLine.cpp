@@ -41,7 +41,7 @@ void TacticKeepXLine::act(RobotController& robot, LineSegment y_segment, double 
         Point meet = {x_meet, y_meet};
 
         if (robot.mWorld.enemies.size() > 0) {
-            if (!robot.mWorld.isBallOnOurSide() || (robot.mWorld.enemies[enemy_stricker_id].getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > 500 && robot.mWorld.ball.getVelocity().getNorm() == 0)) {
+            if (!robot.mWorld.isPointOnOurSide(robot.mWorld.ball.getPosition()) || (robot.mWorld.enemies[enemy_stricker_id].getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > 500 && robot.mWorld.ball.getVelocity().getNorm() == 0)) {
                 meet.setY(y_rest);
             }
         }

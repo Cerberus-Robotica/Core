@@ -8,7 +8,7 @@
 // --- Setters e Getters ---
 void Ball::setVelocity(const Vector2d& v) {
     velocity = v;
-    stopPosition = findStopPosition();
+    stopPosition = getStopPosition();
 }
 
 Vector2d Ball::getVelocity() const {
@@ -25,15 +25,14 @@ bool Ball::getDetected() {
 
 void Ball::setPosition(Point p) {
     position = p;
-    stopPosition = findStopPosition();
+    stopPosition = getStopPosition();
 }
 
 Point Ball::getPosition() {
     return position;
 }
 
-// --- Cálculo da posição final da bola ---
-Point Ball::findStopPosition() const {
+Point Ball::getStopPosition() const {
     // Se a bola está parada, posição final é a atual
     if (velocity.getX() == 0 && velocity.getY() == 0) {
         return position;

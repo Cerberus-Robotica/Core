@@ -16,7 +16,7 @@ namespace tactics {
 			moveTo.act(robot, keep, true);
 		}
 		else {
-			if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > robot.mRadius*5) moveTo.act(robot, robot.mWorld.ball.findStopPosition(), true);
+			if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > robot.mRadius*5) moveTo.act(robot, robot.mWorld.ball.getStopPosition(), true);
 			else moveTo.act(robot, robot.mWorld.ball.getPosition(), true);
 		}
 	}
