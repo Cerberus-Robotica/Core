@@ -53,8 +53,21 @@ public:
 
     enum events {
         halt,
-        normal_start,
-        force_start
+        timeout,
+        stop,
+        prepareOurKickOff,
+        prepareTheirKickOff,
+        ourballPlacement,
+        theirballPlacement,
+        prepareOurPenalty,
+        prepareTheirPenalty,
+        ourKickOff,
+        theirKickOff,
+        ourFreeKick,
+        theirFreeKick,
+        ourPenalty,
+        theirPenalty,
+        run
     };
 
     enum Command {
@@ -100,12 +113,15 @@ public:
         BALL_PLACEMENT_BLUE = 17
     };
 
+
+
     int goal_keeper_id = 0;
     sides our_side = right;
     int our_side_sign = +1;
 
     bool debug = false;
-    enum Command current_command = FORCE_START;
+    enum Command current_command = HALT;
+    enum events event = halt;
     double central_line_x = 0;
     color color = yellow;
     std::array<Robot::role, 16> roles = {Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown, Robot::unknown};
