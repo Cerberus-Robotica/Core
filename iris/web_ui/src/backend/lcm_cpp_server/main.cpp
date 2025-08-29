@@ -179,6 +179,7 @@ int main()
         data["estrategia"] = latest_data.estrategia;
         data["timestamp"] = latest_data.timestamp;
         data["robots_size"] = latest_data.robots_size;
+        data["cams_number"] = latest_data.cams_number;
 
         return crow::response{data};
     });
@@ -272,6 +273,10 @@ int main()
                 latest_data.mcast_port_vision_tracked = body["mcast_port_vision_tracked"].i();
                 std::cout << "[POST] mcast_port_vision_tracked atualizado para " << latest_data.mcast_port_vision_tracked << std::endl;
             }
+            if (body.has("cams_number") && body["cams_number"].t() == crow::json::type::Number) {
+                latest_data.cams_number = body["cams_number"].i();
+                std::cout << "[POST] cams_number atualizado para " << latest_data.cams_number << std::endl;
+            }
 
             // ---- Publicar mensagem no LCM ----
             data::tartarus msg;
@@ -287,6 +292,7 @@ int main()
             msg.mcast_port_vision_sslvision = latest_data.mcast_port_vision_sslvision;
             msg.mcast_port_vision_tracked = latest_data.mcast_port_vision_tracked;
             msg.team_blue = latest_data.team_blue;
+            msg.cams_number = latest_data.cams_number;
 
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";

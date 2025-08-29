@@ -74,18 +74,19 @@ export default function TartarusSection({
   setReceptDimensions,
   receptDimensions,
 }: Props) {
-  const [stmPort, setStmPort] = useState(data.tartarus.stm_port);
+  const [stmPort, setStmPort] = useState(data.tartarus.stm_port ?? 0);
   const [mcast_port_gc, setMcast_port_gc] = useState(
-    data.tartarus.mcast_port_gc,
+    data.tartarus.mcast_port_gc ?? 0,
   );
   const [mcast_port_vision_sslvision, setMcast_port_vision_sslvision] =
-    useState(data.tartarus.mcast_port_vision_sslvision);
+    useState(data.tartarus.mcast_port_vision_sslvision ?? 0);
   const [mcast_port_vision_grsim, setMcast_port_vision_grsim] = useState(
-    data.tartarus.mcast_port_vision_grsim,
+    data.tartarus.mcast_port_vision_grsim ?? 0,
   );
   const [mcast_port_vision_tracked, setMcast_port_vision_tracked] = useState(
-    data.tartarus.mcast_port_vision_tracked,
+    data.tartarus.mcast_port_vision_tracked ?? 0,
   );
+  const [cams_number, setCams_number] = useState(data.tartarus.cams_number ?? 0);
 
   return (
     <>
@@ -176,19 +177,28 @@ export default function TartarusSection({
         label="SSL Vision Port:"
         value={mcast_port_vision_sslvision}
         setValue={setMcast_port_vision_sslvision}
-        onSubmit={() => updateNumber('mcast_port_vision_sslvision', mcast_port_vision_sslvision)}
+        onSubmit={() =>
+          updateNumber(
+            'mcast_port_vision_sslvision',
+            mcast_port_vision_sslvision,
+          )
+        }
       />
       <NumberInputRow
         label="GrSim Port:"
         value={mcast_port_vision_grsim}
         setValue={setMcast_port_vision_grsim}
-        onSubmit={() => updateNumber('mcast_port_vision_grsim', mcast_port_vision_grsim)}
+        onSubmit={() =>
+          updateNumber('mcast_port_vision_grsim', mcast_port_vision_grsim)
+        }
       />
       <NumberInputRow
         label="AutoReferee Port:"
         value={mcast_port_vision_tracked}
         setValue={setMcast_port_vision_tracked}
-        onSubmit={() => updateNumber('mcast_port_vision_tracked', mcast_port_vision_tracked)}
+        onSubmit={() =>
+          updateNumber('mcast_port_vision_tracked', mcast_port_vision_tracked)
+        }
       />
 
       <h2 className="text-lg font-bold mb-4">Campo</h2>
@@ -208,6 +218,13 @@ export default function TartarusSection({
           label={receptDimensions ? 'Fixas' : 'SSL-Vision'}
         />
       </RowWrapper>
+
+      <NumberInputRow
+        label="Número de Cameras:"
+        value={cams_number}
+        setValue={setCams_number}
+        onSubmit={() => updateNumber('cams_number', cams_number)}
+      />
     </>
   );
 }

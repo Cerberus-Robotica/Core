@@ -109,6 +109,7 @@ export type TartarusData = {
 	mcast_port_vision_grsim: number; // default 10020
 	mcast_port_vision_tracked: number;
   goalkeeper_id: number;
+  cams_number: number;
 };
 
 // --- Caronte (Processo / Estratégia) ---
