@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import type { DataType } from '../../types';
+import { RowWrapper } from './utilities/RowWrapper';
+import { ToggleSwitch } from './utilities/ToggleSwitch';
+import { NumberInputRow } from './utilities/NumberInputRow';
+import { ActionButton } from './utilities/ActionButton';
 
 type Props = {
   data: DataType;
@@ -10,60 +14,6 @@ type Props = {
   setFlipField: React.Dispatch<React.SetStateAction<boolean>>;
   setReceptDimensions: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-// Wrapper padrão de linha
-function RowWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex items-center justify-between">{children}</div>
-  );
-}
-
-// Botão reutilizável com cor padrão azul
-function ActionButton({
-  onClick,
-  label,
-}: {
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-[100px] px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
-    >
-      {label}
-    </button>
-  );
-}
-
-type NumberInputRowProps = {
-  label: string;
-  value: number;
-  setValue: React.Dispatch<React.SetStateAction<number>>;
-  onSubmit: () => void;
-};
-
-function NumberInputRow({
-  label,
-  value,
-  setValue,
-  onSubmit,
-}: NumberInputRowProps) {
-  return (
-    <RowWrapper>
-      <p>{label}</p>
-      <div className="flex">
-        <input
-          type="number"
-          value={value}
-          onChange={(e) => setValue(Number(e.target.value))}
-          className="border rounded px-2 py-1 mr-2 w-24"
-        />
-        <ActionButton onClick={onSubmit} label="Alterar" />
-      </div>
-    </RowWrapper>
-  );
-}
 
 export default function TartarusSection({
   data,
@@ -86,7 +36,9 @@ export default function TartarusSection({
   const [mcast_port_vision_tracked, setMcast_port_vision_tracked] = useState(
     data.tartarus.mcast_port_vision_tracked ?? 0,
   );
-  const [cams_number, setCams_number] = useState(data.tartarus.cams_number ?? 0);
+  const [cams_number, setCams_number] = useState(
+    data.tartarus.cams_number ?? 0,
+  );
 
   return (
     <>
@@ -99,9 +51,9 @@ export default function TartarusSection({
             {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() => toggleBoolean('ssl_vision', data.tartarus.ssl_vision)}
-          label="Alternar"
+        <ToggleSwitch
+          value={data.tartarus.ssl_vision}
+          onToggle={() => toggleBoolean('ssl_vision', data.tartarus.ssl_vision)}
         />
       </RowWrapper>
 
@@ -112,11 +64,11 @@ export default function TartarusSection({
             {data.tartarus.autoreferee ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() =>
+        <ToggleSwitch
+          value={data.tartarus.autoreferee}
+          onToggle={() =>
             toggleBoolean('autoreferee', data.tartarus.autoreferee)
           }
-          label="Alternar"
         />
       </RowWrapper>
 
@@ -127,11 +79,11 @@ export default function TartarusSection({
             {data.tartarus.competition_mode ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() =>
+        <ToggleSwitch
+          value={data.tartarus.competition_mode}
+          onToggle={() =>
             toggleBoolean('competition_mode', data.tartarus.competition_mode)
           }
-          label="Alternar"
         />
       </RowWrapper>
 
@@ -142,11 +94,11 @@ export default function TartarusSection({
             {data.tartarus.bool_controller ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() =>
+        <ToggleSwitch
+          value={data.tartarus.bool_controller}
+          onToggle={() =>
             toggleBoolean('bool_controller', data.tartarus.bool_controller)
           }
-          label="Alternar"
         />
       </RowWrapper>
 
