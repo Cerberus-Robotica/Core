@@ -7,13 +7,9 @@ import { FIELD_DIMENSIONS, type Division } from './data/fieldDimensions';
 import { initialData } from './data/initialData';
 import { useFetchLoop } from './hooks/useFetchLoop';
 import { mapBallToFieldCoords, mapRobotsToFieldCoords } from './utils';
+import type { DataType } from './types';
 
-export type SoftwareOption =
-  | 'ia'
-  | 'gc'
-  | 'vision'
-  | 'tartarus'
-  | 'caronte'
+export type SoftwareOption = 'ia' | 'gc' | 'vision' | 'tartarus' | 'caronte';
 
 export default function App() {
   // App.tsx
@@ -21,7 +17,8 @@ export default function App() {
   const [receptDimensions, setReceptDimensions] = useState<boolean>(false);
 
   const [selectedSoftware, setSelectedSoftware] =
-    useState<SoftwareOption | null>(null);
+    useState<keyof DataType>('tartarus');
+
   const [reading, setReading] = useState(false);
   const [selectedDivision, setSelectedDivision] =
     useState<Division>('Entry Level');
@@ -51,6 +48,7 @@ export default function App() {
     centerY,
   );
   const ball = mapBallToFieldCoords(data.vision.balls, centerX, centerY);
+  const [selectedRobotId, setSelectedRobotId] = useState<number | null>(null);
 
   return (
     <div className="bg-[#311A52] h-screen w-screen overflow-hidden">
@@ -78,10 +76,13 @@ export default function App() {
               <DataViewAll
                 reading={reading}
                 selected={selectedSoftware}
+                setSelected={setSelectedSoftware}
                 flipField={flipField}
                 setFlipField={setFlipField}
                 receptDimensions={receptDimensions}
                 setReceptDimensions={setReceptDimensions}
+                selectedRobotId={selectedRobotId}
+                setSelectedRobotId={setSelectedRobotId}
               />
             )}
           </div>

@@ -16,6 +16,10 @@ export type Robot = {
   wheel_br: number;
 };
 
+export type SkillsData = {
+  id: number;
+}
+
 export type IAData = {
   robots_size: number;
   robots: Robot[];
@@ -127,6 +131,7 @@ export type DataType = {
   vision: VisionData;
   gc: GCType;
   tartarus: TartarusData;
+  skills: SkillsData;
 };
 
 // --- BackendData (estrutura parcial vinda do backend) ---
