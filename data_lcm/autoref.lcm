@@ -2,20 +2,13 @@ package data;
 
 struct detection_robots_tracked
 {
-	int16_t robot_id;    //  robot_id is the combination of a team and a robot id
-	float position_x;	//mm
-	float position_y;	//mm
 	float vel_x;	        //  The velocity [mm/s] in the ssl-vision coordinate system
     float vel_y;
     float vel_angular;      //  The angular velocity [rad/s] in the ssl-vision coordinate system
-	float orientation;	    //  rad
-    boolean detected;
 }
 
 struct detection_balls_tracked
 {
-	float position_x;   // The position (x, y) [mm] in the ssl-vision coordinate system
-	float position_y;  
     float vel_x;       // The velocity [mm/s] in the ssl-vision coordinate system
     float vel_y;
 }
@@ -34,10 +27,8 @@ struct kicked_ball_tracked
 struct autoref
 {
     int64_t timestamp; //s
-    int16_t robots_yellow_size;
-    int16_t robots_blue_size;
-    detection_robots_tracked robots_yellow[robots_yellow_size];
-    detection_robots_tracked robots_blue[robots_blue_size];
+    detection_robots_tracked robots_yellow[16];
+    detection_robots_tracked robots_blue[16];
     detection_balls_tracked balls;
     kicked_ball_tracked kicked_ball;
 }

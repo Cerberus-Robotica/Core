@@ -40,21 +40,24 @@ void recebe_dados_GC() {
             my_gc_data.yellow.timeout_time = referee.yellow().timeout_time();
             my_gc_data.yellow.goalkeeper_id = referee.yellow().goalkeeper();
 
-            if(referee.has_designated_position()){
-                my_gc_data.designated_position_x = referee.designated_position().x();
-                my_gc_data.designated_position_y = referee.designated_position().y();
-            }
-            if(referee.game_events_size() > 0) {
-                game_event = &referee.game_events(referee.game_events_size() - 1); // pega o último evento
-                //std::cout << "game_event type: " << game_event->type() << std::endl;
-                my_gc_data.game_event = game_event->type();
-            }
 
             if(han.new_tartarus.iris_as_GC){
                 my_gc_data.team_blue = han.new_tartarus.team_blue;
                 my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
+                my_gc_data.game_event = han.new_tartarus.iris_gc.game_event;
+                my_gc_data.designated_position_x = han.new_tartarus.iris_gc.designated_position_x;
+                my_gc_data.designated_position_y = han.new_tartarus.iris_gc.designated_position_y;
             }
             else{
+                if(referee.game_events_size() > 0) {
+                game_event = &referee.game_events(referee.game_events_size() - 1); // pega o último evento
+                //std::cout << "game_event type: " << game_event->type() << std::endl;
+                my_gc_data.game_event = game_event->type();
+                }
+                if(referee.has_designated_position()){
+                my_gc_data.designated_position_x = referee.designated_position().x();
+                my_gc_data.designated_position_y = referee.designated_position().y();
+                }
                 if(referee.blue().name() == "Cerberus"){
                     my_gc_data.team_blue = true;
                 }else{
