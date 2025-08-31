@@ -178,12 +178,7 @@ void Leader::receive_vision() {
 void Leader::receive_field_geometry() {
     //TODO implementar urgente
     world.field.inside_dimensions.setMinorPoint({static_cast<double>(-han.new_vision.field.field_length/2), static_cast<double>(-han.new_vision.field.field_width/2)});
-    world.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});
-
-
-    team.striker_max_dislocation = fabs(world.field.theirDefenseArea.getMinorPoint().getX() + world.field.theirDefenseArea.getMajorPoint().getX()) / 2;
-    team.mid_field_max_dislocation = std::min(fabs(world.field.theirDefenseArea.getMinorPoint().getX()), fabs(world.field.theirDefenseArea.getMajorPoint().getX()));
-}
+    world.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});}
 
 void Leader::event_FSM() {
     if (team.current_command == TeamInfo::HALT) team.event = TeamInfo::halt;

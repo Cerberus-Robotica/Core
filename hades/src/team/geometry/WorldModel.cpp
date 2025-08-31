@@ -9,6 +9,7 @@
 #include <cmath>
 #include <bits/algorithmfwd.h>
 
+#include "Area.h"
 #include "AreaCircular.h"
 #include "../c_trajectory/geometry/Vetop.h"
 
@@ -31,8 +32,8 @@ bool WorldModel::isPointOnOurSide(Point p) {
 }
 
 bool WorldModel::isPointOnOurArea(Point p) {
-    if (p.getX() > field.ourGoal.getStart().getX() && p.getX() < field.ourGoal.getEnd().getX()) {
-        if (p.getY() > field.ourGoal.getStart().getY() && p.getY() < field.ourGoal.getEnd().getY()) {
+    if (p.getX() > field.ourDefenseArea.getMinorPoint().getX() && p.getX() < field.ourDefenseArea.getMajorPoint().getX()) {
+        if (p.getY() > field.ourDefenseArea.getMinorPoint().getY() && p.getY() < field.ourDefenseArea.getMajorPoint().getY()) {
             return true;
         }
     }
@@ -137,4 +138,25 @@ bool WorldModel::doInterceptAnyRobot(LineSegment l) {
         if (enemy.isDetected()) if (AreaCircular(enemy.getPosition(), enemy.getRadius()).detectIfIntercepts(l)) return true;
     }
     return false;
+}
+
+bool WorldModel::isBallReachable(bool includeOurArea) {
+    // Create a list of areas to check
+    std::vector<AreaRectangular> areasToCheck = {
+        field.theirDefenseArea,
+        field.ourFisicalBarrier,
+        field.theirFisicalBarrier
+    };
+    if (includeOurArea) {
+        areasToCheck.push_back(field.ourDefenseArea);
+    }
+
+    // Check if ball is in any of these areas
+    for (AreaRectangular& area : areasToCheck) {
+        if (area.detectIfContains(ball.getPosition())) {
+            return false;
+        }
+    }
+
+    return true;
 }

@@ -70,7 +70,7 @@ public:
     double mVyaw_max = 5;
     double mVyaw_min = 0.5;
     double mA_ang_max = 15;
-    double mKick_distance = 3000;
+    double mKick_distance = 2000;
     double mKicker_x_max = 3;
     double mKicker_x_min = 0.5;
     double mKicker_z_max = 1;

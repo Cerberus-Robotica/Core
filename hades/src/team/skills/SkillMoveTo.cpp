@@ -141,10 +141,6 @@ namespace skills {
             r.major = {robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getX() - robot.mRadius, robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getY() + robot.mRadius};
             obs_rectangular.push_back(r);
 
-            if (goal.getX() > robot.mWorld.field.full_dimensions.getMajorPoint().getX()) goal.setX(robot.mWorld.field.full_dimensions.getMajorPoint().getX());
-            if (goal.getX() < robot.mWorld.field.full_dimensions.getMinorPoint().getX()) goal.setX(robot.mWorld.field.full_dimensions.getMinorPoint().getX());
-            if (goal.getY() > robot.mWorld.field.full_dimensions.getMajorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMajorPoint().getY());
-            if (goal.getY() < robot.mWorld.field.full_dimensions.getMinorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMinorPoint().getY());
 
             auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
             std::vector<Point> trajectory = {};
@@ -157,12 +153,6 @@ namespace skills {
 
     void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball) {
         auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
-        if (robot.getId() == 1) {
-            std::cout << "TRAJETORIA" << std::endl;
-            for (int i = 0; i < trajectory.size(); i++) {
-                std::cout << trajectory[i].getX() << " " << trajectory[i].getY() << std::endl;
-            }
-        }
         if (robot.getPosition().getDistanceTo(trajectory[size(trajectory) - 1]) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
             robot.mtarget_vyaw = 0; //TODO verificar
