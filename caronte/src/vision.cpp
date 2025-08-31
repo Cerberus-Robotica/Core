@@ -1,161 +1,97 @@
-#include "include/vision.hpp"
-#include "include/socket_connect.hpp"
+#include "include/vision_master.hpp"
 #include "include/tartarus.hpp"
-#include <iostream>
-#include <unordered_set>
-#include <thread>
 
 data::vision my_vision_data;
 
 //thread para receber os dados da visão e publicar no tópico "vision", pelo lcm
-void recebe_dados_vision() {
-
-    lcm::LCM lcm;
+void vision_master::recebe_dados_vision() {
 
     SSL_WrapperPacket vision;
     
     data::detection_robots new_robot;
 
-    std::unordered_set<int> yellow_ids;
-    std::unordered_set<int> blue_ids; // Conjunto para armazenar IDs únicos, de robôs
-
     SSL_GeometryData geometry;
     SSL_GeometryFieldSize field;
     SSL_DetectionFrame detection;
 
-    bool ssl_vision_atual;
-    int cameras;
+    struct sockaddr_in sender_addr;
+    socklen_t addr_len = sizeof(sender_addr);       
 
-    std::cout << "Connecting to sslvision..." << std::endl;
-    while(true){
-        struct sockaddr_in sender_addr;
-        socklen_t addr_len = sizeof(sender_addr);       
-        
-        if(ssl_vision_atual != han.new_tartarus.ssl_vision) {
-            close(sock_vision);
-            setupVisionSocket();
-            ssl_vision_atual = han.new_tartarus.ssl_vision;
-        }
-        if(han.new_tartarus.cams_number > 0){
-            cameras = han.new_tartarus.cams_number;
-        }
-        else{
-            cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
-        }
-        std::cout << "Cameras: " << cameras << std::endl;
-        
-        for(int i = 0; i < cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
-            
-            int bytes_received_vision = recvfrom(sock_vision, buffer_vision, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
+    for(int i = 0; i < vision_master_instance.cameras ; i++){ // usar 4 para grsim e usar 1 para ssl-vision
+        //if(han.updated_tartarus == vision_master_instance.updated) {
+        //    break; // Sai do loop se tartarus tem atualizações
+        //}
+        int bytes_received_vision = recvfrom(sock_vision, buffer_vision, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
 
-            if (bytes_received_vision > 0) {
-                // Parse dos dados recebidos (Vision)
-                vision.ParseFromArray(buffer_vision, bytes_received_vision);
+        if (bytes_received_vision > 0) {
+            // Parse dos dados recebidos (Vision)
+            vision.ParseFromArray(buffer_vision, bytes_received_vision);
 
-                if(vision.has_detection()){
-                    my_vision_data.timestamp = vision.detection().frame_number();
-                    detection = vision.detection();
+            if(vision.has_detection()){
+                my_vision_data.timestamp = vision.detection().frame_number();
+                detection = vision.detection();
 
-                    if (detection.robots_blue_size() > 0) {
-                        for (int i = 0; i < detection.robots_blue_size(); i++) {
-                            int id = detection.robots_blue(i).robot_id();
-                            if(my_vision_data.robots_blue[id].detected == false) {
-                                my_vision_data.robots_blue[id].detected = true;
-                                my_vision_data.robots_blue[id].robot_id = id;
-                                my_vision_data.robots_blue[id].position_x = detection.robots_blue(i).x();
-                                my_vision_data.robots_blue[id].position_y = detection.robots_blue(i).y();
-                                my_vision_data.robots_blue[id].orientation = detection.robots_blue(i).orientation();
-                                blue_ids.insert(id);
-                            }
+                if (detection.robots_blue_size() > 0) {
+                    for (int i = 0; i < detection.robots_blue_size(); i++) {
+                        int id = detection.robots_blue(i).robot_id();
+                        if(my_vision_data.robots_blue[id].detected == false) {
+                            my_vision_data.robots_blue[id].detected = true;
+                            my_vision_data.robots_blue[id].robot_id = id;
+                            my_vision_data.robots_blue[id].position_x = detection.robots_blue(i).x();
+                            my_vision_data.robots_blue[id].position_y = detection.robots_blue(i).y();
+                            my_vision_data.robots_blue[id].orientation = detection.robots_blue(i).orientation();
+                            vision_master_instance.blue_ids.insert(id);
                         }
                     }
-                    else {
-
-                    }
+                }
                     
-                    // Para os robôs amarelos, repita o mesmo processo
-                    if (detection.robots_yellow_size() > 0) {
-                        for (int i = 0; i < detection.robots_yellow_size(); i++) {
-                            int id = detection.robots_yellow(i).robot_id();
-
-                            if(my_vision_data.robots_yellow[id].detected == false) {
-                                my_vision_data.robots_yellow[id].detected = true;
-                                my_vision_data.robots_yellow[id].robot_id = id;
-                                my_vision_data.robots_yellow[id].position_x = detection.robots_yellow(i).x();
-                                my_vision_data.robots_yellow[id].position_y = detection.robots_yellow(i).y();
-                                my_vision_data.robots_yellow[id].orientation = detection.robots_yellow(i).orientation();
-                                yellow_ids.insert(id);
-                            }
+                // Para os robôs amarelos, repita o mesmo processo
+                if (detection.robots_yellow_size() > 0) {
+                    for (int i = 0; i < detection.robots_yellow_size(); i++) {
+                        int id = detection.robots_yellow(i).robot_id();
+                        if(my_vision_data.robots_yellow[id].detected == false) {
+                            my_vision_data.robots_yellow[id].detected = true;
+                            my_vision_data.robots_yellow[id].robot_id = id;
+                            my_vision_data.robots_yellow[id].position_x = detection.robots_yellow(i).x();
+                            my_vision_data.robots_yellow[id].position_y = detection.robots_yellow(i).y();
+                            my_vision_data.robots_yellow[id].orientation = detection.robots_yellow(i).orientation();
+                            vision_master_instance.yellow_ids.insert(id);
                         }
                     }
-                    else {
-
-                    }
-
-                    
-                    if (vision.detection().balls_size() > 0) {
-                        my_vision_data.balls.position_x = detection.balls(0).x();
-                        my_vision_data.balls.position_y = detection.balls(0).y();
-                    }
+                }
+                if (vision.detection().balls_size() > 0) {
+                    my_vision_data.balls.position_x = detection.balls(0).x();
+                    my_vision_data.balls.position_y = detection.balls(0).y();
+                }
                 
-                }
-
-                if (vision.has_geometry()) {
-                    geometry = vision.geometry();
-                    field = geometry.field();
-
-                    my_vision_data.field.field_length = field.field_length();
-                    my_vision_data.field.field_width = field.field_width();
-                    my_vision_data.field.goal_width = field.goal_width();
-                    my_vision_data.field.goal_depth = field.goal_depth();
-                    my_vision_data.field.boundary_width = field.boundary_width();
-                    my_vision_data.field.center_circle_radius = field.center_circle_radius();
-                    my_vision_data.field.defense_area_width = field.penalty_area_width();
-                    my_vision_data.field.defense_area_height = field.penalty_area_depth();
-                    my_vision_data.field.line_thickness = field.line_thickness();
-                    my_vision_data.field.goal_center_to_penalty_mark = field.goal_center_to_penalty_mark();
-                    my_vision_data.field.goal_height = field.goal_height();
-                    my_vision_data.field.ball_radius = field.ball_radius();
-                    my_vision_data.field.max_robot_radius = field.max_robot_radius();
-                }
-            }
-        }
-        my_vision_data.robots_yellow_size = yellow_ids.size();
-        my_vision_data.robots_blue_size = blue_ids.size();
-        for(int i = 0; i < 16; i++){
-            if(my_vision_data.robots_blue[i].detected == true) {
-                std::cout << "Robô azul ID: " << my_vision_data.robots_blue[i].robot_id << std::endl;
-                std::cout << "Posição X: " << my_vision_data.robots_blue[i].position_x << std::endl;
-                std::cout << "Posição Y: " << my_vision_data.robots_blue[i].position_y << std::endl;
-                std::cout << "Orientação: " << my_vision_data.robots_blue[i].orientation << "\n" << std::endl;
             }
 
-        }
+            if (vision.has_geometry()) {
+                geometry = vision.geometry();
+                field = geometry.field();
 
-        for(int i = 0; i < 16; i++){
-            if(my_vision_data.robots_yellow[i].detected == true) {
-                std::cout << "Robô amarelo ID: " << my_vision_data.robots_yellow[i].robot_id << std::endl;
-                std::cout << "Posição X: " << my_vision_data.robots_yellow[i].position_x << std::endl;
-                std::cout << "Posição Y: " << my_vision_data.robots_yellow[i].position_y << std::endl;
-                std::cout << "Orientação: " << my_vision_data.robots_yellow[i].orientation << "\n" << std::endl;
+                my_vision_data.field.field_length = field.field_length();
+                my_vision_data.field.field_width = field.field_width();
+                my_vision_data.field.goal_width = field.goal_width();
+                my_vision_data.field.goal_depth = field.goal_depth();
+                my_vision_data.field.boundary_width = field.boundary_width();
+                my_vision_data.field.center_circle_radius = field.center_circle_radius();
+                my_vision_data.field.defense_area_width = field.penalty_area_width();
+                my_vision_data.field.defense_area_height = field.penalty_area_depth();
+                my_vision_data.field.line_thickness = field.line_thickness();
+                my_vision_data.field.goal_center_to_penalty_mark = field.goal_center_to_penalty_mark();
+                my_vision_data.field.goal_height = field.goal_height();
+                my_vision_data.field.ball_radius = field.ball_radius();
+                my_vision_data.field.max_robot_radius = field.max_robot_radius();
             }
         }
+    }
+    my_vision_data.robots_yellow_size = vision_master_instance.yellow_ids.size();
+    my_vision_data.robots_blue_size = vision_master_instance.blue_ids.size();
 
-        //std::cout << "field length: " << my_vision_data.field.field_length << std::endl;    
-        std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
-        std::cout << "Robos azuis: " << blue_ids.size() << std::endl;
-        std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
-        std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
+    // Publica os dados no tópico "vision"
+    //std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
+    //lcm.publish("vision", &my_vision_data);
+}  
 
-        // Publica os dados no tópico "vision"
-        //std::this_thread::sleep_for(std::chrono::milliseconds(16));
-        //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
-        lcm.publish("vision", &my_vision_data);
-
-        memset(my_vision_data.robots_blue, 0, sizeof(my_vision_data.robots_blue));
-        memset(my_vision_data.robots_yellow, 0, sizeof(my_vision_data.robots_yellow));
-
-        yellow_ids.clear();
-	    blue_ids.clear();
-    }  
-}

@@ -13,6 +13,7 @@ class Handler {
 
     lcm::LCM* lc;
     data::tartarus new_tartarus;
+    bool updated_tartarus = false;
 };
 
 extern Handler han;

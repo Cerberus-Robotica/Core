@@ -16,6 +16,10 @@ export type Robot = {
   wheel_br: number;
 };
 
+export type SkillsData = {
+  id: number;
+}
+
 export type IAData = {
   robots_size: number;
   robots: Robot[];
@@ -104,8 +108,12 @@ export type TartarusData = {
   team_blue: boolean;
   bool_controller: boolean;
   stm_port: number;
-  controller_port: number;
+  mcast_port_gc: number;// default 10003
+	mcast_port_vision_sslvision: number; // default 10006
+	mcast_port_vision_grsim: number; // default 10020
+	mcast_port_vision_tracked: number;
   goalkeeper_id: number;
+  cams_number: number;
 };
 
 // --- Caronte (Processo / Estratégia) ---
@@ -123,6 +131,7 @@ export type DataType = {
   vision: VisionData;
   gc: GCType;
   tartarus: TartarusData;
+  skills: SkillsData;
 };
 
 // --- BackendData (estrutura parcial vinda do backend) ---

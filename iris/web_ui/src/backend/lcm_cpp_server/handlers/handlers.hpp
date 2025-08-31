@@ -44,6 +44,11 @@ struct LatestData {
     bool team_blue_status = false;
     int16_t stm_port = 0;
     int16_t controller_port = 0;
+    int16_t mcast_port_gc;
+    int16_t mcast_port_vision_sslvision; // default 10006
+	int16_t mcast_port_vision_grsim; // default 10020
+	int16_t mcast_port_vision_tracked;
+    int16_t cams_number = 0;
 };
 
 struct LCMControl {

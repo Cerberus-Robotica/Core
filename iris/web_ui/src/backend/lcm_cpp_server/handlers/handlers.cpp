@@ -66,6 +66,11 @@ void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, co
     latest_data.bool_controller = msg->bool_controller;
     latest_data.stm_port = msg->stm_port;
     //latest_data.controller_port = msg->controller_port;
+    latest_data.mcast_port_gc = msg->mcast_port_gc;
+    latest_data.mcast_port_vision_grsim = msg->mcast_port_vision_grsim;
+    latest_data.mcast_port_vision_sslvision = msg->mcast_port_vision_sslvision;
+    latest_data.mcast_port_vision_tracked = msg->mcast_port_vision_tracked;
+    latest_data.cams_number = msg->cams_number;
 }
 
 

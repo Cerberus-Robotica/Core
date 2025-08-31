@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import type { DataType } from '../../types';
+import { RowWrapper } from './utilities/RowWrapper';
+import { ToggleSwitch } from './utilities/ToggleSwitch';
+import { NumberInputRow } from './utilities/NumberInputRow';
+import { ActionButton } from './utilities/ActionButton';
 
 type Props = {
   data: DataType;
@@ -11,31 +15,6 @@ type Props = {
   setReceptDimensions: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-// Wrapper padrão de linha
-function RowWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex items-center justify-between">{children}</div>
-  );
-}
-
-// Botão reutilizável com cor padrão azul
-function ActionButton({
-  onClick,
-  label,
-}: {
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-[100px] px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
-    >
-      {label}
-    </button>
-  );
-}
-
 export default function TartarusSection({
   data,
   toggleBoolean,
@@ -45,9 +24,20 @@ export default function TartarusSection({
   setReceptDimensions,
   receptDimensions,
 }: Props) {
-  const [stmPort, setStmPort] = useState(data.tartarus.stm_port);
-  const [controllerPort, setControllerPort] = useState(
-    data.tartarus.controller_port,
+  const [stmPort, setStmPort] = useState(data.tartarus.stm_port ?? 0);
+  const [mcast_port_gc, setMcast_port_gc] = useState(
+    data.tartarus.mcast_port_gc ?? 0,
+  );
+  const [mcast_port_vision_sslvision, setMcast_port_vision_sslvision] =
+    useState(data.tartarus.mcast_port_vision_sslvision ?? 0);
+  const [mcast_port_vision_grsim, setMcast_port_vision_grsim] = useState(
+    data.tartarus.mcast_port_vision_grsim ?? 0,
+  );
+  const [mcast_port_vision_tracked, setMcast_port_vision_tracked] = useState(
+    data.tartarus.mcast_port_vision_tracked ?? 0,
+  );
+  const [cams_number, setCams_number] = useState(
+    data.tartarus.cams_number ?? 0,
   );
 
   return (
@@ -61,9 +51,9 @@ export default function TartarusSection({
             {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() => toggleBoolean('ssl_vision', data.tartarus.ssl_vision)}
-          label="Alternar"
+        <ToggleSwitch
+          value={data.tartarus.ssl_vision}
+          onToggle={() => toggleBoolean('ssl_vision', data.tartarus.ssl_vision)}
         />
       </RowWrapper>
 
@@ -74,9 +64,11 @@ export default function TartarusSection({
             {data.tartarus.autoreferee ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() => toggleBoolean('autoreferee', data.tartarus.autoreferee)}
-          label="Alternar"
+        <ToggleSwitch
+          value={data.tartarus.autoreferee}
+          onToggle={() =>
+            toggleBoolean('autoreferee', data.tartarus.autoreferee)
+          }
         />
       </RowWrapper>
 
@@ -87,11 +79,11 @@ export default function TartarusSection({
             {data.tartarus.competition_mode ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() =>
+        <ToggleSwitch
+          value={data.tartarus.competition_mode}
+          onToggle={() =>
             toggleBoolean('competition_mode', data.tartarus.competition_mode)
           }
-          label="Alternar"
         />
       </RowWrapper>
 
@@ -102,11 +94,11 @@ export default function TartarusSection({
             {data.tartarus.bool_controller ? 'Sim' : 'Não'}
           </span>
         </p>
-        <ActionButton
-          onClick={() =>
+        <ToggleSwitch
+          value={data.tartarus.bool_controller}
+          onToggle={() =>
             toggleBoolean('bool_controller', data.tartarus.bool_controller)
           }
-          label="Alternar"
         />
       </RowWrapper>
 
@@ -121,37 +113,45 @@ export default function TartarusSection({
 
       <h2 className="text-lg font-bold mb-4">Portas</h2>
 
-      <RowWrapper>
-        <p>STM Port:</p>
-        <div className="flex">
-          <input
-            type="number"
-            value={stmPort}
-            onChange={(e) => setStmPort(Number(e.target.value))}
-            className="border rounded px-2 py-1 mr-2 w-24"
-          />
-          <ActionButton
-            onClick={() => updateNumber('stm_port', stmPort)}
-            label="Alterar"
-          />
-        </div>
-      </RowWrapper>
-
-      <RowWrapper>
-        <p>Controller Port:</p>
-        <div className="flex">
-          <input
-            type="number"
-            value={controllerPort}
-            onChange={(e) => setControllerPort(Number(e.target.value))}
-            className="border rounded px-2 py-1 mr-2 w-24"
-          />
-          <ActionButton
-            onClick={() => updateNumber('controller_port', controllerPort)}
-            label="Alterar"
-          />
-        </div>
-      </RowWrapper>
+      <NumberInputRow
+        label="STM Port:"
+        value={stmPort}
+        setValue={setStmPort}
+        onSubmit={() => updateNumber('stm_port', stmPort)}
+      />
+      <NumberInputRow
+        label="GC Port:"
+        value={mcast_port_gc}
+        setValue={setMcast_port_gc}
+        onSubmit={() => updateNumber('mcast_port_gc', mcast_port_gc)}
+      />
+      <NumberInputRow
+        label="SSL Vision Port:"
+        value={mcast_port_vision_sslvision}
+        setValue={setMcast_port_vision_sslvision}
+        onSubmit={() =>
+          updateNumber(
+            'mcast_port_vision_sslvision',
+            mcast_port_vision_sslvision,
+          )
+        }
+      />
+      <NumberInputRow
+        label="GrSim Port:"
+        value={mcast_port_vision_grsim}
+        setValue={setMcast_port_vision_grsim}
+        onSubmit={() =>
+          updateNumber('mcast_port_vision_grsim', mcast_port_vision_grsim)
+        }
+      />
+      <NumberInputRow
+        label="AutoReferee Port:"
+        value={mcast_port_vision_tracked}
+        setValue={setMcast_port_vision_tracked}
+        onSubmit={() =>
+          updateNumber('mcast_port_vision_tracked', mcast_port_vision_tracked)
+        }
+      />
 
       <h2 className="text-lg font-bold mb-4">Campo</h2>
 
@@ -170,6 +170,13 @@ export default function TartarusSection({
           label={receptDimensions ? 'Fixas' : 'SSL-Vision'}
         />
       </RowWrapper>
+
+      <NumberInputRow
+        label="Número de Cameras:"
+        value={cams_number}
+        setValue={setCams_number}
+        onSubmit={() => updateNumber('cams_number', cams_number)}
+      />
     </>
   );
 }
