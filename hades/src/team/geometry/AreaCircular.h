@@ -18,8 +18,10 @@ public:
 	bool detectIfContains(Point);
 	bool detectIfIntercepts(Point, Point);
 	bool detectIfIntercepts(LineSegment);
-	std::array<Point, 2> getInterceptionPoints(Point p1, Point p2);
-	std::array<Point, 2> getInterceptionPoints(LineSegment l);
+	std::vector<Point> getInterceptionPoints(Point p1, Point p2);
+	std::vector<Point> getInterceptionPoints(LineSegment l);
+	std::array<Point, 2> getInterceptionPoints(const AreaCircular& other);
+	std::array<Point, 2> getNormalPoints(Point& p);
 };
 
 

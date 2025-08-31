@@ -9,7 +9,7 @@ namespace tactics {
 
 class TacticIntercept : public TacticBase {
 private:
-	double distanceThreshold = 400;
+	double distanceThreshold = 200;
     double angle_tolerance = 3.1415/8;
 public:
 	void act(RobotController& robot) override;

@@ -9,6 +9,7 @@
 #include <cmath>
 #include <bits/algorithmfwd.h>
 
+#include "AreaCircular.h"
 #include "../c_trajectory/geometry/Vetop.h"
 
 Point WorldModel::getKickingPosition(Point pos_0, Point pos_1, double distance) {
@@ -121,4 +122,19 @@ int WorldModel::getIdOfTheBallInterceptor() {
 bool WorldModel::isBallMovingIdDirection(int id) {
     return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
         {allies[id].getPosition().getX() - ball.getPosition().getX(), allies[id].getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
+}
+
+bool WorldModel::isBallMovingRobotDirection(Robot robot) {
+    return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
+        {robot.getPosition().getX() - ball.getPosition().getX(), robot.getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
+}
+
+bool WorldModel::doInterceptAnyRobot(LineSegment l) {
+    for (Robot ally : allies) {
+        if (ally.isDetected()) if (AreaCircular(ally.getPosition(), ally.getRadius()).detectIfIntercepts(l)) return true;
+    }
+    for (Robot enemy : enemies) {
+        if (enemy.isDetected()) if (AreaCircular(enemy.getPosition(), enemy.getRadius()).detectIfIntercepts(l)) return true;
+    }
+    return false;
 }

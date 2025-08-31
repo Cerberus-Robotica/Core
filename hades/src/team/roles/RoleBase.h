@@ -21,6 +21,7 @@ protected:
     tactics::TacticPositionAndKick positionAndKick;
     tactics::TacticKeepLocation keepLocation;
     tactics::TacticKeepXLine keepXLine;
+    tactics::TacticIntercept intercept;
 public:
     virtual void act(RobotController& robot) = 0;
 };

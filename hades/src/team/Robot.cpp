@@ -45,6 +45,11 @@ const std::deque<Vector2d>& Robot::getStoredVelocities() const {
 	return stored_velocities;
 }
 
+double Robot::getRadius() const {
+	return radius;
+}
+
+
 // --- Setters ---
 void Robot::setAlly(bool is) {
 	this->ally = is;

@@ -24,13 +24,59 @@ bool AreaCircular::detectIfIntercepts(LineSegment l) {
              inters[1].getX() == 0 && inters[1].getY() == 0);
 }
 
-std::array<Point, 2> AreaCircular::getInterceptionPoints(Point p1, Point p2) {
+std::array<Point, 2> AreaCircular::getInterceptionPoints(const AreaCircular& other) {
+    // Distance between centers
+    double dx = other.center.getX() - center.getX();
+    double dy = other.center.getY() - center.getY();
+    double d = std::sqrt(dx*dx + dy*dy);
+
+    // Check if circles are too far apart or one is contained in the other
+    if (d > (radius + other.radius)) {
+        throw std::runtime_error("Circles are too far apart - no intersection");
+    }
+    if (d < std::abs(radius - other.radius)) {
+        throw std::runtime_error("One circle is contained within the other - no intersection");
+    }
+    if (d == 0 && radius == other.radius) {
+        throw std::runtime_error("Circles are identical - infinite intersections");
+    }
+    if (d == 0) {
+        throw std::runtime_error("Circles are concentric - no intersection");
+    }
+
+    // Distance from this circle's center to the line connecting intersection points
+    double a = (radius*radius - other.radius*other.radius + d*d) / (2*d);
+
+    // Height of the triangle formed by centers and intersection point
+    double h = std::sqrt(radius*radius - a*a);
+
+    // Point on the line between centers
+    double px = center.getX() + a * (dx / d);
+    double py = center.getY() + a * (dy / d);
+
+    // Calculate the two intersection points
+    std::array<Point, 2> intersections = {Point(0, 0), Point(0, 0)};
+    intersections[0] = Point(
+        px + h * (-dy / d),
+        py + h * (dx / d)
+    );
+
+    intersections[1] = Point(
+        px - h * (-dy / d),
+        py - h * (dx / d)
+    );
+
+    return intersections;
+}
+
+std::vector<Point> AreaCircular::getInterceptionPoints(Point p1, Point p2) {
     LineSegment seg(p1, p2);
     return getInterceptionPoints(seg);
 }
 
-std::array<Point, 2> AreaCircular::getInterceptionPoints(LineSegment l) {
-    std::array<Point, 2> intersections = { Point(0,0), Point(0,0) };
+std::vector<Point> AreaCircular::getInterceptionPoints(LineSegment l) {
+
+    std::vector<Point> intersections = { Point(0,0), Point(0,0) };
 
     double x1 = l.getStart().getX() - center.getX();
     double y1 = l.getStart().getY() - center.getY();
@@ -57,6 +103,7 @@ std::array<Point, 2> AreaCircular::getInterceptionPoints(LineSegment l) {
     int found = 0;
 
     if (t1 >= 0.0 && t1 <= 1.0) {
+        intersections.reserve(1);
         intersections[found++] = Point(
             center.getX() + x1 + t1*dx,
             center.getY() + y1 + t1*dy
@@ -64,6 +111,7 @@ std::array<Point, 2> AreaCircular::getInterceptionPoints(LineSegment l) {
     }
 
     if (t2 >= 0.0 && t2 <= 1.0 && found < 2) {
+        intersections.reserve(1);
         intersections[found++] = Point(
             center.getX() + x1 + t2*dx,
             center.getY() + y1 + t2*dy
@@ -71,4 +119,29 @@ std::array<Point, 2> AreaCircular::getInterceptionPoints(LineSegment l) {
     }
 
     return intersections;
+}
+
+std::array<Point, 2> AreaCircular::getNormalPoints(Point& p) {
+    double diversion = radius*1.05;
+
+    double k_norm = sqrt(fabs(pow(p.getDistanceTo(center), 2) - diversion*diversion));
+
+    double theta = atan2((center.getY() - p.getY()), (center.getX() - p.getX()));
+    double dif = atan2(diversion, k_norm);
+    double theta_1 = theta + dif;
+    double theta_2 = theta - dif;
+
+    if (k_norm < radius) {
+        k_norm = radius;
+    }
+
+    double distancia_do_centro = p.getDistanceTo(center);
+    if (distancia_do_centro < diversion) {
+        double correction = atan2(distancia_do_centro - radius, k_norm);
+        theta_1 += correction;
+        theta_2 -= correction;
+    }
+    Point p1 = {k_norm * cos(theta_1) + p.getX(), k_norm * sin(theta_1) + p.getY()};
+    Point p2 = {k_norm * cos(theta_2) + p.getX(), k_norm * sin(theta_2) + p.getY()};
+    return {p1, p2};
 }

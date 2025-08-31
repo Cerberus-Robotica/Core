@@ -3,6 +3,9 @@
 //
 
 #include "SkillKick.h"
+
+#include <iostream>
+
 #include "../RobotController.h"
 #include "../TeamInfo.h"
 
@@ -10,7 +13,7 @@ namespace skills {
 	void SkillKick::act(RobotController& robot) {
 		if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distancethreshold) {
 			robot.mkicker_x = 0;
-			robot.mPositioned = false;
+			robot.positioned = false;
 			robot.mTeam->positioned[robot.getId()] = false;
 		}
 		Vector2d v_vet = {robot.mWorld.ball.getPosition(), robot.getPosition()};

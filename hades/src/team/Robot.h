@@ -15,7 +15,7 @@ public:
         unknown = -1,
         goal_keeper,
         striker,
-        mid_field,
+        support,
         defender,
         halted,
         kickoff_kicker,
@@ -34,12 +34,18 @@ protected:
     Vector2d vel = Vector2d(0,0);
     std::deque<Vector2d> stored_velocities = {};
     double vyaw = 0.0;
+    double radius = 160;
     bool detected = false;
     enum role this_role = unknown;
 
 public:
     // Construtor
     Robot(int id) : id(id) {}
+
+    //flags
+    bool positioned = true;
+    bool aligned = true;
+    bool oriented = true;
 
     // --- Getters ---
     bool isAlly() const;
@@ -52,6 +58,7 @@ public:
     bool isDetected() const;
     enum role getRole() const;
     const std::deque<Vector2d>& getStoredVelocities() const;
+    double getRadius() const;
 
     // --- Setters ---
     void setAlly(bool is);

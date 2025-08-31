@@ -103,11 +103,6 @@ void RobotController::receive_vision() {
         if (!blue_robot.detected) continue;
         if (mTeam->color == TeamInfo::blue) {
             int rb_id = blue_robot.robot_id;
-            if (rb_id >= size(mWorld.allies)) {
-                for (int i = size(mWorld.allies); i <= rb_id; i++) {
-                    mWorld.allies.push_back(Robot(i));
-                }
-            }
             double new_yaw = blue_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (mDelta_time > 0) {
@@ -128,12 +123,6 @@ void RobotController::receive_vision() {
         }
         else {
             int rb_id = blue_robot.robot_id;
-            if (rb_id >= size(mWorld.enemies)) {
-                for (int i = size(mWorld.enemies); i <= rb_id; i++) {
-                    mWorld.enemies.push_back(Robot(i));
-                }
-            }
-
             double new_yaw = blue_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (mDelta_time > 0) {
@@ -159,11 +148,6 @@ void RobotController::receive_vision() {
         if (!yellow_robot.detected) continue;
         if (mTeam->color == TeamInfo::yellow) {
             int rb_id = yellow_robot.robot_id;
-            if (rb_id >= size(mWorld.allies)) {
-                for (int i = size(mWorld.allies); i <= rb_id; i++) {
-                    mWorld.allies.emplace_back(i);
-                }
-            }
             double new_yaw = yellow_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
             if (mDelta_time > 0) {
@@ -184,11 +168,6 @@ void RobotController::receive_vision() {
         }
         else {
             int rb_id = yellow_robot.robot_id;
-            if (rb_id >= size(mWorld.enemies)) {
-                for (int i = size(mWorld.enemies); i <= rb_id; i++) {
-                    mWorld.enemies.push_back(Robot(i));
-                }
-            }
 
             double new_yaw = yellow_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;

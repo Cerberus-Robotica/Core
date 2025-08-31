@@ -3,33 +3,35 @@
 
 // Função auxiliar para checar se dois segmentos se interceptam
 static bool segmentsIntersect(Point p1, Point p2, Point q1, Point q2, Point& intersection) {
-    double A1 = p2.getY() - p1.getY();
-    double B1 = p1.getX() - p2.getX();
-    double C1 = A1 * p1.getX() + B1 * p1.getY();
+    // Use parametric form: p1 + t*(p2-p1) and q1 + s*(q2-q1)
+    double dx1 = p2.getX() - p1.getX();
+    double dy1 = p2.getY() - p1.getY();
+    double dx2 = q2.getX() - q1.getX();
+    double dy2 = q2.getY() - q1.getY();
 
-    double A2 = q2.getY() - q1.getY();
-    double B2 = q1.getX() - q2.getX();
-    double C2 = A2 * q1.getX() + B2 * q1.getY();
+    double det = dx1 * dy2 - dy1 * dx2;
 
-    double det = A1 * B2 - A2 * B1;
-    if (det == 0) {
-        return false; // paralelas
+    // Check for parallel lines with tolerance
+    if (std::abs(det) < 1e-10) {
+        return false; // Lines are parallel
     }
 
-    double x = (B2 * C1 - B1 * C2) / det;
-    double y = (A1 * C2 - A2 * C1) / det;
+    double dx3 = q1.getX() - p1.getX();
+    double dy3 = q1.getY() - p1.getY();
 
-    // Verificar se (x,y) está dentro dos dois segmentos
-    if (x >= std::min(p1.getX(), p2.getX()) && x <= std::max(p1.getX(), p2.getX()) &&
-        y >= std::min(p1.getY(), p2.getY()) && y <= std::max(p1.getY(), p2.getY()) &&
-        x >= std::min(q1.getX(), q2.getX()) && x <= std::max(q1.getX(), q2.getX()) &&
-        y >= std::min(q1.getY(), q2.getY()) && y <= std::max(q1.getY(), q2.getY())) {
-        intersection = Point(x, y);
+    double t = (dx3 * dy2 - dy3 * dx2) / det;
+    double s = (dx3 * dy1 - dy3 * dx1) / det;
+
+    // Check if intersection is within both segments (with small tolerance for floating point)
+    const double epsilon = 1e-10;
+    if (t >= -epsilon && t <= 1.0 + epsilon && s >= -epsilon && s <= 1.0 + epsilon) {
+        intersection = Point(p1.getX() + t * dx1, p1.getY() + t * dy1);
         return true;
     }
 
     return false;
 }
+
 
 bool AreaRectangular::detectIfContains(Point p) {
     return (p.getX() >= minorPoint.getX() && p.getX() <= majorPoint.getX() &&
@@ -59,14 +61,23 @@ bool AreaRectangular::detectIfIntercepts(LineSegment l) {
     return false;
 }
 
-std::array<Point, 2> AreaRectangular::getInterceptionPoints(Point p1, Point p2) {
+std::vector<Point> AreaRectangular::getInterceptionPoints(Point p1, Point p2) {
     LineSegment seg(p1, p2);
     return getInterceptionPoints(seg);
 }
 
-std::array<Point, 2> AreaRectangular::getInterceptionPoints(LineSegment l) {
-    std::array<Point, 2> intersections = { Point(0, 0), Point(0, 0) };
-    int found = 0;
+void AreaRectangular::grow(double size) {
+    Point& p = majorPoint;
+    if (p.getX() > 0) p.setX(p.getX() + size); else p.setX(p.getX() - size);
+    if (p.getY() > 0) p.setY(p.getY() + size); else p.setY(p.getY() - size);
+    Point& p2 = minorPoint;
+    if (p2.getX() > 0) p2.setX(p2.getX() + size); else p2.setX(p2.getX() - size);
+    if (p2.getY() > 0) p2.setY(p2.getY() + size); else p2.setY(p2.getY() - size);
+}
+
+std::vector<Point> AreaRectangular::getInterceptionPoints(LineSegment l) {
+    std::vector<Point> intersections;
+    intersections.reserve(2); // A line can intersect a rectangle at most at 2 points
 
     Point rectPts[4] = {
         minorPoint,
@@ -76,16 +87,68 @@ std::array<Point, 2> AreaRectangular::getInterceptionPoints(LineSegment l) {
     };
 
     for (int i = 0; i < 4; i++) {
-        Point inter = {0 ,0};
+        Point inter = {0, 0};
         if (segmentsIntersect(l.getStart(), l.getEnd(), rectPts[i], rectPts[(i + 1) % 4], inter)) {
-            if (found < 2) {
-                intersections[found] = inter;
-                found++;
+            // Check if this intersection point is already found (avoid duplicates)
+            bool isDuplicate = false;
+            for (const Point& existingPoint : intersections) {
+                if (std::abs(existingPoint.getX() - inter.getX()) < 1e-9 &&
+                    std::abs(existingPoint.getY() - inter.getY()) < 1e-9) {
+                    isDuplicate = true;
+                    break;
+                    }
+            }
+
+            if (!isDuplicate && intersections.size() < 2) {
+                intersections.push_back(inter);
             }
         }
     }
-
     return intersections;
+}
+
+std::array<Point, 2> AreaRectangular::getNormalPoints(Point& p) {
+    double adc = 1.0;
+
+    if (p.getX() > majorPoint.getX()) {
+        if (p.getY() > majorPoint.getY()) {
+            Point p1 = {minorPoint.getX() - adc, majorPoint.getY() + adc};
+            Point p2 = {majorPoint.getX() + adc, minorPoint.getY() - adc};
+            return {p1, p2};
+        } else if (p.getY() < minorPoint.getY()) {
+            Point p1 = {minorPoint.getX() - adc, minorPoint.getY() - adc};
+            Point p2 = {majorPoint.getX() + adc, majorPoint.getY() + adc};
+            return {p1, p2};
+        } else {
+            Point p1 = {majorPoint.getX() + adc, minorPoint.getY() - adc};
+            Point p2 = {majorPoint.getX() + adc, majorPoint.getY() + adc};
+            return {p1, p2};
+        }
+    } else if (p.getX() < minorPoint.getX()) {
+        if (p.getY() > majorPoint.getY()) {
+            Point p1 = {majorPoint.getX() + adc, majorPoint.getY() + adc};
+            Point p2 = {minorPoint.getX() - adc, minorPoint.getY() - adc};
+            return {p1, p2};
+        } else if (p.getY() < minorPoint.getY()) {
+            Point p1 = {minorPoint.getX() - adc, majorPoint.getY() + adc};
+            Point p2 = {majorPoint.getX() + adc, minorPoint.getY() - adc};
+            return {p1, p2};
+        } else {
+            Point p1 = {minorPoint.getX() - adc, minorPoint.getY() - adc};
+            Point p2 = {minorPoint.getX() - adc, majorPoint.getY() + adc};
+            return {p1, p2};
+        }
+    } else {
+        if (p.getY() > majorPoint.getY()) {
+            Point p1 = {majorPoint.getX() + adc, majorPoint.getY() + adc};
+            Point p2 = {minorPoint.getX() - adc, majorPoint.getY() + adc};
+            return {p1, p2};
+        } else {
+            Point p1 = {minorPoint.getX() - adc, minorPoint.getY() - adc};
+            Point p2 = {majorPoint.getX() + adc, minorPoint.getY() - adc};
+            return {p1, p2};
+        }
+    }
 }
 
 Point AreaRectangular::getMajorPoint() {

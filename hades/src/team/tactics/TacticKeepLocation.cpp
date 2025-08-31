@@ -23,5 +23,6 @@ namespace tactics {
 				} else moveTo.act(robot, robot.mWorld.ball.getStopPosition(), false);
 			}
 		}
+		turnTo.act(robot, robot.mWorld.ball.getPosition());
 	}
 } // tactics
