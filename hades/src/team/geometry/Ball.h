@@ -5,13 +5,14 @@
 #ifndef BALL_H
 #define BALL_H
 
+#include "LineSegment.h"
 #include "Point.h"
 #include "Vector2d.h"
 
 class Ball {
 private:
 	bool detected;
-	double deceleration = 0.2;
+	double deceleration = 0.3;
 	Point position;
 	Vector2d velocity;
 	Point stopPosition = Point(0, 0);
@@ -27,6 +28,7 @@ public:
 	Point getStopPosition() const;
 	bool isStopped();
 	bool isMoving();
+	LineSegment getMovementLine() const;
 };
 
 

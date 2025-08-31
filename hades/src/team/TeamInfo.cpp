@@ -3,3 +3,10 @@
 //
 
 #include "TeamInfo.h"
+
+Robot TeamInfo::getRobotofRole(enum Robot::role role) {
+	for (Robot robot : robots) {
+		if (robot.getRole() == role) return robot;
+	}
+	throw std::runtime_error("No robot of desired role");
+}

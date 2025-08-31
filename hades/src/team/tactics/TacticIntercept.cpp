@@ -3,6 +3,10 @@
 //
 
 #include "TacticIntercept.h"
+
+#include <iostream>
+#include <ostream>
+
 #include "../RobotController.h"
 
 namespace tactics {
@@ -12,8 +16,9 @@ namespace tactics {
         if (robot.mWorld.ball.isMoving()) {
           	LineSegment line = {robot.mWorld.ball.getPosition(), robot.mWorld.ball.getVelocity()};
         	if (robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) < distanceThreshold && line.isPointAligned(robot.getPosition(), angle_tolerance)) {
-                  cushion.act(robot);
+        		cushion.act(robot);
         	} else moveTo.act(robot, robot.mWorld.ball.getStopPosition(), false);
         }
+		turnTo.act(robot, robot.mWorld.ball.getPosition());
 	}
 } // tactics

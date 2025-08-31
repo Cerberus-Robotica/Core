@@ -23,6 +23,7 @@ public:
 
     Point getStart() const;
     Point getEnd() const;
+    Point getMiddle() const;
     void setStart(const Point& start);
     void setEnd(const Point& end);
 

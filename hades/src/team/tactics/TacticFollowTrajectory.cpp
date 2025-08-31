@@ -28,14 +28,14 @@ namespace tactics {
 		}
 		if (size(trajectory) == 0) {
 			robot.mtarget_vel = {0, 0};
-			robot.mPositioned = true;
+			robot.positioned = true;
 			robot.mTeam->positioned[robot.getId()] = true;
 			return;
 		}
 
 		moveTo.act(robot, trajectory[0], true);
 
-		robot.mPositioned = false;
+		robot.positioned = false;
 		robot.mTeam->positioned[robot.getId()] = false;
 	}
 	void TacticFollowTrajectory::act(RobotController& robot) {

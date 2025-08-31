@@ -19,7 +19,7 @@ public:
     std::shared_ptr<roles::RoleDefender> role_defender = std::make_shared<roles::RoleDefender>();
     std::shared_ptr<roles::RoleStriker> role_striker = std::make_shared<roles::RoleStriker>();
     std::shared_ptr<roles::RoleGoalKeeper> role_goal_keeper = std::make_shared<roles::RoleGoalKeeper>();
-    std::shared_ptr<roles::RoleMidField> role_mid_field = std::make_shared<roles::RoleMidField>();
+    std::shared_ptr<roles::RoleSupport> role_mid_field = std::make_shared<roles::RoleSupport>();
     std::shared_ptr<roles::RoleKickOffKicker> role_kick_off_kicker = std::make_shared<roles::RoleKickOffKicker>();
     std::shared_ptr<roles::RoleKickOffSupport> role_kick_off_support = std::make_shared<roles::RoleKickOffSupport>();
     std::shared_ptr<roles::RoleKickOffGoalKeeper> role_kick_off_goal_keeper = std::make_shared<roles::RoleKickOffGoalKeeper>();
@@ -32,7 +32,7 @@ public:
         {Robot::defender, role_defender},
         {Robot::striker, role_striker},
         {Robot::goal_keeper, role_goal_keeper},
-        {Robot::mid_field, role_mid_field},
+        {Robot::support, role_mid_field},
         {Robot::kickoff_kicker, role_kick_off_kicker},
         {Robot::kickoff_support, role_kick_off_support},
         {Robot::kickoff_goal_keeper, role_kick_off_goal_keeper},
@@ -142,6 +142,8 @@ public:
     std::array<int, 16> active_robots = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int num_of_active_robots = 0;
     bool positioned[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+
+    Robot getRobotofRole(enum Robot::role role);
 };
 
 

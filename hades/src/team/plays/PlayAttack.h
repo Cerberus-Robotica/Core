@@ -16,7 +16,7 @@ public:
     PlayAttack() {
         name = "attack";
         required_robots = 3;
-        required_roles = {Robot::goal_keeper, Robot::mid_field, Robot::striker};
+        required_roles = {Robot::goal_keeper, Robot::striker, Robot::support};
     }
 };
 

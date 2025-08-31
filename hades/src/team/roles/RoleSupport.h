@@ -9,7 +9,10 @@
 
 namespace roles {
 
-class RoleMidField : public RoleBase {
+class RoleSupport : public RoleBase {
+private:
+    Point getSupportPosition(RobotController robot);
+public:
     void act(RobotController& robot);
 };
 

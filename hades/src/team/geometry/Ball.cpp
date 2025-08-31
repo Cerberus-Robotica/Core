@@ -62,3 +62,7 @@ bool Ball::isStopped() {
 bool Ball::isMoving() {
     return !isStopped();
 }
+
+LineSegment Ball::getMovementLine() const {
+    return LineSegment(position, getStopPosition());
+}

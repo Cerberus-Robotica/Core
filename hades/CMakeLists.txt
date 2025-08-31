@@ -68,8 +68,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/RoleBase.h
         src/team/roles/RoleHalted.cpp
         src/team/roles/RoleHalted.h
-        src/team/roles/RoleMidField.cpp
-        src/team/roles/RoleMidField.h
+        src/team/roles/RoleSupport.cpp
+        src/team/roles/RoleSupport.h
         src/team/roles/RoleGoalKeeper.cpp
         src/team/roles/RoleGoalKeeper.h
         src/team/roles/RoleDefender.cpp
@@ -98,8 +98,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/tactics/TacticPositionAndKick.cpp
         src/team/tactics/TacticFollowTrajectory.h
         src/team/tactics/TacticFollowTrajectory.cpp
-        src/team/tactics/TacticBase.h
-        src/team/tactics/TacticBase.cpp
+        src/team/tactics/TacticIntercept.h
+        src/team/tactics/TacticIntercept.cpp
         src/team/tactics/tactics.h
 
         src/team/skills/SkillBase.h

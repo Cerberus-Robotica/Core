@@ -13,5 +13,6 @@
 #include "TacticKeepLocation.h"
 #include "TacticKeepXLine.h"
 #include "TacticPositionAndKick.h"
+#include "TacticIntercept.h"
 
 #endif //TACTICS_H

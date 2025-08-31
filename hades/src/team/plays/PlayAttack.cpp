@@ -63,7 +63,7 @@ std::array<Robot::role, 16> PlayAttack::role_assign(WorldModel& world, TeamInfo&
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
             //std::cout << "striker : " << closest_id << std::endl;
         }
-        if (selected_role == Robot::mid_field) {
+        if (selected_role == Robot::support) {
             int closest_idx = 0;
             if (world.ball.getVelocity().getNorm() < 0.1) {
                 for (int idx = 0; idx < active_allies_ids.size(); idx++) {
@@ -84,7 +84,7 @@ std::array<Robot::role, 16> PlayAttack::role_assign(WorldModel& world, TeamInfo&
                 }
             }
             int closest_id = active_allies_ids[closest_idx];
-            roles[closest_id] = Robot::mid_field;
+            roles[closest_id] = Robot::support;
             distances_allies_from_ball.erase(distances_allies_from_ball.begin() + closest_idx);
             active_allies_ids.erase(active_allies_ids.begin() + closest_idx);
             //std::cout << "midfield : " << closest_id << std::endl;

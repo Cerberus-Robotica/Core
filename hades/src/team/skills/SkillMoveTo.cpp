@@ -146,8 +146,6 @@ namespace skills {
             if (goal.getY() > robot.mWorld.field.full_dimensions.getMajorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMajorPoint().getY());
             if (goal.getY() < robot.mWorld.field.full_dimensions.getMinorPoint().getY()) goal.setY(robot.mWorld.field.full_dimensions.getMinorPoint().getY());
 
-
-
             auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
             std::vector<Point> trajectory = {};
             for (int i = 0; i < trajectory_vector.size(); i++) {
@@ -158,17 +156,23 @@ namespace skills {
 
 
     void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball) {
-        if (robot.getPosition().getDistanceTo(goal) < robot.mStatic_position_tolarance) {
+        auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
+        if (robot.getId() == 1) {
+            std::cout << "TRAJETORIA" << std::endl;
+            for (int i = 0; i < trajectory.size(); i++) {
+                std::cout << trajectory[i].getX() << " " << trajectory[i].getY() << std::endl;
+            }
+        }
+        if (robot.getPosition().getDistanceTo(trajectory[size(trajectory) - 1]) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
             robot.mtarget_vyaw = 0; //TODO verificar
-            robot.mPositioned = true;
+            robot.positioned = true;
             robot.mTeam->positioned[robot.getId()] = true;
             return;
         }
-        robot.mPositioned = false;
+        robot.positioned = false;
         robot.mTeam->positioned[robot.getId()] = false;
         Vector2d v_vet;
-        auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
         std::size(trajectory) > 0 ? v_vet = motion_planner(robot, trajectory) : v_vet = {0, 0};
 
         v_vet = motion_control(v_vet, -robot.getYaw());

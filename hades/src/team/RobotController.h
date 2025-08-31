@@ -21,6 +21,7 @@ class RobotController : public Robot{
 public:
     RobotController(int new_id): Robot(new_id), mWorld() {
         id = new_id;
+        setPosition({0, 0});
     }
 
     void start(TeamInfo* team_ads);
@@ -78,7 +79,7 @@ public:
     double mDribbler_min = 0.5;
 
     //angle and position tolerance
-    double mStatic_position_tolarance = mRadius/8;
+    double mStatic_position_tolarance = mRadius/4;
     double mDynamic_position_tolarance = mRadius/16;
     double mStatic_angle_tolarance = 0.005;
 
@@ -93,12 +94,6 @@ public:
     double mKI_mov = 0;
     double mKD_mov = 0;
     double mI_mov = 0;
-
-    //flags
-    bool mPositioned = true;
-    bool mAlligned = true;
-    bool mOriented = true;
-
 
     //field info
     WorldModel mWorld;

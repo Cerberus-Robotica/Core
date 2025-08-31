@@ -39,10 +39,10 @@ void SkillTurnTo::act(RobotController& robot, Point goal) {
 	double delta = find_angle_error(robot, goal);
 	if (fabs(delta) < robot.mStatic_angle_tolarance) {
 		robot.mtarget_vyaw = 0;
-		robot.mOriented = true;
+		robot.oriented = true;
 		return;
 	}
-	robot.mOriented = false;
+	robot.oriented = false;
 	double new_vyaw = turn_control(robot, delta);
 	if (new_vyaw > robot.mtarget_vyaw + robot.mDelta_time*robot.mA_ang_max) {
 		new_vyaw = robot.mtarget_vyaw + robot.mDelta_time*robot.mA_ang_max;

@@ -11,7 +11,7 @@
 #include "RoleHalted.h"
 #include "RoleStriker.h"
 #include "RoleGoalKeeper.h"
-#include "RoleMidField.h"
+#include "RoleSupport.h"
 #include "RoleKickOffKicker.h"
 #include "RoleKickOffSupport.h"
 #include "RoleKickOffGoalKeeper.h"

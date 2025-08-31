@@ -63,11 +63,6 @@ void Leader::receive_vision() {
         if (!blue_robot.detected) continue;
         if (team.color == TeamInfo::blue) {
             int rb_id = blue_robot.robot_id;
-            if (rb_id >= size(world.allies)) {
-                for (int i = size(world.allies); i <= rb_id; i++) {
-                    world.allies.push_back(Robot(i));
-                }
-            }
             if (team.active_robots[rb_id] == 0) {
                 add_robot(rb_id);
                 continue;
@@ -92,11 +87,6 @@ void Leader::receive_vision() {
         }
         else {
             int rb_id = blue_robot.robot_id;
-            if (rb_id >= size(world.enemies)) {
-                for (int i = size(world.enemies); i <= rb_id; i++) {
-                    world.enemies.push_back(Robot(i));
-                }
-            }
 
             double new_yaw = blue_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
@@ -123,11 +113,6 @@ void Leader::receive_vision() {
         if (!yellow_robot.detected) continue;
         if (team.color == TeamInfo::yellow) {
             int rb_id = yellow_robot.robot_id;
-            if (rb_id >= size(world.allies)) {
-                for (int i = size(world.allies); i <= rb_id; i++) {
-                    world.allies.push_back(Robot(i));
-                }
-            }
             if (team.active_robots[rb_id] == 0) {
                 add_robot(rb_id);
                 continue;
@@ -152,11 +137,6 @@ void Leader::receive_vision() {
         }
         else {
             int rb_id = yellow_robot.robot_id;
-            if (rb_id >= size(world.enemies)) {
-                for (int i = size(world.enemies); i <= rb_id; i++) {
-                    world.enemies.push_back(Robot(i));
-                }
-            }
 
             double new_yaw = yellow_robot.orientation;
             if (new_yaw < 0) new_yaw += 2*M_PI;
@@ -392,6 +372,9 @@ void Leader::select_plays() {
 
     // Copiar para o time
     team.roles = roles;
+    for (int i = 0; i < roles.size(); i++) {
+        team.robots[i].setRole(roles[i]);
+    }
 }
 
 
