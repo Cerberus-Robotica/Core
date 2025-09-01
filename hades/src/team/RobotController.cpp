@@ -223,12 +223,25 @@ void RobotController::receive_field_geometry() {
 
     AreaRectangular leftDefenseArea = {{-han.new_vision.field.field_width/2, -han.new_vision.field.defense_area_height/2},{-han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width, han.new_vision.field.defense_area_height/2}};
     AreaRectangular rightDefenseArea = {{han.new_vision.field.field_width/2 - han.new_vision.field.defense_area_width, -han.new_vision.field.defense_area_height/2}, {han.new_vision.field.field_width/2, han.new_vision.field.defense_area_height/2}};
-    return;
+
+    LineSegment leftGoal = {Point(-han.new_vision.field.field_length/2 , -han.new_vision.field.goal_height/2), Point(-han.new_vision.field.field_length/2 , han.new_vision.field.goal_height/2)};
+    LineSegment rightGoal = {Point(han.new_vision.field.field_length/2 , -han.new_vision.field.goal_height/2), Point(han.new_vision.field.field_length/2 , han.new_vision.field.goal_height/2)};
+
+    AreaRectangular leftFisicalBarrier = {leftGoal.getStart(), {leftGoal.getEnd().getX() - han.new_vision.field.goal_depth, leftGoal.getEnd().getY()}};
+    AreaRectangular rightFisicalBarrier = {rightGoal.getStart(), {rightGoal.getEnd().getX() + han.new_vision.field.goal_depth, rightGoal.getEnd().getY()}};
     if (mTeam->our_side == TeamInfo::left) {
+        mWorld.field.ourFisicalBarrier = leftFisicalBarrier;
+        mWorld.field.theirFisicalBarrier = rightFisicalBarrier;
+        mWorld.field.ourGoal = leftGoal;
+        mWorld.field.theirGoal = rightGoal;
         mWorld.field.ourDefenseArea = leftDefenseArea;
         mWorld.field.theirDefenseArea = rightDefenseArea;
     }
     if (mTeam->our_side == TeamInfo::right) {
+        mWorld.field.ourFisicalBarrier = rightFisicalBarrier;
+        mWorld.field.theirFisicalBarrier = leftFisicalBarrier;
+        mWorld.field.ourGoal = rightGoal;
+        mWorld.field.theirGoal = leftGoal;
         mWorld.field.ourDefenseArea = rightDefenseArea;
         mWorld.field.theirDefenseArea = leftDefenseArea;
     }

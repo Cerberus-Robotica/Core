@@ -40,7 +40,7 @@ protected:
 
 public:
     // Construtor
-    Robot(int id) : id(id) {}
+    Robot(int id) : id(id) {this_role = unknown;}
 
     //flags
     bool positioned = true;

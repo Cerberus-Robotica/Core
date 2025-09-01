@@ -178,8 +178,27 @@ void Leader::receive_vision() {
 void Leader::receive_field_geometry() {
     //TODO implementar urgente
     world.field.inside_dimensions.setMinorPoint({static_cast<double>(-han.new_vision.field.field_length/2), static_cast<double>(-han.new_vision.field.field_width/2)});
-    world.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});}
+    world.field.inside_dimensions.setMajorPoint({static_cast<double>(han.new_vision.field.field_length/2), static_cast<double>(han.new_vision.field.field_width/2)});
 
+    AreaRectangular leftDefenseArea = {{-han.new_vision.field.field_width/2, -han.new_vision.field.defense_area_height/2},{-han.new_vision.field.field_width/2 + han.new_vision.field.defense_area_width, han.new_vision.field.defense_area_height/2}};
+    AreaRectangular rightDefenseArea = {{han.new_vision.field.field_width/2 - han.new_vision.field.defense_area_width, -han.new_vision.field.defense_area_height/2}, {han.new_vision.field.field_width/2, han.new_vision.field.defense_area_height/2}};
+
+    LineSegment leftGoal = {Point(-han.new_vision.field.field_width/2 , -han.new_vision.field.goal_height/2), Point(-han.new_vision.field.field_width/2 , han.new_vision.field.goal_height/2)};
+    LineSegment rightGoal = {Point(han.new_vision.field.field_width/2 , -han.new_vision.field.goal_height/2), Point(han.new_vision.field.field_width/2 , han.new_vision.field.goal_height/2)};
+    std::cout << han.new_vision.field.defense_area_height << std::endl;
+    if (team.our_side == TeamInfo::left) {
+        world.field.ourGoal = leftGoal;
+        world.field.theirGoal = rightGoal;
+        //world.field.ourDefenseArea = leftDefenseArea;
+        //world.field.theirDefenseArea = rightDefenseArea;
+    }
+    if (team.our_side == TeamInfo::right) {
+        world.field.ourGoal = rightGoal;
+        world.field.theirGoal = leftGoal;
+        //world.field.ourDefenseArea = rightDefenseArea;
+        //world.field.theirDefenseArea = leftDefenseArea;
+    }
+}
 void Leader::event_FSM() {
     if (team.current_command == TeamInfo::HALT) team.event = TeamInfo::halt;
 
@@ -305,11 +324,10 @@ void Leader::event_FSM() {
 void Leader::receive_config() {
     //TODO receber time do tartarus ou do GC
     //TODO receber lado do time
+    team.our_side = TeamInfo::left;
 
     if (team.our_side == TeamInfo::right) team.our_side_sign = 1;
     else team.our_side_sign = -1;
-
-
 }
 
 void Leader::receive_gamecontroller() {
@@ -323,8 +341,9 @@ void Leader::receive_gamecontroller() {
     else if (is_team_blue == 0) {
         team.color = TeamInfo::yellow;
         team.goal_keeper_id = han.new_GC.yellow.goalkeeper_id;
-
     }
+
+    event_FSM();
 }
 
 void Leader::world_analysis() {

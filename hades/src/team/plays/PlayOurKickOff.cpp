@@ -15,11 +15,11 @@
 #include "../TeamInfo.h"
 
 int PlayOurKickOff::calc_score(WorldModel world, TeamInfo team) {
-    int score = 0;
+    int new_score = 0;
     if (team.event == TeamInfo::ourKickOff || team.event == TeamInfo::prepareOurKickOff) {
-        score += 999992;
+        new_score += 999992;
     }
-    this->score = score;
+    this->score = new_score;
     return score;
 }
 

@@ -125,9 +125,9 @@ bool WorldModel::isBallMovingIdDirection(int id) {
         {allies[id].getPosition().getX() - ball.getPosition().getX(), allies[id].getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
 }
 
-bool WorldModel::isBallMovingRobotDirection(Robot robot) {
+bool WorldModel::isBallMovingRobotDirection(Robot robot, double tolerance) {
     return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
-        {robot.getPosition().getX() - ball.getPosition().getX(), robot.getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
+        {robot.getPosition().getX() - ball.getPosition().getX(), robot.getPosition().getY() - ball.getPosition().getY()}) < tolerance;
 }
 
 bool WorldModel::doInterceptAnyRobot(LineSegment l) {
@@ -159,4 +159,19 @@ bool WorldModel::isBallReachable(bool includeOurArea) {
     }
 
     return true;
+}
+
+Robot WorldModel::getClosestAllyToPoint(Point p) {
+    Robot closest = allies[0];
+    while (int i = 0 < allies.size()) {
+        if (allies[i].isDetected()) {
+            closest = allies[i];
+            break;
+        }
+        if (i == 16) throw std::runtime_error("No allies");
+    }
+    for (Robot r : allies) {
+        if (r.getPosition().getDistanceTo(p) < closest.getPosition().getDistanceTo(p)) closest = r;
+    }
+    return closest;
 }

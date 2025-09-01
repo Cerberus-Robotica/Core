@@ -44,9 +44,10 @@ public:
     int findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id);
     int getIdOfTheBallInterceptor();
     bool isBallMovingIdDirection(int id);
-    bool isBallMovingRobotDirection(Robot robot);
+    bool isBallMovingRobotDirection(Robot robot, double tolerance = 3.1415/2);
     bool isBallReachable(bool includeOurArea); //TODO IMPLEMENTAR PARA TACTICPOSITIONANDKICK() PARA NAO CHUTAR COM BOLA DENTRO DA AREA TMJ
     bool doInterceptAnyRobot(LineSegment l);
+    Robot getClosestAllyToPoint(Point p);
 };
 
 

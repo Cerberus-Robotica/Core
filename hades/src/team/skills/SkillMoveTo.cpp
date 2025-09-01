@@ -155,7 +155,7 @@ namespace skills {
         auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
         if (robot.getPosition().getDistanceTo(trajectory[size(trajectory) - 1]) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
-            robot.mtarget_vyaw = 0; //TODO verificar
+            robot.mtarget_vyaw = 0;
             robot.positioned = true;
             robot.mTeam->positioned[robot.getId()] = true;
             return;
