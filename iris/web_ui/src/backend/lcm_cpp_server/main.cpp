@@ -85,6 +85,9 @@ int main()
         data["autoreferee"] = latest_data.autoreferee;
         data["competition_mode"] = latest_data.competition_mode;
         data["bool_controller"] = latest_data.bool_controller;
+        data["debug_mode"] = latest_data.debug_mode;
+        data["half_field"] = latest_data.half_field;
+        data["iris_as_GC"] = latest_data.iris_as_GC;
         data["team_blue"] = latest_data.team_blue;
         data["team_blue_status"] = latest_data.team_blue_status;
 
@@ -251,6 +254,18 @@ int main()
                 latest_data.bool_controller = body["bool_controller"].b();
                 std::cout << "[POST] bool_controller atualizado para " << (latest_data.bool_controller ? "true" : "false") << std::endl;
             }
+            if (body.has("debug_mode") && (body["debug_mode"].t() == crow::json::type::True || body["debug_mode"].t() == crow::json::type::False)) {
+                latest_data.debug_mode = body["debug_mode"].b();
+                std::cout << "[POST] debug_mode atualizado para " << (latest_data.debug_mode ? "true" : "false") << std::endl;
+            }
+            if (body.has("half_field") && (body["half_field"].t() == crow::json::type::True || body["half_field"].t() == crow::json::type::False)) {
+                latest_data.half_field = body["half_field"].b();
+                std::cout << "[POST] half_field atualizado para " << (latest_data.half_field ? "true" : "false") << std::endl;
+            }
+            if (body.has("iris_as_GC") && (body["iris_as_GC"].t() == crow::json::type::True || body["iris_as_GC"].t() == crow::json::type::False)) {
+                latest_data.iris_as_GC = body["iris_as_GC"].b();
+                std::cout << "[POST] iris_as_GC atualizado para " << (latest_data.iris_as_GC ? "true" : "false") << std::endl;
+            }
 
             // ---- Portas ----
             if (body.has("stm_port") && body["stm_port"].t() == crow::json::type::Number) {
@@ -284,9 +299,11 @@ int main()
             msg.autoreferee = latest_data.autoreferee;
             msg.competition_mode = latest_data.competition_mode;
             msg.bool_controller = latest_data.bool_controller;
+            msg.debug_mode = latest_data.debug_mode;
+            msg.half_field = latest_data.half_field;
+            msg.iris_as_GC = latest_data.iris_as_GC;
             msg.goalkeeper_id = latest_data.team_blue ? latest_data.blue.goalkeeper_id : latest_data.yellow.goalkeeper_id;
             msg.stm_port = latest_data.stm_port;
-            //msg.controller_port = latest_data.controller_port;
             msg.mcast_port_gc = latest_data.mcast_port_gc;
             msg.mcast_port_vision_grsim = latest_data.mcast_port_vision_grsim;
             msg.mcast_port_vision_sslvision = latest_data.mcast_port_vision_sslvision;

@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useFetchLoop } from '../hooks/useFetchLoop';
-import { sendPost } from '../hooks/useSendPost';
 import TeamSelector from './TeamSelector';
 import { initialData } from '../data/initialData';
 
@@ -11,17 +9,8 @@ type Props = {
 export function DataView({ reading, setReading }: Props) {
   //const [recebendoDoLCM, setRecebendoDoLCM] = useState(true);
 
-  const [goalieInput, setGoalieInput] = useState<number>(0);
-
   const data = useFetchLoop(reading, initialData);
 
-  const handleSendGoalie = async () => {
-    const success = await sendPost('http://localhost:5000/command', {
-      goalkeeper_id: goalieInput,
-      goalkeeper_from_lcm: false, // <- isso é ESSENCIAL para impedir sobrescrita
-    });
-    alert(success ? 'ID enviado com sucesso' : 'Erro ao enviar ID');
-  };
 
 
   /*const handleToggleFonte = async () => {
@@ -96,29 +85,8 @@ export function DataView({ reading, setReading }: Props) {
           {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
         </span>
       </p>
-      <p>
-        Team Blue Status:{' '}
-        <span className="font-mono">
-          {data.tartarus.team_blue_status ? 'Sim' : 'Não'}
-        </span>
-      </p>
 
       <div>
-        <label className="block mb-1 font-semibold text-white">
-          ID do Goleiro:
-        </label>
-        <input
-          type="number"
-          className="w-full p-2 rounded border border-gray-300 mb-2 text-black"
-          value={goalieInput}
-          onChange={(e) => setGoalieInput(Number(e.target.value))}
-        />
-        <button
-          onClick={handleSendGoalie}
-          className="w-full py-2 bg-[#6805F2] hover:bg-[#34007D] text-white rounded font-semibold"
-        >
-          Enviar Goleiro
-        </button>
 
         {/* Passa o setter para sincronizar estado no TeamSelector */}
         <TeamSelector />

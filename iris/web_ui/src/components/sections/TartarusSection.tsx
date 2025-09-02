@@ -4,6 +4,8 @@ import { RowWrapper } from './utilities/RowWrapper';
 import { ToggleSwitch } from './utilities/ToggleSwitch';
 import { NumberInputRow } from './utilities/NumberInputRow';
 import { ActionButton } from './utilities/ActionButton';
+import { CompetitionOverlay } from './utilities/CompetitionOverlay';
+import { sendPost } from '../../hooks/useSendPost';
 
 type Props = {
   data: DataType;
@@ -39,9 +41,15 @@ export default function TartarusSection({
   const [cams_number, setCams_number] = useState(
     data.tartarus.cams_number ?? 0,
   );
+  const [goalieInput, setGoalieInput] = useState<number>(0);
 
   return (
-    <>
+    <div className="relative">
+      {/* Overlay só aparece se competition_mode estiver ativo */}
+      {data.tartarus.competition_mode && (
+        <CompetitionOverlay imageSrc={`/img/Venom.png`} />
+      )}
+
       <h2 className="text-lg font-bold mb-4">Tartarus</h2>
 
       <RowWrapper>
@@ -104,12 +112,63 @@ export default function TartarusSection({
 
       <RowWrapper>
         <p>
+          Modo Debug:{' '}
+          <span className="font-mono">
+            {data.tartarus.debug_mode ? 'Sim' : 'Não'}
+          </span>
+        </p>
+        <ToggleSwitch
+          value={data.tartarus.debug_mode}
+          onToggle={() => toggleBoolean('debug_mode', data.tartarus.debug_mode)}
+        />
+      </RowWrapper>
+
+      <RowWrapper>
+        <p>
+          Meio Campo:{' '}
+          <span className="font-mono">
+            {data.tartarus.half_field ? 'Sim' : 'Não'}
+          </span>
+        </p>
+        <ToggleSwitch
+          value={data.tartarus.half_field}
+          onToggle={() => toggleBoolean('half_field', data.tartarus.half_field)}
+        />
+      </RowWrapper>
+
+      <RowWrapper>
+        <p>
+          Iris como GC:{' '}
+          <span className="font-mono">
+            {data.tartarus.iris_as_GC ? 'Sim' : 'Não'}
+          </span>
+        </p>
+        <ToggleSwitch
+          value={data.tartarus.iris_as_GC}
+          onToggle={() => toggleBoolean('iris_as_GC', data.tartarus.iris_as_GC)}
+        />
+      </RowWrapper>
+
+      <RowWrapper>
+        <p>
           Time Azul:{' '}
           <span className="font-mono">
             {data.tartarus.team_blue ? 'Sim' : 'Não'}
           </span>
         </p>
       </RowWrapper>
+
+      <NumberInputRow
+        label="ID do Goleiro:"
+        value={goalieInput}
+        setValue={setGoalieInput}
+        onSubmit={async () => {
+          await sendPost('http://localhost:5000/command', {
+            goalkeeper_id: goalieInput,
+            goalkeeper_from_lcm: false, // essencial para impedir sobrescrita
+          });
+        }}
+      />
 
       <h2 className="text-lg font-bold mb-4">Portas</h2>
 
@@ -177,6 +236,6 @@ export default function TartarusSection({
         setValue={setCams_number}
         onSubmit={() => updateNumber('cams_number', cams_number)}
       />
-    </>
+    </div>
   );
 }

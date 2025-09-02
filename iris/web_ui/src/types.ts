@@ -16,6 +16,10 @@ export type Robot = {
   wheel_br: number;
 };
 
+export type CompetitionData = {
+  team_info: boolean;
+}
+
 export type SkillsData = {
   id: number;
 }
@@ -103,10 +107,12 @@ export type VisionData = {
 export type TartarusData = {
   ssl_vision: boolean;
   autoreferee: boolean;
-  team_blue_status: boolean;
   competition_mode: boolean;
   team_blue: boolean;
   bool_controller: boolean;
+  debug_mode: boolean;
+  half_field: boolean;
+  iris_as_GC: boolean;
   stm_port: number;
   mcast_port_gc: number;// default 10003
 	mcast_port_vision_sslvision: number; // default 10006
@@ -132,6 +138,7 @@ export type DataType = {
   gc: GCType;
   tartarus: TartarusData;
   skills: SkillsData;
+  competition: CompetitionData;
 };
 
 // --- BackendData (estrutura parcial vinda do backend) ---

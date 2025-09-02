@@ -5,6 +5,8 @@
 #include "AreaCircular.h"
 #include <cmath>
 #include <algorithm>
+#include <stdexcept>
+
 
 bool AreaCircular::detectIfContains(Point p) {
     double dx = p.getX() - center.getX();
