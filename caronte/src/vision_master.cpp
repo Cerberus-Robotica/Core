@@ -68,6 +68,7 @@ void vision_master::vision_main()
         std::cout << "\nball position_x " << my_vision_data.balls.position_x << std::endl;
         std::cout << "Robos azuis: " << blue_ids.size() << std::endl;
         std::cout << "  Robos amarelos: " << my_vision_data.robots_yellow_size << std::endl;
+        std::cout << "iris_as_gc: " << int(han.new_tartarus.iris_as_GC) << std::endl;
         std::cout << "Timestamp: " << my_vision_data.timestamp << std::endl;
         std::cout << "my_autoref_data.timestamp: " << my_autoref_data.timestamp << std::endl;
 

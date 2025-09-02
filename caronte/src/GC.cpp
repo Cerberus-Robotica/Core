@@ -2,6 +2,8 @@
 #include "include/socket_connect.hpp"
 #include "include/tartarus.hpp"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 data::game_controller my_gc_data;
 
@@ -17,8 +19,14 @@ void recebe_dados_GC() {
         
         struct sockaddr_in sender_addr;
         socklen_t addr_len = sizeof(sender_addr);
+        int bytes_received_GC = 0;
             // Recebendo os dados do socket GC
-        int bytes_received_GC = recvfrom(sock_GC, buffer_GC, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
+        if (!han.new_tartarus.iris_as_GC) {
+            bytes_received_GC = recvfrom(sock_GC, buffer_GC, BUFFER_SIZE, 0, (struct sockaddr*)&sender_addr, &addr_len);
+        }
+        else{
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        }
 
         if (bytes_received_GC > 0) {
             // Parse dos dados recebidos (GC)
@@ -40,15 +48,7 @@ void recebe_dados_GC() {
             my_gc_data.yellow.timeout_time = referee.yellow().timeout_time();
             my_gc_data.yellow.goalkeeper_id = referee.yellow().goalkeeper();
 
-
-            if(han.new_tartarus.iris_as_GC){
-                my_gc_data.team_blue = han.new_tartarus.team_blue;
-                my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
-                my_gc_data.game_event = han.new_tartarus.iris_gc.game_event;
-                my_gc_data.designated_position_x = han.new_tartarus.iris_gc.designated_position_x;
-                my_gc_data.designated_position_y = han.new_tartarus.iris_gc.designated_position_y;
-            }
-            else{
+            if(!han.new_tartarus.iris_as_GC){
                 if(referee.game_events_size() > 0) {
                 game_event = &referee.game_events(referee.game_events_size() - 1); // pega o último evento
                 //std::cout << "game_event type: " << game_event->type() << std::endl;
@@ -66,6 +66,18 @@ void recebe_dados_GC() {
                 my_gc_data.current_command = referee.command(); // enum command
             }
         }
+        else if(han.new_tartarus.iris_as_GC){
+            my_gc_data.team_blue = han.new_tartarus.team_blue;
+            my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
+            my_gc_data.game_event = han.new_tartarus.iris_gc.game_event;
+            my_gc_data.designated_position_x = han.new_tartarus.iris_gc.designated_position_x;
+            my_gc_data.designated_position_y = han.new_tartarus.iris_gc.designated_position_y;
+        }
         lcm.publish("GC", &my_gc_data);
-    }  
+        //std::cout << "iris_as_gc: " << int(han.new_tartarus.iris_as_GC) << std::endl;
+        //std::cout << "Game command: " << my_gc_data.current_command << std::endl;
+        //std::cout << "Game event: " << my_gc_data.game_event << std::endl;
+        //std::cout << "Designated position: (" << my_gc_data.designated_position_x << ", " << my_gc_data.designated_position_y << ")" << std::endl;
+        //std::cout << "Team blue: " << (my_gc_data.team_blue ? "true" : "false") << std::endl << std::endl;
+    }
 }
