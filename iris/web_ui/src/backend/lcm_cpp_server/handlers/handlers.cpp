@@ -44,10 +44,10 @@ void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, co
     std::lock_guard<std::mutex> lock(data_mutex);
     msg_tartarus = *msg;
 
-    std::cout << "[handleTartarus] goal_keeper_id_from_lcm: " << lcm_control.goalkeeper_id_from_lcm
+    std::cout << "[handleTartarus] goal_keeper_id_from_lcm: " << latest_data.goalkeeper_id
             << ", goal_keeper_id recebido do LCM: " << msg->goalkeeper_id << std::endl;
 
-    if (lcm_control.goalkeeper_id_from_lcm) {
+    if (latest_data.goalkeeper_id) {
         if (msg_GC.blue.name == "Cerberus") {
             latest_data.team_blue_status = true;
             latest_data.blue.goalkeeper_id = msg->goalkeeper_id;
@@ -64,8 +64,11 @@ void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, co
     latest_data.autoreferee = msg->autoreferee;
     latest_data.competition_mode = msg->competition_mode;
     latest_data.bool_controller = msg->bool_controller;
+    latest_data.debug_mode = msg->debug_mode;
+    latest_data.half_field = msg->half_field;
+    latest_data.iris_as_GC = msg->iris_as_GC;
+    
     latest_data.stm_port = msg->stm_port;
-    //latest_data.controller_port = msg->controller_port;
     latest_data.mcast_port_gc = msg->mcast_port_gc;
     latest_data.mcast_port_vision_grsim = msg->mcast_port_vision_grsim;
     latest_data.mcast_port_vision_sslvision = msg->mcast_port_vision_sslvision;

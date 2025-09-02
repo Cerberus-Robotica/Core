@@ -51,14 +51,26 @@ export const initialData: DataType = {
     },
   },
   tartarus: {
-    team_blue_status: false,
     ssl_vision: false,
     autoreferee: false,
     competition_mode: false,
     team_blue: false,
     bool_controller: false,
+    debug_mode: false,
+    half_field: false,
+    iris_as_GC: false,
     stm_port: 0,
-    controller_port: 0,
+    mcast_port_gc: 0,// default 10003
+    mcast_port_vision_sslvision: 0, // default 10006
+    mcast_port_vision_grsim: 0, // default 10020
+    mcast_port_vision_tracked: 0,
     goalkeeper_id: 0,
+    cams_number: 0,
   },
+  skills: {
+    id: 0,
+  },
+  competition: {
+    team_info: false,
+  }
 };

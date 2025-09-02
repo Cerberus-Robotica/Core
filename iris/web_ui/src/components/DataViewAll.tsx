@@ -13,6 +13,7 @@ import FieldSection from './sections/FieldSection';
 import SkillsSection from './sections/SkillsSection';
 
 import { sendPost } from '../hooks/useSendPost';
+import CompetitionSection from './sections/CompetitionSection';
 
 type Props = {
   reading: boolean;
@@ -92,6 +93,9 @@ export function DataViewAll({
           <p>Selecione um robô para ver as skills</p>
         )
       ) : null,
+    competition: (
+      <CompetitionSection data={data} toggleBoolean={toggleBoolean} />
+    ),
   };
 
   return (
