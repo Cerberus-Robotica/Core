@@ -52,6 +52,8 @@ void handlers::handle_ia_vision(const lcm::ReceiveBuffer* rbuf,
         robots_ia.wheel_fl = 0;
         robots_ia.wheel_bl = 0;
         robots_ia.wheel_br = 0;
+        
+        robots_ia.has_kicker = new_tartarus.robots[i].has_kicker;
 
     }
     //for(int i = 0; i < 16; ++i) {

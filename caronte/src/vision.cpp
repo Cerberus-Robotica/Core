@@ -69,7 +69,7 @@ void vision_master::recebe_dados_vision() {
             if (vision.has_geometry()) {
                 geometry = vision.geometry();
                 field = geometry.field();
-
+                
                 my_vision_data.field.field_length = field.field_length();
                 my_vision_data.field.field_width = field.field_width();
                 my_vision_data.field.goal_width = field.goal_width();
