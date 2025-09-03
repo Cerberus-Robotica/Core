@@ -17,7 +17,13 @@ export type Robot = {
 };
 
 export type CompetitionData = {
-  team_info: boolean;
+  autoreferee: boolean;
+  competition_mode: boolean;
+  stm_port: number;
+  mcast_port_gc: number;// default 10003
+	mcast_port_vision_sslvision: number; // default 10006
+	mcast_port_vision_tracked: number;
+  cams_number: number;
 }
 
 export type SkillsData = {

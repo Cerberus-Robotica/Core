@@ -14,6 +14,7 @@ import SkillsSection from './sections/SkillsSection';
 
 import { sendPost } from '../hooks/useSendPost';
 import CompetitionSection from './sections/CompetitionSection';
+import { competitionData } from '../data/competitionData';
 
 type Props = {
   reading: boolean;
@@ -41,11 +42,29 @@ export function DataViewAll({
   const [selectedRobotId, setSelectedRobotId] = useState<number | null>(null);
 
   const toggleBoolean = async (key: string, currentValue: boolean) => {
-    const success = await sendPost('http://localhost:5000/command', {
-      [key]: !currentValue,
-    });
-    if (!success) {
-      console.error(`Erro ao alternar ${key}`);
+    try {
+      let payload;
+
+      if (key === 'competition_mode') {
+        if (!currentValue) {
+          // ativando modo competição → manda o preset inteiro
+          payload = competitionData;
+        } else {
+          // desativando → só desliga o campo
+          payload = { competition_mode: false };
+        }
+      } else {
+        // demais toggles → comportamento padrão
+        payload = { [key]: !currentValue };
+      }
+
+      const success = await sendPost('http://localhost:5000/command', payload);
+
+      if (!success) {
+        console.error(`Erro ao alternar ${key}`);
+      }
+    } catch (err) {
+      console.error(`Erro ao enviar ${key}:`, err);
     }
   };
 
@@ -94,7 +113,11 @@ export function DataViewAll({
         )
       ) : null,
     competition: (
-      <CompetitionSection data={data} toggleBoolean={toggleBoolean} />
+      <CompetitionSection
+        data={data}
+        toggleBoolean={toggleBoolean}
+        updateNumber={updateNumber}
+      />
     ),
   };
 
