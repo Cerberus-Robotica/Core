@@ -48,7 +48,9 @@ void RobotController::loop() {
         receive_vision();
         receive_field_geometry();
         check_connection();
-        select_behavior();
+        //select_behavior();
+        skills::SkillMoveTo moveto;
+        moveto.act(*this);
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
