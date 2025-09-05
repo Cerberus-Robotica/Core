@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import type { DataType } from '../types';
+import { competitionData } from '../data/competitionData';
 
 export function useFetchLoop(reading: boolean, initialData: DataType): DataType {
   const [data, setData] = useState<DataType>(initialData);
+  
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -43,33 +45,64 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
             blue: json.blue ?? initialData.gc.blue,
             yellow: json.yellow ?? initialData.gc.yellow,
           },
-          tartarus: {
-            ...initialData.tartarus,
-            ssl_vision: json.ssl_vision ?? initialData.tartarus.ssl_vision,
-            autoreferee: json.autoreferee ?? initialData.tartarus.autoreferee,
-            competition_mode: json.competition_mode ?? initialData.tartarus.competition_mode,
-            bool_controller: json.bool_controller ?? initialData.tartarus.bool_controller,
-            debug_mode: json.debug_mode ?? initialData.tartarus.debug_mode,
-            half_field: json.half_field ?? initialData.tartarus.half_field,
-            iris_as_GC: json.iris_as_GC ?? initialData.tartarus.iris_as_GC,
-            goalkeeper_id: json.goalkeeper_id ?? initialData.tartarus.goalkeeper_id,
-            cams_number: json.cams_number ?? initialData.tartarus.cams_number,
-            stm_port: json.stm_port ?? initialData.tartarus.stm_port,
-            mcast_port_gc: json.mcast_port_gc ?? initialData.tartarus.mcast_port_gc,
-            mcast_port_vision_grsim: json.mcast_port_vision_grsim ?? initialData.tartarus.mcast_port_vision_grsim,
-            mcast_port_vision_sslvision: json.mcast_port_vision_sslvision ?? initialData.tartarus.mcast_port_vision_sslvision,
-            mcast_port_vision_tracked: json.mcast_port_vision_tracked ?? initialData.tartarus.mcast_port_vision_tracked,
-            team_blue: json.team_blue ?? initialData.tartarus.team_blue,
-          },
+          tartarus: (() => {
+            const base = {
+              ...initialData.tartarus,
+              ssl_vision: json.ssl_vision ?? initialData.tartarus.ssl_vision,
+              autoreferee: json.autoreferee ?? initialData.tartarus.autoreferee,
+              competition_mode: json.competition_mode ?? initialData.tartarus.competition_mode,
+              bool_controller: json.bool_controller ?? initialData.tartarus.bool_controller,
+              debug_mode: json.debug_mode ?? initialData.tartarus.debug_mode,
+              half_field: json.half_field ?? initialData.tartarus.half_field,
+              iris_as_GC: json.iris_as_GC ?? initialData.tartarus.iris_as_GC,
+              goalkeeper_id: json.goalkeeper_id ?? initialData.tartarus.goalkeeper_id,
+              cams_number: json.cams_number ?? initialData.tartarus.cams_number,
+              stm_port: json.stm_port ?? initialData.tartarus.stm_port,
+              mcast_port_gc: json.mcast_port_gc ?? initialData.tartarus.mcast_port_gc,
+              mcast_port_vision_grsim: json.mcast_port_vision_grsim ?? initialData.tartarus.mcast_port_vision_grsim,
+              mcast_port_vision_sslvision: json.mcast_port_vision_sslvision ?? initialData.tartarus.mcast_port_vision_sslvision,
+              mcast_port_vision_tracked: json.mcast_port_vision_tracked ?? initialData.tartarus.mcast_port_vision_tracked,
+              team_blue: json.team_blue ?? initialData.tartarus.team_blue,
+            };
+
+            // 🔹 Se ativar o modo competição, sobrescreve com competitionData
+            if (base.competition_mode) {
+              return { ...base, ...competitionData, competition_mode: true };
+            }
+            return base;
+          })(),
           skills: {
             ...initialData.skills,
             id: json.id ?? initialData.skills.id,
           },
-          competition: {
-            ...initialData.competition,
-            team_info: json.team_info ?? initialData.competition.team_info,
-          },
+          competition: (() => {
+            const competitionMode = json.competition_mode ?? initialData.tartarus.competition_mode;
+
+            // Se modo competição ativo e competition ainda não existe → inicializa com preset
+            if (competitionMode) {
+              return {
+                ...competitionData,
+                competition_mode: true,
+                autoreferee: json.autoreferee ?? competitionData.autoreferee,
+                cams_number: json.cams_number ?? competitionData.cams_number,
+                stm_port: json.stm_port ?? competitionData.stm_port,
+                mcast_port_gc: json.mcast_port_gc ?? competitionData.mcast_port_gc,
+                mcast_port_vision_sslvision: json.mcast_port_vision_sslvision ?? competitionData.mcast_port_vision_sslvision,
+                mcast_port_vision_tracked: json.mcast_port_vision_tracked ?? competitionData.mcast_port_vision_tracked,
+              };
+            }
+
+            // Se modo competição não ativo → mantém apenas competition_mode falso
+            return {
+              ...competitionData,
+              competition_mode: false,
+            };
+          })(),
+
+
+
         });
+
 
 
 

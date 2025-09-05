@@ -79,12 +79,6 @@ export function DataView({ reading, setReading }: Props) {
       </p>
 
       <h2 className="text-lg font-bold mt-4 mb-1">Tartarus</h2>
-      <p>
-        SSL Vision:{' '}
-        <span className="font-mono">
-          {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
-        </span>
-      </p>
 
       <div>
 
