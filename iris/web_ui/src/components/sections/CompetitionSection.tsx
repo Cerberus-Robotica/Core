@@ -16,17 +16,34 @@ export default function CompetitionSection({
   toggleBoolean,
   updateNumber,
 }: Props) {
+  const toggleLocal = async (
+    key: keyof DataType['tartarus'],
+    value: boolean,
+    setValue: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    try {
+      const newValue = !value;
+      setValue(newValue);
+
+      const success = await sendPost('http://localhost:5000/command', {
+        [key]: newValue,
+      });
+
+      if (!success) {
+        console.error(`Erro ao alternar ${key}`);
+        // rollback se der erro
+        setValue(value);
+      }
+    } catch (err) {
+      console.error(`Erro ao enviar ${key}:`, err);
+      setValue(value); // rollback
+    }
+  };
+
   const { tartarus } = data;
   // no CompetitionSection
   const [autoreferee, setAutoreferee] = useState(tartarus.autoreferee ?? false);
-
-  // Atualiza sempre que muda o backend, mas respeita alterações do front
-  useEffect(() => {
-    setAutoreferee((prev) =>
-      prev !== autoreferee ? (tartarus.autoreferee ?? false) : prev,
-    );
-  }, [tartarus.autoreferee]);
-
+  const [sslVision, setSslVision] = useState(tartarus.ssl_vision ?? false);
   const [stmPort, setStmPort] = useState(tartarus.stm_port ?? 0);
   const [mcastPortGC, setMcastPortGC] = useState(tartarus.mcast_port_gc ?? 0);
   const [sslVisionPort, setSslVisionPort] = useState(
@@ -74,19 +91,24 @@ export default function CompetitionSection({
           <RowWrapper>
             <p>
               Auto Referee:{' '}
-              <span className="font-mono">
-                {tartarus.autoreferee ? 'Sim' : 'Não'}
-              </span>
             </p>
             <ToggleSwitch
               value={autoreferee}
-              onToggle={async () => {
-                const newValue = !autoreferee;
-                setAutoreferee(newValue);
-                await sendPost('http://localhost:5000/command', {
-                  autoreferee: newValue,
-                });
-              }}
+              onToggle={() =>
+                toggleLocal('autoreferee', autoreferee, setAutoreferee)
+              }
+            />
+          </RowWrapper>
+
+          <RowWrapper>
+            <p>
+              SSL Vision:{' '}
+            </p>
+            <ToggleSwitch
+              value={sslVision}
+              onToggle={() =>
+                toggleLocal('ssl_vision', sslVision, setSslVision)
+              }
             />
           </RowWrapper>
 
