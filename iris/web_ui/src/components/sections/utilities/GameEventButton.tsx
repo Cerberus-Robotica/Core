@@ -3,21 +3,19 @@ import { sendPost } from "../../../hooks/useSendPost";
 type Props = {
   label: string;
   value: number;
-  color: "yellow" | "blue" | "default";
+  color: "default";
 };
 
-export default function CurrentCommandButton({ label, value, color }: Props) {
+export default function GameEventButton({ label, value, color }: Props) {
   const handleClick = async () => {
     // sempre reseta para 0 antes de enviar o novo evento
-    await sendPost("http://localhost:5000/command", { current_command: 0 });
-    await sendPost("http://localhost:5000/command", { current_command: value });
+    await sendPost("http://localhost:5000/command", { game_event: 0 });
+    await sendPost("http://localhost:5000/command", { game_event: value });
   };
 
   const bgColor =
-    color === "yellow"
-      ? "bg-yellow-500 hover:bg-yellow-600 text-black"
-      : color === "blue"
-      ? "bg-blue-600 hover:bg-blue-700 text-white"
+    color === "default"
+      ? "bg-white hover:bg-[#acacac] text-black"
       : "bg-white hover:bg-[#acacac] text-black";
 
   return (
