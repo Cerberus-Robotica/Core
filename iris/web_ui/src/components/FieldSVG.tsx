@@ -22,13 +22,19 @@ export function FieldSVG({
   const strokeWidth = 10;
   const robotSize = dimensions.max_robot_radius * 2;
   const ballSize = dimensions.ball_radius * 2;
-  console.log('flipField:', flipField, 'centerX:', centerX, 'centerY:', centerY);
-
+  console.log(
+    'flipField:',
+    flipField,
+    'centerX:',
+    centerX,
+    'centerY:',
+    centerY,
+  );
 
   return (
     <svg
       className="h-full w-auto"
-      viewBox={`0 0 ${dimensions.field_width} ${totalFieldLength}`}
+      viewBox={`${-dimensions.boundary_width} 0 ${dimensions.field_width + 2 * dimensions.boundary_width} ${totalFieldLength}`}
       preserveAspectRatio="xMidYMid meet"
     >
       <g
