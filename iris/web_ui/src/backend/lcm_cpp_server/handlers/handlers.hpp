@@ -14,10 +14,10 @@
 struct LatestData {
     // Game Controller
     bool team_blue = false;
-    float designated_position_x = 0.f;
-    float designated_position_y = 0.f;
-    int current_command = 0;
-    int game_event = 0;
+    float gc_designated_position_x = 0.f;
+    float gc_designated_position_y = 0.f;
+    int gc_current_command = 0;
+    int gc_game_event = 0;
     data::team_info yellow;
     data::team_info blue;
 
@@ -54,6 +54,12 @@ struct LatestData {
 	int16_t mcast_port_vision_tracked;
     
     bool team_blue_status = false;
+
+    //Iris GC
+    float designated_position_x = 0.f;
+    float designated_position_y = 0.f;
+    int current_command = 0;
+    int game_event = 0;
 };
 
 struct LCMControl {

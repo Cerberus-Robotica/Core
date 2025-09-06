@@ -16,10 +16,10 @@ void Handler::handleGC(const lcm::ReceiveBuffer *, const std::string &, const gc
         latest_data.team_blue = msg->team_blue;
     }
 
-    latest_data.designated_position_x = msg->designated_position_x;
-    latest_data.designated_position_y = msg->designated_position_y;
-    latest_data.current_command = msg->current_command;
-    latest_data.game_event = msg->game_event;
+    latest_data.gc_designated_position_x = msg->designated_position_x;
+    latest_data.gc_designated_position_y = msg->designated_position_y;
+    latest_data.gc_current_command = msg->current_command;
+    latest_data.gc_game_event = msg->game_event;
 
     // Atualiza blue, exceto goalkeeper_id se desabilitado para LCM
     latest_data.blue.name = msg->blue.name;
@@ -74,6 +74,11 @@ void Handler::handleTartarus(const lcm::ReceiveBuffer *, const std::string &, co
     latest_data.mcast_port_vision_sslvision = msg->mcast_port_vision_sslvision;
     latest_data.mcast_port_vision_tracked = msg->mcast_port_vision_tracked;
     latest_data.cams_number = msg->cams_number;
+
+    latest_data.designated_position_x = msg->iris_gc.designated_position_x;
+    latest_data.designated_position_y = msg->iris_gc.designated_position_y;
+    latest_data.current_command = msg->iris_gc.current_command;
+    latest_data.game_event = msg->iris_gc.game_event;
 }
 
 

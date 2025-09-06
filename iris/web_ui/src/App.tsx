@@ -63,6 +63,7 @@ export default function App() {
         <div className="flex w-full h-full overflow-hidden">
           {/* Campo ajustado pela divisão selecionada */}
           <FieldView
+            data={data}
             dimensions={dimensions}
             blueRobots={blueRobots}
             yellowRobots={yellowRobots}

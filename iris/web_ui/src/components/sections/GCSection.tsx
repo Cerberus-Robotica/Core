@@ -27,7 +27,7 @@ export default function GCSection({ data }: Props) {
         />
       </div>
       {tartarus.iris_as_GC ? (
-        <IrisGCTemplate data={data} />
+        <IrisGCTemplate />
       ) : (
         <SslGCTemplate data={data} />
       )}
