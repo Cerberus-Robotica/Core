@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GoalkeeperIdInput from "../utilities/GoalkeeperIdInput";
-import GameEventButton from "../utilities/GameEventButton";
+import CurrentCommandButton from "../utilities/CurrentCommandButton";
 import { sendPost } from "../../../hooks/useSendPost"; // função que você já usa para enviar POST
 
 export default function IrisGCTemplate() {
@@ -28,34 +28,34 @@ export default function IrisGCTemplate() {
         {/* Botões divididos em 2 colunas */}
         <div className="grid grid-cols-2 gap-2 w-3/4">
           <div>
-            <GameEventButton label="HALT" value={0} color="default" />
-            <GameEventButton label="STOP" value={1} color="default" />
+            <CurrentCommandButton label="HALT" value={0} color="default" />
+            <CurrentCommandButton label="STOP" value={1} color="default" />
           </div>
           <div>
-            <GameEventButton label="NORMAL START" value={2} color="default" />
-            <GameEventButton label="FORCE START" value={3} color="default" />
+            <CurrentCommandButton label="NORMAL START" value={2} color="default" />
+            <CurrentCommandButton label="FORCE START" value={3} color="default" />
           </div>
 
           {/* Coluna Amarela */}
           <div>
-            <GameEventButton label="KICKOFF" value={4} color="yellow" />
-            <GameEventButton label="PENALTY" value={6} color="yellow" />
-            <GameEventButton label="DIRECT FREE KICK" value={8} color="yellow" />
-            <GameEventButton label="INDIRECT FREE KICK" value={10} color="yellow" />
-            <GameEventButton label="TIME OUT" value={12} color="yellow" />
-            <GameEventButton label="GOAL" value={14} color="yellow" />
-            <GameEventButton label="BALL PLACEMENT" value={16} color="yellow" />
+            <CurrentCommandButton label="KICKOFF" value={4} color="yellow" />
+            <CurrentCommandButton label="PENALTY" value={6} color="yellow" />
+            <CurrentCommandButton label="DIRECT FREE KICK" value={8} color="yellow" />
+            <CurrentCommandButton label="INDIRECT FREE KICK" value={10} color="yellow" />
+            <CurrentCommandButton label="TIME OUT" value={12} color="yellow" />
+            <CurrentCommandButton label="GOAL" value={14} color="yellow" />
+            <CurrentCommandButton label="BALL PLACEMENT" value={16} color="yellow" />
           </div>
 
           {/* Coluna Azul */}
           <div>
-            <GameEventButton label="KICKOFF" value={5} color="blue" />
-            <GameEventButton label="PENALTY" value={7} color="blue" />
-            <GameEventButton label="DIRECT FREE KICK" value={9} color="blue" />
-            <GameEventButton label="INDIRECT FREE KICK" value={11} color="blue" />
-            <GameEventButton label="TIME OUT" value={13} color="blue" />
-            <GameEventButton label="GOAL" value={15} color="blue" />
-            <GameEventButton label="BALL PLACEMENT" value={17} color="blue" />
+            <CurrentCommandButton label="KICKOFF" value={5} color="blue" />
+            <CurrentCommandButton label="PENALTY" value={7} color="blue" />
+            <CurrentCommandButton label="DIRECT FREE KICK" value={9} color="blue" />
+            <CurrentCommandButton label="INDIRECT FREE KICK" value={11} color="blue" />
+            <CurrentCommandButton label="TIME OUT" value={13} color="blue" />
+            <CurrentCommandButton label="GOAL" value={15} color="blue" />
+            <CurrentCommandButton label="BALL PLACEMENT" value={17} color="blue" />
           </div>
         </div>
 
