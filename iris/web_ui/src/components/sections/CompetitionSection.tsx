@@ -1,83 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { DataType } from '../../types';
 import { NumberInputRow } from './utilities/NumberInputRow';
 import { RowWrapper } from './utilities/RowWrapper';
 import { ToggleSwitch } from './utilities/ToggleSwitch';
-import { sendPost } from '../../hooks/useSendPost';
+import { toggleBoolean, toggleLocal, updateNumber } from '../../utils';
+import { useTartarusState } from '../../hooks/useTartarusState';
 
 type Props = {
   data: DataType;
-  toggleBoolean: (key: string, currentValue: boolean) => void;
-  updateNumber: (key: string, value: number) => void;
 };
 
-export default function CompetitionSection({
-  data,
-  toggleBoolean,
-  updateNumber,
-}: Props) {
-  const toggleLocal = async (
-    key: keyof DataType['tartarus'],
-    value: boolean,
-    setValue: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    try {
-      const newValue = !value;
-      setValue(newValue);
-
-      const success = await sendPost('http://localhost:5000/command', {
-        [key]: newValue,
-      });
-
-      if (!success) {
-        console.error(`Erro ao alternar ${key}`);
-        // rollback se der erro
-        setValue(value);
-      }
-    } catch (err) {
-      console.error(`Erro ao enviar ${key}:`, err);
-      setValue(value); // rollback
-    }
-  };
-
+export default function CompetitionSection({ data }: Props) {
   const { tartarus } = data;
   // no CompetitionSection
   const [autoreferee, setAutoreferee] = useState(tartarus.autoreferee ?? false);
   const [sslVision, setSslVision] = useState(tartarus.ssl_vision ?? false);
-  const [stmPort, setStmPort] = useState(tartarus.stm_port ?? 0);
-  const [mcastPortGC, setMcastPortGC] = useState(tartarus.mcast_port_gc ?? 0);
-  const [sslVisionPort, setSslVisionPort] = useState(
-    tartarus.mcast_port_vision_sslvision ?? 0,
-  );
-  const [trackedPort, setTrackedPort] = useState(
-    tartarus.mcast_port_vision_tracked ?? 0,
-  );
-  const [camsNumber, setCamsNumber] = useState(tartarus.cams_number ?? 0);
-
-  // Atualiza os estados locais sempre que os dados do backend mudarem
-  useEffect(() => {
-    setStmPort(tartarus.stm_port ?? 0);
-    setMcastPortGC(tartarus.mcast_port_gc ?? 0);
-    setSslVisionPort(tartarus.mcast_port_vision_sslvision ?? 0);
-    setTrackedPort(tartarus.mcast_port_vision_tracked ?? 0);
-    setCamsNumber(tartarus.cams_number ?? 0);
-  }, [
-    tartarus.stm_port,
-    tartarus.mcast_port_gc,
-    tartarus.mcast_port_vision_sslvision,
-    tartarus.mcast_port_vision_tracked,
-    tartarus.cams_number,
-  ]);
+  const {
+    stmPort,
+    setStmPort,
+    mcastGCPort: mcastGCPort,
+    setMcastPortGC: setMcastGCPort,
+    mcastSslVisionPort: mcastSslVisionPort,
+    setSslVisionPort: setMcastSslVisionPort,
+    mcastTrackedPort: mcastTrackedPort,
+    setTrackedPort: setMcastTrackedPort,
+    camsNumber,
+    setCamsNumber,
+  } = useTartarusState(tartarus);
 
   return (
     <>
       <div className="flex flex-col items-center mb-4">
-        <p className="mb-2">
-          Modo Competição:{' '}
-          <span className="font-mono">
-            {tartarus.competition_mode ? 'Sim' : 'Não'}
-          </span>
-        </p>
+        <p className="mb-2">Modo Competição:</p>
         <ToggleSwitch
           value={tartarus.competition_mode}
           onToggle={() =>
@@ -89,9 +43,7 @@ export default function CompetitionSection({
       {tartarus.competition_mode && (
         <>
           <RowWrapper>
-            <p>
-              Auto Referee:{' '}
-            </p>
+            <p>Auto Referee: </p>
             <ToggleSwitch
               value={autoreferee}
               onToggle={() =>
@@ -101,9 +53,7 @@ export default function CompetitionSection({
           </RowWrapper>
 
           <RowWrapper>
-            <p>
-              SSL Vision:{' '}
-            </p>
+            <p>SSL Vision: </p>
             <ToggleSwitch
               value={sslVision}
               onToggle={() =>
@@ -120,24 +70,24 @@ export default function CompetitionSection({
           />
           <NumberInputRow
             label="GC Port:"
-            value={mcastPortGC}
-            setValue={setMcastPortGC}
-            onSubmit={() => updateNumber('mcast_port_gc', mcastPortGC)}
+            value={mcastGCPort}
+            setValue={setMcastGCPort}
+            onSubmit={() => updateNumber('mcast_port_gc', mcastGCPort)}
           />
           <NumberInputRow
             label="SSL Vision Port:"
-            value={sslVisionPort}
-            setValue={setSslVisionPort}
+            value={mcastSslVisionPort}
+            setValue={setMcastSslVisionPort}
             onSubmit={() =>
-              updateNumber('mcast_port_vision_sslvision', sslVisionPort)
+              updateNumber('mcast_port_vision_sslvision', mcastSslVisionPort)
             }
           />
           <NumberInputRow
             label="AutoReferee Port:"
-            value={trackedPort}
-            setValue={setTrackedPort}
+            value={mcastTrackedPort}
+            setValue={setMcastTrackedPort}
             onSubmit={() =>
-              updateNumber('mcast_port_vision_tracked', trackedPort)
+              updateNumber('mcast_port_vision_tracked', mcastTrackedPort)
             }
           />
           <NumberInputRow

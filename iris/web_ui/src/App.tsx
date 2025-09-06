@@ -71,7 +71,7 @@ export default function App() {
           />
 
           <div className="flex flex-1 h-full overflow-hidden">
-            <DataView reading={reading} setReading={setReading} />
+            <DataView data={data} reading={reading} setReading={setReading} />
             {selectedSoftware && (
               <DataViewAll
                 reading={reading}

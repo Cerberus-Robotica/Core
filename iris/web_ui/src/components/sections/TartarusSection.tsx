@@ -1,16 +1,15 @@
-import { useState } from 'react';
 import type { DataType } from '../../types';
 import { RowWrapper } from './utilities/RowWrapper';
 import { ToggleSwitch } from './utilities/ToggleSwitch';
 import { NumberInputRow } from './utilities/NumberInputRow';
 import { ActionButton } from './utilities/ActionButton';
 import { CompetitionOverlay } from './utilities/CompetitionOverlay';
-import { sendPost } from '../../hooks/useSendPost';
+import GoalkeeperIdInput from './utilities/GoalkeeperIdInput';
+import { useTartarusState } from '../../hooks/useTartarusState';
+import { toggleBoolean, updateNumber } from '../../utils';
 
 type Props = {
   data: DataType;
-  updateNumber: (key: string, value: number) => void;
-  toggleBoolean: (key: string, currentValue: boolean) => void;
   flipField: boolean;
   receptDimensions: boolean;
   setFlipField: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,8 +18,6 @@ type Props = {
 
 export default function TartarusSection({
   data,
-  toggleBoolean,
-  updateNumber,
   setFlipField,
   flipField,
   setReceptDimensions,
@@ -28,22 +25,20 @@ export default function TartarusSection({
 }: Props) {
   const { tartarus } = data;
 
-  const [stmPort, setStmPort] = useState(tartarus.stm_port ?? 0);
-  const [mcast_port_gc, setMcast_port_gc] = useState(
-    tartarus.mcast_port_gc ?? 0,
-  );
-  const [mcast_port_vision_sslvision, setMcast_port_vision_sslvision] =
-    useState(tartarus.mcast_port_vision_sslvision ?? 0);
-  const [mcast_port_vision_grsim, setMcast_port_vision_grsim] = useState(
-    tartarus.mcast_port_vision_grsim ?? 0,
-  );
-  const [mcast_port_vision_tracked, setMcast_port_vision_tracked] = useState(
-    tartarus.mcast_port_vision_tracked ?? 0,
-  );
-  const [cams_number, setCams_number] = useState(
-    tartarus.cams_number ?? 0,
-  );
-  const [goalieInput, setGoalieInput] = useState<number>(0);
+  const {
+    stmPort,
+    setStmPort,
+    mcastGCPort: mcastGCPort,
+    setMcastPortGC: setMcastGCPort,
+    mcastSslVisionPort: mcastSslVisionPort,
+    setSslVisionPort: setMcastSslVisionPort,
+    mcastTrackedPort: mcastTrackedPort,
+    setTrackedPort: setMcastTrackedPort,
+    camsNumber,
+    setCamsNumber,
+    mcastGrsimPort: mcastGrsimPort,
+    setMcastGrsimPort: setMcastGrsimPort,
+  } = useTartarusState(tartarus);
 
   return (
     <div className="relative">
@@ -55,9 +50,7 @@ export default function TartarusSection({
       <h2 className="text-lg font-bold mb-4">Tartarus</h2>
 
       <RowWrapper>
-        <p>
-          SSL Vision:{' '}
-        </p>
+        <p>SSL Vision: </p>
         <ToggleSwitch
           value={tartarus.ssl_vision}
           onToggle={() => toggleBoolean('ssl_vision', tartarus.ssl_vision)}
@@ -65,21 +58,15 @@ export default function TartarusSection({
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Auto Referee:{' '}
-        </p>
+        <p>Auto Referee: </p>
         <ToggleSwitch
           value={tartarus.autoreferee}
-          onToggle={() =>
-            toggleBoolean('autoreferee', tartarus.autoreferee)
-          }
+          onToggle={() => toggleBoolean('autoreferee', tartarus.autoreferee)}
         />
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Modo Competição:{' '}
-        </p>
+        <p>Modo Competição: </p>
         <ToggleSwitch
           value={tartarus.competition_mode}
           onToggle={() =>
@@ -89,9 +76,7 @@ export default function TartarusSection({
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Modo Controller:{' '}
-        </p>
+        <p>Modo Controller: </p>
         <ToggleSwitch
           value={tartarus.bool_controller}
           onToggle={() =>
@@ -101,9 +86,7 @@ export default function TartarusSection({
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Modo Debug:{' '}
-        </p>
+        <p>Modo Debug: </p>
         <ToggleSwitch
           value={tartarus.debug_mode}
           onToggle={() => toggleBoolean('debug_mode', tartarus.debug_mode)}
@@ -111,9 +94,7 @@ export default function TartarusSection({
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Meio Campo:{' '}
-        </p>
+        <p>Meio Campo: </p>
         <ToggleSwitch
           value={tartarus.half_field}
           onToggle={() => toggleBoolean('half_field', tartarus.half_field)}
@@ -121,9 +102,7 @@ export default function TartarusSection({
       </RowWrapper>
 
       <RowWrapper>
-        <p>
-          Iris como GC:{' '}
-        </p>
+        <p>Iris GC: </p>
         <ToggleSwitch
           value={tartarus.iris_as_GC}
           onToggle={() => toggleBoolean('iris_as_GC', tartarus.iris_as_GC)}
@@ -139,18 +118,7 @@ export default function TartarusSection({
         </p>
       </RowWrapper>
 
-
-      <NumberInputRow
-        label="ID do Goleiro:"
-        value={goalieInput}
-        setValue={setGoalieInput}
-        onSubmit={async () => {
-          await sendPost('http://localhost:5000/command', {
-            goalkeeper_id: goalieInput,
-            goalkeeper_from_lcm: false, // essencial para impedir sobrescrita
-          });
-        }}
-      />
+      <GoalkeeperIdInput />
 
       <h2 className="text-lg font-bold mb-4">Portas</h2>
 
@@ -162,35 +130,35 @@ export default function TartarusSection({
       />
       <NumberInputRow
         label="GC Port:"
-        value={mcast_port_gc}
-        setValue={setMcast_port_gc}
-        onSubmit={() => updateNumber('mcast_port_gc', mcast_port_gc)}
+        value={mcastGCPort}
+        setValue={setMcastGCPort}
+        onSubmit={() => updateNumber('mcast_port_gc', mcastGCPort)}
       />
       <NumberInputRow
         label="SSL Vision Port:"
-        value={mcast_port_vision_sslvision}
-        setValue={setMcast_port_vision_sslvision}
+        value={mcastSslVisionPort}
+        setValue={setMcastSslVisionPort}
         onSubmit={() =>
           updateNumber(
             'mcast_port_vision_sslvision',
-            mcast_port_vision_sslvision,
+            mcastSslVisionPort,
           )
         }
       />
       <NumberInputRow
         label="GrSim Port:"
-        value={mcast_port_vision_grsim}
-        setValue={setMcast_port_vision_grsim}
+        value={mcastGrsimPort}
+        setValue={setMcastGrsimPort}
         onSubmit={() =>
-          updateNumber('mcast_port_vision_grsim', mcast_port_vision_grsim)
+          updateNumber('mcast_port_vision_grsim', mcastGrsimPort)
         }
       />
       <NumberInputRow
         label="AutoReferee Port:"
-        value={mcast_port_vision_tracked}
-        setValue={setMcast_port_vision_tracked}
+        value={mcastTrackedPort}
+        setValue={setMcastTrackedPort}
         onSubmit={() =>
-          updateNumber('mcast_port_vision_tracked', mcast_port_vision_tracked)
+          updateNumber('mcast_port_vision_tracked', mcastTrackedPort)
         }
       />
 
@@ -214,9 +182,9 @@ export default function TartarusSection({
 
       <NumberInputRow
         label="Número de Cameras:"
-        value={cams_number}
-        setValue={setCams_number}
-        onSubmit={() => updateNumber('cams_number', cams_number)}
+        value={camsNumber}
+        setValue={setCamsNumber}
+        onSubmit={() => updateNumber('cams_number', camsNumber)}
       />
     </div>
   );

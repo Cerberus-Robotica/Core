@@ -1,4 +1,6 @@
-import type { DetectionBall, DetectionRobot, Robot, RobotField } from './types'; // ajuste o caminho conforme
+import { competitionData } from './data/competitionData';
+import { sendPost } from './hooks/useSendPost';
+import type { DataType, DetectionBall, DetectionRobot, Robot, RobotField } from './types'; // ajuste o caminho conforme
 
 export function detectionRobotToRobot(dr: DetectionRobot): RobotField {
   return {
@@ -55,3 +57,61 @@ export function filterRobotsForTeam(
     .slice(0, maxRobots);
 }
 
+export const toggleLocal = async (
+  key: keyof DataType['tartarus'],
+  value: boolean,
+  setValue: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  try {
+    const newValue = !value;
+    setValue(newValue);
+
+    const success = await sendPost('http://localhost:5000/command', {
+      [key]: newValue,
+    });
+
+    if (!success) {
+      console.error(`Erro ao alternar ${key}`);
+      setValue(value); // rollback se deu erro
+    }
+  } catch (err) {
+    console.error(`Erro ao enviar ${key}:`, err);
+    setValue(value); // rollback
+  }
+};
+
+export const toggleBoolean = async (key: string, currentValue: boolean) => {
+    try {
+      let payload;
+
+      if (key === 'competition_mode') {
+        if (!currentValue) {
+          // ativando modo competição → manda o preset inteiro
+          payload = competitionData;
+        } else {
+          // desativando → só desliga o campo
+          payload = { competition_mode: false };
+        }
+      } else {
+        // demais toggles → comportamento padrão
+        payload = { [key]: !currentValue };
+      }
+
+      const success = await sendPost('http://localhost:5000/command', payload);
+
+      if (!success) {
+        console.error(`Erro ao alternar ${key}`);
+      }
+    } catch (err) {
+      console.error(`Erro ao enviar ${key}:`, err);
+    }
+  };
+
+  export const updateNumber = async (key: string, value: number) => {
+      const success = await sendPost('http://localhost:5000/command', {
+        [key]: value,
+      });
+      if (!success) {
+        console.error(`Erro ao atualizar ${key} para ${value}`);
+      }
+    };

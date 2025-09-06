@@ -41,42 +41,6 @@ export function DataViewAll({
   const data = useFetchLoop(reading, initialData);
   const [selectedRobotId, setSelectedRobotId] = useState<number | null>(null);
 
-  const toggleBoolean = async (key: string, currentValue: boolean) => {
-    try {
-      let payload;
-
-      if (key === 'competition_mode') {
-        if (!currentValue) {
-          // ativando modo competição → manda o preset inteiro
-          payload = competitionData;
-        } else {
-          // desativando → só desliga o campo
-          payload = { competition_mode: false };
-        }
-      } else {
-        // demais toggles → comportamento padrão
-        payload = { [key]: !currentValue };
-      }
-
-      const success = await sendPost('http://localhost:5000/command', payload);
-
-      if (!success) {
-        console.error(`Erro ao alternar ${key}`);
-      }
-    } catch (err) {
-      console.error(`Erro ao enviar ${key}:`, err);
-    }
-  };
-
-  const updateNumber = async (key: string, value: number) => {
-    const success = await sendPost('http://localhost:5000/command', {
-      [key]: value,
-    });
-    if (!success) {
-      console.error(`Erro ao atualizar ${key} para ${value}`);
-    }
-  };
-
   const section = {
     ia: (
       <IASection
@@ -90,8 +54,6 @@ export function DataViewAll({
     tartarus: (
       <TartarusSection
         data={data}
-        updateNumber={updateNumber}
-        toggleBoolean={toggleBoolean}
         flipField={flipField}
         setFlipField={setFlipField}
         receptDimensions={receptDimensions}
@@ -115,8 +77,6 @@ export function DataViewAll({
     competition: (
       <CompetitionSection
         data={data}
-        toggleBoolean={toggleBoolean}
-        updateNumber={updateNumber}
       />
     ),
   };
