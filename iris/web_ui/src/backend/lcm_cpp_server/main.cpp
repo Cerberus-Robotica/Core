@@ -210,16 +210,15 @@ int main()
         try
         {
             // Antes de processar qualquer outro campo
-            if (body.has("game_event") && body["game_event"].t() == crow::json::type::Number) {
-                // Zera o game_event primeiro
-                latest_data.game_event = 0;
-                std::cout << "[POST] game_event resetado para 0" << std::endl;
+            if (body.has("current_command") && body["current_command"].t() == crow::json::type::Number) {
+                latest_data.current_command = 0;
+                std::cout << "[POST] current_command resetado para 0" << std::endl;
 
-                // Depois aplica o novo valor
-                int evt = body["game_event"].i();
-                latest_data.game_event = evt;
-                std::cout << "[POST] game_event atualizado para " << evt << std::endl;
+                int cmd = body["current_command"].i();
+                latest_data.current_command = cmd;
+                std::cout << "[POST] current_command atualizado para " << cmd << std::endl;
             }
+
 
             if (body.has("designated_position_x") && body["designated_position_x"].t() == crow::json::type::Number) {
                 latest_data.designated_position_x = static_cast<float>(body["designated_position_x"].d());
@@ -343,6 +342,7 @@ int main()
             msg.iris_gc.game_event = latest_data.game_event;
             msg.iris_gc.designated_position_x = latest_data.designated_position_x;
             msg.iris_gc.designated_position_y = latest_data.designated_position_y;
+            msg.iris_gc.current_command = latest_data.current_command;
 
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
