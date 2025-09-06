@@ -11,10 +11,10 @@ export default function SslGCTemplate({ data }: Props) {
     <>
       <h2 className="text-lg font-bold mb-1">Game Controller</h2>
       <p>Team Blue: {data.gc.team_blue ? 'Sim' : 'Não'}</p>
-      <p>Designated Position X: {data.gc.designated_position_x}</p>
-      <p>Designated Position Y: {data.gc.designated_position_y}</p>
-      <p>Current Command: {data.gc.current_command}</p>
-      <p>Game Event: {data.gc.game_event}</p>
+      <p>Designated Position X: {data.gc.gc_designated_position_x}</p>
+      <p>Designated Position Y: {data.gc.gc_designated_position_y}</p>
+      <p>Current Command: {data.gc.gc_current_command}</p>
+      <p>Game Event: {data.gc.gc_game_event}</p>
 
       <h2 className="font-bold mt-4">Time Azul</h2>
       <p>Nome: {data.gc.blue.name}</p>

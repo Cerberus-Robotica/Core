@@ -38,10 +38,10 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
           gc: {
             ...initialData.gc,
             team_blue: json.team_blue ?? initialData.gc.team_blue,
-            designated_position_x: json.designated_position_x ?? initialData.gc.designated_position_x,
-            designated_position_y: json.designated_position_y ?? initialData.gc.designated_position_y,
-            current_command: json.current_command ?? initialData.gc.current_command,
-            game_event: json.game_event ?? initialData.gc.game_event,
+            gc_designated_position_x: json.gc_designated_position_x ?? initialData.gc.gc_designated_position_x,
+            gc_designated_position_y: json.gc_designated_position_y ?? initialData.gc.gc_designated_position_y,
+            gc_current_command: json.gc_current_command ?? initialData.gc.gc_current_command,
+            gc_game_event: json.gc_game_event ?? initialData.gc.gc_game_event,
             blue: json.blue ?? initialData.gc.blue,
             yellow: json.yellow ?? initialData.gc.yellow,
           },
@@ -71,6 +71,13 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
             }
             return base;
           })(),
+          irisGC: {
+            ...initialData.irisGC,
+            designated_position_x: json.designated_position_x ?? initialData.irisGC.designated_position_x,
+            designated_position_y: json.designated_position_y ?? initialData.irisGC.designated_position_y,
+            current_command: json.current_command ?? initialData.irisGC.current_command,
+            game_event: json.game_event ?? initialData.irisGC.game_event,
+          },
           skills: {
             ...initialData.skills,
             id: json.id ?? initialData.skills.id,
@@ -98,8 +105,6 @@ export function useFetchLoop(reading: boolean, initialData: DataType): DataType 
               competition_mode: false,
             };
           })(),
-
-
 
         });
 

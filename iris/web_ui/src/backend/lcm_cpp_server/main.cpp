@@ -75,7 +75,8 @@ int main()
     // ============================
     // GET /data
     // ============================
-    CROW_ROUTE(app, "/data").methods("GET"_method)([] {
+    CROW_ROUTE(app, "/data").methods("GET"_method)([]
+                                                   {
         std::lock_guard<std::mutex> lock(data_mutex);
 
         crow::json::wvalue data;
@@ -99,6 +100,12 @@ int main()
         data["mcast_port_vision_tracked"] = latest_data.mcast_port_vision_tracked;
 
         // ---- Game Controller ----
+        data["gc_designated_position_x"] = latest_data.gc_designated_position_x;
+        data["gc_designated_position_y"] = latest_data.gc_designated_position_y;
+        data["gc_current_command"] = latest_data.gc_current_command;
+        data["gc_game_event"] = latest_data.gc_game_event;
+
+        // ---- Iris Game Controller ----
         data["designated_position_x"] = latest_data.designated_position_x;
         data["designated_position_y"] = latest_data.designated_position_y;
         data["current_command"] = latest_data.current_command;
@@ -184,13 +191,13 @@ int main()
         data["robots_size"] = latest_data.robots_size;
         data["cams_number"] = latest_data.cams_number;
 
-        return crow::response{data};
-    });
+        return crow::response{data}; });
 
     // ============================
     // POST /command
     // ============================
-    CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req) {
+    CROW_ROUTE(app, "/command").methods("POST"_method)([](const crow::request &req)
+                                                       {
         auto body = crow::json::load(req.body);
         if (!body)
         {
@@ -202,6 +209,28 @@ int main()
 
         try
         {
+            // Antes de processar qualquer outro campo
+            if (body.has("game_event") && body["game_event"].t() == crow::json::type::Number) {
+                // Zera o game_event primeiro
+                latest_data.game_event = 0;
+                std::cout << "[POST] game_event resetado para 0" << std::endl;
+
+                // Depois aplica o novo valor
+                int evt = body["game_event"].i();
+                latest_data.game_event = evt;
+                std::cout << "[POST] game_event atualizado para " << evt << std::endl;
+            }
+
+            if (body.has("designated_position_x") && body["designated_position_x"].t() == crow::json::type::Number) {
+                latest_data.designated_position_x = static_cast<float>(body["designated_position_x"].d());
+                std::cout << "[POST] designated_position_x atualizado para " << latest_data.designated_position_x << std::endl;
+            }
+
+            if (body.has("designated_position_y") && body["designated_position_y"].t() == crow::json::type::Number) {
+                latest_data.designated_position_y = static_cast<float>(body["designated_position_y"].d());
+                std::cout << "[POST] designated_position_y atualizado para " << latest_data.designated_position_y << std::endl;
+            }
+
             // Atualiza team_blue manualmente e desativa fonte LCM
             if (body.has("team_blue"))
             {
@@ -311,6 +340,10 @@ int main()
             msg.team_blue = latest_data.team_blue;
             msg.cams_number = latest_data.cams_number;
 
+            msg.iris_gc.game_event = latest_data.game_event;
+            msg.iris_gc.designated_position_x = latest_data.designated_position_x;
+            msg.iris_gc.designated_position_y = latest_data.designated_position_y;
+
             global_lcm.publish("tartarus", &msg);
             std::cout << "[POST] Mensagem publicada no canal 'tartarus'\n";
         }
@@ -323,8 +356,7 @@ int main()
         crow::response res("{\"status\":\"ok\"}");
         res.code = 200;
         res.add_header("Content-Type", "application/json");
-        return res;
-    });
+        return res; });
 
     app.port(5000).multithreaded().run();
     lcm_thread.join();

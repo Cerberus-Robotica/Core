@@ -11,10 +11,7 @@ import TartarusSection from './sections/TartarusSection';
 import CaronteSection from './sections/CaronteSection';
 import FieldSection from './sections/FieldSection';
 import SkillsSection from './sections/SkillsSection';
-
-import { sendPost } from '../hooks/useSendPost';
 import CompetitionSection from './sections/CompetitionSection';
-import { competitionData } from '../data/competitionData';
 
 type Props = {
   reading: boolean;
