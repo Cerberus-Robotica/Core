@@ -49,6 +49,21 @@ void RobotController::loop() {
         receive_field_geometry();
         check_connection();
         select_behavior();
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+        //skills::SkillMoveTo moveto;
+        //moveto.act(*this);
+>>>>>>> Stashed changes
+=======
+        //skills::SkillMoveTo moveto;
+        //moveto.act(*this);
+>>>>>>> Stashed changes
+=======
+        //skills::SkillMoveTo moveto;
+        //moveto.act(*this);
+>>>>>>> Stashed changes
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
