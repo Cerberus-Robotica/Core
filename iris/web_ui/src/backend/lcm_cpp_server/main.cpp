@@ -219,6 +219,15 @@ int main()
                 std::cout << "[POST] current_command atualizado para " << cmd << std::endl;
             }
 
+            if (body.has("game_event") && body["game_event"].t() == crow::json::type::Number) {
+                latest_data.game_event = 0;
+                std::cout << "[POST] game_event resetado para 0" << std::endl;
+
+                int cmd = body["game_event"].i();
+                latest_data.game_event = cmd;
+                std::cout << "[POST] game_event atualizado para " << cmd << std::endl;
+            }
+
 
             if (body.has("designated_position_x") && body["designated_position_x"].t() == crow::json::type::Number) {
                 latest_data.designated_position_x = static_cast<float>(body["designated_position_x"].d());
