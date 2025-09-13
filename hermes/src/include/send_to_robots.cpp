@@ -5,11 +5,11 @@ Pacote pct;
 
 void robots_sender::send_to_grsim() { // function to send data to grSim
     commands.Clear();
-    std::cout << "team robot size " << han.data_ia_copy.robots_size << std::endl;
-    std::cout << "timestamp " << han.data_ia_copy.timestamp << std::endl;
+//    std::cout << "team robot size " << han.data_ia_copy.robots_size << std::endl;
+//    std::cout << "timestamp " << han.data_ia_copy.timestamp << std::endl;
 
     if (han.data_ia_copy.robots_size == 0) {
-        std::cerr << "Warning: robots_size is 0, skipping send_to_grsim()" << std::endl;
+//        std::cerr << "Warning: robots_size is 0, skipping send_to_grsim()" << std::endl;
         return;
     }
 
@@ -60,13 +60,14 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
     }
 
     packet_grsim.mutable_commands()->CopyFrom(commands);
-    std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
+//    std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
 
     //std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
     packet_grsim.SerializeAsString();
     std::string serialized_packet = packet_grsim.SerializeAsString();
     sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
-    std::cout << "Sending to grSim..." << std::endl << std::endl;
+    sleep(0.05);
+//    std::cout << "Sending to grSim..." << std::endl << std::endl;
 
 
 }
@@ -100,7 +101,7 @@ void robots_sender::send_control() { // global function to send control commands
                             r->vel_tang = pct.Vy;
                             r->vel_normal = pct.Vx;
                             r->vel_ang = pct.Vang;
-                            std::cout << "Controlled robot - " << "Robot I: " << (int)r->id << " Vy: " << r->vel_tang << " Vx: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
+//                            std::cout << "Controlled robot - " << "Robot I: " << (int)r->id << " Vy: " << r->vel_tang << " Vx: " << r->vel_normal << " Vang: " << r->vel_ang << std::endl;
                         }
                         else {
                             r->vel_tang = 0;

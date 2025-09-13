@@ -21,6 +21,11 @@ set(PROTO_FILES
     ${CMAKE_SOURCE_DIR}/../proto/grSim_Packet.proto
     ${CMAKE_SOURCE_DIR}/../proto/grSim_Replacement.proto
     ${CMAKE_SOURCE_DIR}/../proto/grSim_Robotstatus.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_simulation_config.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_simulation_control.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_simulation_error.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_gc_common.proto
+    ${CMAKE_SOURCE_DIR}/../proto/ssl_vision_geometry.proto
 )
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
@@ -28,6 +33,7 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
 # Adicionar executável
 add_executable(${PROJECT_NAME}
                 src/main.cpp
+                src/control_grsim.cpp
                 ${PROTO_SRCS}
                 src/include/socket_connect.cpp
                 src/include/handler.cpp
@@ -36,6 +42,7 @@ add_executable(${PROJECT_NAME}
                 src/include/esp_connect.cpp
                 src/include/manual_control.cpp
                 src/include/stm_connect.cpp
+
                 )
 
 target_include_directories(${PROJECT_NAME}
