@@ -2,6 +2,7 @@ import { useState } from "react";
 import GoalkeeperIdInput from "../utilities/GoalkeeperIdInput";
 import CurrentCommandButton from "../utilities/CurrentCommandButton";
 import { sendPost } from "../../../hooks/useSendPost"; // função que você já usa para enviar POST
+import EventTabs from "../utilities/EventTabs";
 
 export default function IrisGCTemplate() {
   const [posX, setPosX] = useState(0);
@@ -22,6 +23,7 @@ export default function IrisGCTemplate() {
   return (
     <>
       <GoalkeeperIdInput />
+      <h2 className="text-lg font-bold mb-4">Comandos:</h2>
       <div className="flex flex-col items-center space-y-1 mt-4">
         {/* Primeiros botões (um embaixo do outro) */}
 
@@ -88,6 +90,10 @@ export default function IrisGCTemplate() {
           </button>
         </div>
       </div>
+      <h2 className="text-lg font-bold mb-4">Eventos:</h2>
+      <div className=" ">
+          <EventTabs/>
+        </div>
     </>
   );
 }
