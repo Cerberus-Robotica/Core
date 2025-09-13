@@ -144,6 +144,7 @@ public:
     bool positioned[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
     Robot getRobotofRole(enum Robot::role role);
+    Robot getEnemyofRole(enum Robot::role role, std::array<Robot, 16> enemies);
 };
 
 

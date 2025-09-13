@@ -45,9 +45,12 @@ public:
     int getIdOfTheBallInterceptor();
     bool isBallMovingIdDirection(int id);
     bool isBallMovingRobotDirection(Robot robot, double tolerance = 3.1415/2);
-    bool isBallReachable(bool includeOurArea); //TODO IMPLEMENTAR PARA TACTICPOSITIONANDKICK() PARA NAO CHUTAR COM BOLA DENTRO DA AREA TMJ
+    bool isBallReachable(bool includeOurArea);
     bool doInterceptAnyRobot(LineSegment l);
     Robot getClosestAllyToPoint(Point p);
+    Robot getClosestEnemyToPoint(Point p);
+    bool isBallHittingTheGoal();
+    Point getGoalPosition(Robot goalkeeper);
 };
 
 

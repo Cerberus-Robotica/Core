@@ -49,21 +49,6 @@ void RobotController::loop() {
         receive_field_geometry();
         check_connection();
         select_behavior();
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-        //skills::SkillMoveTo moveto;
-        //moveto.act(*this);
->>>>>>> Stashed changes
-=======
-        //skills::SkillMoveTo moveto;
-        //moveto.act(*this);
->>>>>>> Stashed changes
-=======
-        //skills::SkillMoveTo moveto;
-        //moveto.act(*this);
->>>>>>> Stashed changes
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -219,6 +204,12 @@ void RobotController::receive_vision() {
     }
 
     mWorld.ball.setPosition({han.new_vision.balls.position_x, han.new_vision.balls.position_y});
+    VisibilityGraph graph;
+    for (Robot ally : mWorld.allies) {
+        if (ally.getId() == getId()) continue;
+        graph.addShadow(CircularShadow(mWorld.ball.getPosition(), {ally.getPosition(), ally.getRadius()}));
+    }
+    mWorld.ball.setVisibilityGraph(graph);
 
     mLast_time_stamp = han.new_vision.timestamp;
 

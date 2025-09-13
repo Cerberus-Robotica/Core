@@ -8,6 +8,7 @@
 #include "LineSegment.h"
 #include "Point.h"
 #include "Vector2d.h"
+#include "VisibilityGraph.h"
 
 class Ball {
 private:
@@ -17,6 +18,7 @@ private:
 	Vector2d velocity;
 	Point stopPosition = Point(0, 0);
 	double velocityThreshold = 0.2;
+	VisibilityGraph visibility;
 public:
   	Ball(bool detected, Point position, Vector2d velocity) : detected(detected), position(position), velocity(velocity) {stopPosition = getStopPosition();};
   	void setVelocity(const Vector2d& v);
@@ -29,6 +31,8 @@ public:
 	bool isStopped();
 	bool isMoving();
 	LineSegment getMovementLine() const;
+	void setVisibilityGraph(VisibilityGraph graph) {visibility = graph;};
+	bool isVisible(Point p) {return visibility.isVisible(p);};
 };
 
 

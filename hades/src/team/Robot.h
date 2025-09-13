@@ -36,6 +36,7 @@ protected:
     double vyaw = 0.0;
     double radius = 160;
     bool detected = false;
+    double kickDistance = 2000;
     enum role this_role = unknown;
 
 public:
@@ -59,6 +60,7 @@ public:
     enum role getRole() const;
     const std::deque<Vector2d>& getStoredVelocities() const;
     double getRadius() const;
+    double getKickDistance() const {return kickDistance;};
 
     // --- Setters ---
     void setAlly(bool is);

@@ -5,17 +5,17 @@
 #ifndef SHADOW_H
 #define SHADOW_H
 #include "LineSegment.h"
-
+#include "Point.h"
 
 class Shadow {
-protected:
-	LineSegment line1;
-    LineSegment line2;
 public:
-	virtual void setShadow();
-    virtual void isVisible(Point p);
+	Shadow() = default;
+	virtual ~Shadow() = default;
+	virtual bool isVisible(Point p) = 0;
+	virtual bool containsPoint(Point p) = 0;  // Check if point is in shadow
+
+	// Helper method to check if point is between the two line segments
+	bool isPointBetweenLines(Point p) const;
 };
-
-
 
 #endif //SHADOW_H

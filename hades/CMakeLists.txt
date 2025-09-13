@@ -49,6 +49,12 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/geometry/Field.h
         src/team/geometry/Vector2d.cpp
         src/team/geometry/Vector2d.h
+        src/team/geometry/VisibilityGraph.h
+        src/team/geometry/VisibilityGraph.cpp
+        src/team/geometry/Shadow.h
+        src/team/geometry/Shadow.cpp
+        src/team/geometry/CircularShadow.h
+        src/team/geometry/CircularShadow.cpp
         src/team/geometry/geometry.h
 
         src/team/plays/PlayAttack.cpp

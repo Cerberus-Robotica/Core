@@ -175,3 +175,45 @@ Robot WorldModel::getClosestAllyToPoint(Point p) {
     }
     return closest;
 }
+
+Robot WorldModel::getClosestEnemyToPoint(Point p) {
+    Robot closest = enemies[0];
+    while (int i = 0 < enemies.size()) {
+        if (enemies[i].isDetected()) {
+            closest = enemies[i];
+            break;
+        }
+        if (i == 16) throw std::runtime_error("No allies");
+    }
+    for (Robot r : enemies) {
+        if (r.getPosition().getDistanceTo(p) < closest.getPosition().getDistanceTo(p)) closest = r;
+    }
+    return closest;
+}
+
+bool WorldModel::isBallHittingTheGoal() {
+    return ball.getMovementLine().intersects(field.theirGoal);
+}
+
+Point WorldModel::getGoalPosition(Robot goalkeeper) {
+    std::vector<Point> points = {};
+    int num = 12;
+    int k1 = 1;
+    int k2 = 1;
+    int k3 = 1;
+
+    for (int i = 0; i < num; i++) {
+        Point p = field.theirGoal.getResized(field.theirGoal.getLength()/num).getEnd();
+        if (!ball.isVisible(p)) continue;
+        points.push_back(p);
+    }
+
+    int best_idx = 0;
+    for (int i = 1; i < points.size(); i++) {
+        if (points[best_idx].getDistanceTo(goalkeeper.getPosition())*k1 > points[i].getDistanceTo(goalkeeper.getPosition())*k1) { //TODO melhorar essa funcao
+            best_idx = i;
+        }
+    }
+    if (points.size() == 0) throw std::runtime_error("No goals found");
+    return points[best_idx];
+}

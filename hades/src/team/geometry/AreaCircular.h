@@ -15,11 +15,13 @@ private:
 	double radius;
 public:
   	AreaCircular(Point center, double radius) : center(center), radius(radius) {};
-	bool detectIfContains(Point);
-	bool detectIfIntercepts(Point, Point);
-	bool detectIfIntercepts(LineSegment);
-	std::vector<Point> getInterceptionPoints(Point p1, Point p2);
-	std::vector<Point> getInterceptionPoints(LineSegment l);
+	Point getCenter() const { return center; }
+	double getRadius() const { return radius; }
+	bool detectIfContains(Point) const;
+	bool detectIfIntercepts(Point, Point) const;
+	bool detectIfIntercepts(LineSegment) const;
+	std::vector<Point> getInterceptionPoints(Point p1, Point p2) const;
+	std::vector<Point> getInterceptionPoints(LineSegment l) const;
 	std::array<Point, 2> getInterceptionPoints(const AreaCircular& other);
 	std::array<Point, 2> getNormalPoints(Point& p);
 };

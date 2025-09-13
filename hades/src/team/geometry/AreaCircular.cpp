@@ -8,18 +8,18 @@
 #include <stdexcept>
 
 
-bool AreaCircular::detectIfContains(Point p) {
+bool AreaCircular::detectIfContains(Point p) const {
     double dx = p.getX() - center.getX();
     double dy = p.getY() - center.getY();
     return (dx * dx + dy * dy) <= (radius * radius);
 }
 
-bool AreaCircular::detectIfIntercepts(Point p1, Point p2) {
+bool AreaCircular::detectIfIntercepts(Point p1, Point p2) const {
     LineSegment seg(p1, p2);
     return detectIfIntercepts(seg);
 }
 
-bool AreaCircular::detectIfIntercepts(LineSegment l) {
+bool AreaCircular::detectIfIntercepts(LineSegment l) const {
     auto inters = getInterceptionPoints(l);
     // Se pelo menos um ponto de interseção é válido, retorna true
     return !(inters[0].getX() == 0 && inters[0].getY() == 0 &&
@@ -71,12 +71,12 @@ std::array<Point, 2> AreaCircular::getInterceptionPoints(const AreaCircular& oth
     return intersections;
 }
 
-std::vector<Point> AreaCircular::getInterceptionPoints(Point p1, Point p2) {
+std::vector<Point> AreaCircular::getInterceptionPoints(Point p1, Point p2) const {
     LineSegment seg(p1, p2);
     return getInterceptionPoints(seg);
 }
 
-std::vector<Point> AreaCircular::getInterceptionPoints(LineSegment l) {
+std::vector<Point> AreaCircular::getInterceptionPoints(LineSegment l) const {
 
     std::vector<Point> intersections = { Point(0,0), Point(0,0) };
 

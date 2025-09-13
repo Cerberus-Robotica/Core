@@ -30,6 +30,8 @@ public:
     double getLength() const;
     Point getPointProjection(const Point& p) const;
     bool isPointAligned(const Point& p, double tolerance = 1e-9) const;
+    bool intersects(const LineSegment& other) const;
+    LineSegment getResized(int new_size);
 };
 
 
