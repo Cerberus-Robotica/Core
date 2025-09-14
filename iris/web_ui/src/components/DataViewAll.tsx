@@ -11,8 +11,6 @@ import TartarusSection from './sections/TartarusSection';
 import CaronteSection from './sections/CaronteSection';
 import FieldSection from './sections/FieldSection';
 import SkillsSection from './sections/SkillsSection';
-
-import { sendPost } from '../hooks/useSendPost';
 import CompetitionSection from './sections/CompetitionSection';
 
 type Props = {
@@ -40,24 +38,6 @@ export function DataViewAll({
   const data = useFetchLoop(reading, initialData);
   const [selectedRobotId, setSelectedRobotId] = useState<number | null>(null);
 
-  const toggleBoolean = async (key: string, currentValue: boolean) => {
-    const success = await sendPost('http://localhost:5000/command', {
-      [key]: !currentValue,
-    });
-    if (!success) {
-      console.error(`Erro ao alternar ${key}`);
-    }
-  };
-
-  const updateNumber = async (key: string, value: number) => {
-    const success = await sendPost('http://localhost:5000/command', {
-      [key]: value,
-    });
-    if (!success) {
-      console.error(`Erro ao atualizar ${key} para ${value}`);
-    }
-  };
-
   const section = {
     ia: (
       <IASection
@@ -71,8 +51,6 @@ export function DataViewAll({
     tartarus: (
       <TartarusSection
         data={data}
-        updateNumber={updateNumber}
-        toggleBoolean={toggleBoolean}
         flipField={flipField}
         setFlipField={setFlipField}
         receptDimensions={receptDimensions}
@@ -94,7 +72,9 @@ export function DataViewAll({
         )
       ) : null,
     competition: (
-      <CompetitionSection data={data} toggleBoolean={toggleBoolean} />
+      <CompetitionSection
+        data={data}
+      />
     ),
   };
 

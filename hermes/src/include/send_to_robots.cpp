@@ -1,4 +1,5 @@
 #include "send_to_robots.hpp"
+#include <thread>
 
 bool time_atual;
 Pacote pct;
@@ -62,10 +63,11 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
     packet_grsim.mutable_commands()->CopyFrom(commands);
     std::cout << "commands size " << packet_grsim.commands().robot_commands_size() << std::endl;
 
-    //std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
+    std::cout << "byte size " << packet_grsim.ByteSize() << std::endl << std::endl;
     packet_grsim.SerializeAsString();
     std::string serialized_packet = packet_grsim.SerializeAsString();
     sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     std::cout << "Sending to grSim..." << std::endl << std::endl;
 
 
@@ -81,7 +83,7 @@ void robots_sender::send_control() { // global function to send control commands
         while(han.data_tartarus_copy.bool_controller == 1 && control_obj.joy == nullptr) { //only works with UI
             control_obj.connect_controller(); // try to connect the controller
             std::cout << "trying to connect the controller..." << std::endl;
-            sleep(1.0);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         
         if (han.data_tartarus_copy.ssl_vision == 0) {
@@ -146,7 +148,7 @@ void robots_sender::send_control() { // global function to send control commands
                     }
                 }
             }
-            sleep(1);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
     close(stm_obj.serial_port);

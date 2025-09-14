@@ -1,17 +1,13 @@
-import { useFetchLoop } from '../hooks/useFetchLoop';
-import TeamSelector from './TeamSelector';
-import { initialData } from '../data/initialData';
+import TeamSelector from './sections/utilities/TeamSelector';
+import type { DataType } from '../types';
 
 type Props = {
+  data: DataType;
   reading: boolean;
   setReading: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export function DataView({ reading, setReading }: Props) {
+export function DataView({ reading, setReading, data }: Props) {
   //const [recebendoDoLCM, setRecebendoDoLCM] = useState(true);
-
-  const data = useFetchLoop(reading, initialData);
-
-
 
   /*const handleToggleFonte = async () => {
     const novoEstado = !recebendoDoLCM;
@@ -27,9 +23,8 @@ export function DataView({ reading, setReading }: Props) {
     }
   };*/
 
-
   return (
-    <div className="m-2 p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] w-[30%]">
+    <div className="m-2 p-4 bg-[#545454] text-white border-[#6805F2] border-3 rounded-[5px] w-[40%]">
       <button
         onClick={() => setReading(!reading)}
         className={`mb-4 w-full py-2 rounded-[5px] font-semibold transition-colors duration-200 ${
@@ -60,7 +55,6 @@ export function DataView({ reading, setReading }: Props) {
       </p>
       */}
 
-
       <h2 className="text-lg font-bold mt-4 mb-1">IA</h2>
       <p>
         Robots Size: <span className="font-mono">{data.ia.robots_size}</span>
@@ -79,22 +73,21 @@ export function DataView({ reading, setReading }: Props) {
       </p>
 
       <h2 className="text-lg font-bold mt-4 mb-1">Tartarus</h2>
-      <p>
-        SSL Vision:{' '}
-        <span className="font-mono">
-          {data.tartarus.ssl_vision ? 'Sim' : 'Não'}
-        </span>
-      </p>
 
       <div>
-
         {/* Passa o setter para sincronizar estado no TeamSelector */}
-        <TeamSelector />
+        {data.tartarus.iris_as_GC && (
+          <>
+            <TeamSelector />
 
-        <p className="w-full text-center mt-4">
-          Time Atual:{' '}
-          <span className="font-mono">{data.gc.team_blue ? 'Azul' : 'Amarelo'}</span>
-        </p>
+            <p className="w-full text-center mt-4">
+              Time Atual:{' '}
+              <span className="font-mono">
+                {data.gc.team_blue ? 'Azul' : 'Amarelo'}
+              </span>
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

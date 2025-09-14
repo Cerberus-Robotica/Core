@@ -8,6 +8,7 @@ export type Robot = {
 };
 
 export function FieldSVG({
+  data,
   dimensions,
   blueRobots = [],
   yellowRobots = [],
@@ -22,13 +23,30 @@ export function FieldSVG({
   const strokeWidth = 10;
   const robotSize = dimensions.max_robot_radius * 2;
   const ballSize = dimensions.ball_radius * 2;
-  console.log('flipField:', flipField, 'centerX:', centerX, 'centerY:', centerY);
 
+  const designatedPosition = data.tartarus.iris_as_GC
+    ? {
+        x: data?.irisGC?.designated_position_x ?? 0,
+        y: data?.irisGC?.designated_position_y ?? 0,
+      }
+    : {
+        x: data?.gc?.gc_designated_position_x ?? 0,
+        y: data?.gc?.gc_designated_position_y ?? 0,
+      };
+
+  console.log(
+    'flipField:',
+    flipField,
+    'centerX:',
+    centerX,
+    'centerY:',
+    centerY,
+  );
 
   return (
     <svg
       className="h-full w-auto"
-      viewBox={`0 0 ${dimensions.field_width} ${totalFieldLength}`}
+      viewBox={`${-dimensions.boundary_width} 0 ${dimensions.field_width + 2 * dimensions.boundary_width} ${totalFieldLength}`}
       preserveAspectRatio="xMidYMid meet"
     >
       <g
@@ -36,6 +54,7 @@ export function FieldSVG({
           flipField ? `rotate(180, ${centerX}, ${centerY})` : undefined
         }
       >
+
         {/* Fundo campo + gol (centralizado com largura do gol) */}
         <rect
           x={(dimensions.field_width - dimensions.goal_width) / 2}
@@ -200,6 +219,29 @@ export function FieldSVG({
             pointerEvents="none"
           />
         )}
+
+        {designatedPosition &&
+          designatedPosition.x != 0 &&
+          designatedPosition.y != 0 && (
+            <>
+              <line
+                x1={designatedPosition.x - 50}
+                y1={designatedPosition.y - 50}
+                x2={designatedPosition.x + 50}
+                y2={designatedPosition.y + 50}
+                stroke="red"
+                strokeWidth={7}
+              />
+              <line
+                x1={designatedPosition.x - 50}
+                y1={designatedPosition.y + 50}
+                x2={designatedPosition.x + 50}
+                y2={designatedPosition.y - 50}
+                stroke="red"
+                strokeWidth={7}
+              />
+            </>
+          )}
       </g>
     </svg>
   );

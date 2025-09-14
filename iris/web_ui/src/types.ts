@@ -17,7 +17,23 @@ export type Robot = {
 };
 
 export type CompetitionData = {
-  team_info: boolean;
+  ssl_vision: boolean;
+  autoreferee: boolean,
+  competition_mode: boolean;
+  bool_controller: boolean;
+  debug_mode: boolean;
+  half_field: boolean;
+  iris_as_GC: boolean;
+
+  goalkeeper_id: number;
+  cams_number: number;
+  stm_port: number;
+  mcast_port_gc: number;
+  mcast_port_vision_sslvision: number;
+  mcast_port_vision_grsim: number;
+  mcast_port_vision_tracked: number;
+  
+  team_blue: boolean,
 }
 
 export type SkillsData = {
@@ -40,10 +56,10 @@ export type TeamInfo = {
 
 export type GCType = {
   team_blue: boolean;
-  designated_position_x: number;
-  designated_position_y: number;
-  current_command: number;
-  game_event: number;
+  gc_designated_position_x: number;
+  gc_designated_position_y: number;
+  gc_current_command: number;
+  gc_game_event: number;
   blue: TeamInfo;
   yellow: TeamInfo;
 };
@@ -122,6 +138,13 @@ export type TartarusData = {
   cams_number: number;
 };
 
+export type IrisGCData = {
+  designated_position_x: number;
+  designated_position_y: number;
+  current_command: number;
+  game_event: number;
+}
+
 // --- Caronte (Processo / Estratégia) ---
 
 export type CaronteData = {
@@ -139,6 +162,7 @@ export type DataType = {
   tartarus: TartarusData;
   skills: SkillsData;
   competition: CompetitionData;
+  irisGC: IrisGCData;
 };
 
 // --- BackendData (estrutura parcial vinda do backend) ---

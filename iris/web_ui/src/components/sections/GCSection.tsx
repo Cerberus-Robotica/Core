@@ -1,31 +1,36 @@
 // src/components/sections/GCSection.tsx
 import type { DataType } from '../../types';
-
+import { toggleBoolean } from '../../utils';
+import IrisGCTemplate from './templates/IrisGCTemplate';
+import SslGCTemplate from './templates/SslGCTemplate';
+import { ToggleSwitch } from './utilities/ToggleSwitch';
 type Props = {
   data: DataType;
 };
 
 export default function GCSection({ data }: Props) {
+  const { tartarus } = data;
   return (
     <>
-      <h2 className="text-lg font-bold mb-1">Game Controller</h2>
-      <p>Team Blue: {data.gc.team_blue ? 'Sim' : 'Não'}</p>
-      <p>Designated Position X: {data.gc.designated_position_x}</p>
-      <p>Designated Position Y: {data.gc.designated_position_y}</p>
-      <p>Current Command: {data.gc.current_command}</p>
-      <p>Game Event: {data.gc.game_event}</p>
-
-      <h2 className="font-bold mt-4">Time Azul</h2>
-      <p>Nome: {data.gc.blue.name}</p>
-      <p>Goleiro ID: {data.gc.blue.goalkeeper_id}</p>
-      <p>Faltas: {data.gc.blue.fouls}</p>
-      <p>Pontos: {data.gc.blue.score}</p>
-
-      <h2 className="font-bold mt-4">Time Amarelo</h2>
-      <p>Nome: {data.gc.yellow.name}</p>
-      <p>Goleiro ID: {data.gc.yellow.goalkeeper_id}</p>
-      <p>Faltas: {data.gc.yellow.fouls}</p>
-      <p>Pontos: {data.gc.yellow.score}</p>
+      <div className="flex flex-col items-center mb-4">
+        <p className="mb-2">
+          Game Controller:{' '}
+          <span className="font-mono">
+            {tartarus.iris_as_GC ? 'Iris' : 'SSL'}
+          </span>
+        </p>
+        <ToggleSwitch
+          value={tartarus.iris_as_GC}
+          onToggle={() =>
+            toggleBoolean('iris_as_GC', tartarus.iris_as_GC)
+          }
+        />
+      </div>
+      {tartarus.iris_as_GC ? (
+        <IrisGCTemplate />
+      ) : (
+        <SslGCTemplate data={data} />
+      )}
     </>
   );
 }

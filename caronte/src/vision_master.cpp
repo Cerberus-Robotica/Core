@@ -32,7 +32,7 @@ void vision_master::vision_main()
         else{
             vision_master_instance.cameras = han.new_tartarus.ssl_vision ? 1 : 4; // 4 cameras para o grsim e 1 camera para o ssl-vision
         }
-        std::cout << "Cameras: " << vision_master_instance.cameras << std::endl;
+//        std::cout << "Cameras: " << vision_master_instance.cameras << std::endl;
 
         vision_master_instance.recebe_dados_vision();
         if(autoreferee_atual){

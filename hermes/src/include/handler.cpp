@@ -21,3 +21,11 @@ void handler::handletartarus(const lcm::ReceiveBuffer* rbuf,
 
     //std::cout << "tartarus has been updated: " << std::boolalpha << updated_tartarus << std::endl;
 }
+
+void handler::handleGC(const lcm::ReceiveBuffer* rbuf,
+    const std::string& chan, 
+    const data::game_controller * data_gc) {
+
+    this->data_gc_copy = *data_gc;
+
+}

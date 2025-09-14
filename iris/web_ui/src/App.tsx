@@ -63,6 +63,7 @@ export default function App() {
         <div className="flex w-full h-full overflow-hidden">
           {/* Campo ajustado pela divisão selecionada */}
           <FieldView
+            data={data}
             dimensions={dimensions}
             blueRobots={blueRobots}
             yellowRobots={yellowRobots}
@@ -71,7 +72,7 @@ export default function App() {
           />
 
           <div className="flex flex-1 h-full overflow-hidden">
-            <DataView reading={reading} setReading={setReading} />
+            <DataView data={data} reading={reading} setReading={setReading} />
             {selectedSoftware && (
               <DataViewAll
                 reading={reading}
