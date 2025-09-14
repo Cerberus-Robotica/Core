@@ -21,6 +21,7 @@ struct game_controller
 	boolean team_blue;
 	team_info yellow;
 	team_info blue;
+	boolean has_designated_position;
 	float designated_position_x;
 	float designated_position_y;
 	int16_t current_command;

@@ -14,6 +14,8 @@ void recebe_dados_GC() {
 
     Referee referee;
     const GameEvent *game_event = nullptr;
+    bool updated = false;
+    
     std::cout << "Conectando ao GC..." << std::endl;
     while(true){
         
@@ -55,8 +57,12 @@ void recebe_dados_GC() {
                 my_gc_data.game_event = game_event->type();
                 }
                 if(referee.has_designated_position()){
-                my_gc_data.designated_position_x = referee.designated_position().x();
-                my_gc_data.designated_position_y = referee.designated_position().y();
+                    my_gc_data.has_designated_position = true;
+                    my_gc_data.designated_position_x = referee.designated_position().x();
+                    my_gc_data.designated_position_y = referee.designated_position().y();
+                }
+                else{
+                    my_gc_data.has_designated_position = false;
                 }
                 if(referee.blue().name() == "Cerberus"){
                     my_gc_data.team_blue = true;
@@ -67,24 +73,36 @@ void recebe_dados_GC() {
             }
         }
         else if(han.new_tartarus.iris_as_GC){
-            my_gc_data.team_blue = han.new_tartarus.team_blue;
-            if(han.new_tartarus.team_blue){
-                my_gc_data.blue.goalkeeper_id = han.new_tartarus.goalkeeper_id;
+            if(han.updated_tartarus != updated){
+                updated = han.updated_tartarus;
+                
+                my_gc_data.team_blue = han.new_tartarus.team_blue;
+                if(han.new_tartarus.team_blue){
+                    my_gc_data.blue.goalkeeper_id = han.new_tartarus.goalkeeper_id;
+                }
+                else{
+                    my_gc_data.yellow.goalkeeper_id = han.new_tartarus.goalkeeper_id;
+                }
+                my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
+                my_gc_data.game_event = han.new_tartarus.iris_gc.game_event;
+                if(han.new_tartarus.iris_gc.designated_position_x != my_gc_data.designated_position_x || han.new_tartarus.iris_gc.designated_position_y != my_gc_data.designated_position_y){
+                    my_gc_data.has_designated_position = true;
+                    my_gc_data.designated_position_x = han.new_tartarus.iris_gc.designated_position_x;
+                    my_gc_data.designated_position_y = han.new_tartarus.iris_gc.designated_position_y;
+                }
+                else{
+                    my_gc_data.has_designated_position = false;
+                }
             }
-            else{
-                my_gc_data.yellow.goalkeeper_id = han.new_tartarus.goalkeeper_id;
-            }
-            my_gc_data.current_command = han.new_tartarus.iris_gc.current_command;
-            my_gc_data.game_event = han.new_tartarus.iris_gc.game_event;
-            my_gc_data.designated_position_x = han.new_tartarus.iris_gc.designated_position_x;
-            my_gc_data.designated_position_y = han.new_tartarus.iris_gc.designated_position_y;
         }
         lcm.publish("GC", &my_gc_data);
-        std::cout << "iris_as_gc: " << int(han.new_tartarus.iris_as_GC) << std::endl;
-        std::cout << "Game command: " << my_gc_data.current_command << std::endl;
-        std::cout << "Game event: " << my_gc_data.game_event << std::endl;
-        std::cout << "Designated position: (" << my_gc_data.designated_position_x << ", " << my_gc_data.designated_position_y << ")" << std::endl;
-        std::cout << "Team blue: " << (my_gc_data.team_blue ? "true" : "false") << std::endl << std::endl;
+        //std::cout << "iris_as_gc: " << int(han.new_tartarus.iris_as_GC) << std::endl;
+        //std::cout << "Game command: " << my_gc_data.current_command << std::endl;
+        //std::cout << "Game event: " << my_gc_data.game_event << std::endl;
+        //std::cout << "Designated position: (" << my_gc_data.designated_position_x << ", " << my_gc_data.designated_position_y << ")" << std::endl;
+        //std::cout << "tartarus Designated position: (" << han.new_tartarus.iris_gc.designated_position_x << ", " << han.new_tartarus.iris_gc.designated_position_y << ")" << std::endl;
+        //std::cout << "Team blue: " << (my_gc_data.team_blue ? "true" : "false") << std::endl << std::endl;
+        //std::cout << "has_designated_position: " << int(my_gc_data.has_designated_position) << std::endl;
         
     }
 }
