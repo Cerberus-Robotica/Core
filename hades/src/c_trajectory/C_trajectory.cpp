@@ -39,13 +39,18 @@ menorpasso : Menor distancia entre dois pontos consecutivos
 
     vector<vector<double>> trajectory = {};
 
+    if (goal[0] < boundaries.minor[0]) goal[0] = boundaries.minor[0];
+    if (goal[1] < boundaries.minor[1]) goal[1] = boundaries.minor[1];
+    if (goal[0] > boundaries.major[0]) goal[0] = boundaries.major[0];
+    if (goal[1] > boundaries.major[1]) goal[1] = boundaries.major[1];
+
+
     vector<double> start_new = interference(start, obs_circular, obs_retangular);
     vector<double> goal_new = interference(goal, obs_circular, obs_retangular);
 
     if (start_new[0] != start[0] || start_new[1] != start[1]) {
         trajectory.push_back(start);
     }
-
 
     vector<vector<double>> mid_path = path_connect(start_new, goal_new, obs_circular, obs_retangular);
     if (size(mid_path) == 0) {

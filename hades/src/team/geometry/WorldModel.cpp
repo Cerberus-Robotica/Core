@@ -120,9 +120,9 @@ int WorldModel::getIdOfTheBallInterceptor() {
     return closest_id*!itsEnemy + 20*closest_id*itsEnemy;
 }
 
-bool WorldModel::isBallMovingIdDirection(int id) {
+bool WorldModel::isBallMovingIdDirection(int id, double angle_tolerance) {
     return angle_vectors_small({ball.getVelocity().getX(), ball.getVelocity().getY()},
-        {allies[id].getPosition().getX() - ball.getPosition().getX(), allies[id].getPosition().getY() - ball.getPosition().getY()}) < M_PI/2;
+        {allies[id].getPosition().getX() - ball.getPosition().getX(), allies[id].getPosition().getY() - ball.getPosition().getY()}) < angle_tolerance;
 }
 
 bool WorldModel::isBallMovingRobotDirection(Robot robot, double tolerance) {

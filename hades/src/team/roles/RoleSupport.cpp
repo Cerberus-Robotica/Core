@@ -28,6 +28,7 @@ namespace roles {
             }
             Point p(x, y);
             if (!robot.mWorld.ball.isVisible(p)) continue;
+            if (!robot.mWorld.field.inside_dimensions.detectIfContains(p)) continue;    ////TODO problema quando posicoes caem dentro da area de defesa
             points.push_back(p);
         }
 
@@ -58,9 +59,13 @@ namespace roles {
         //TODO continuar
         if (robot.mWorld.ball.isMoving() && robot.mWorld.isBallMovingRobotDirection(robot)) {
             intercept.act(robot);
+            std::cout << "b" << std::endl;
         } else {
             try {
-                keepLocation.act(robot, getSupportPosition(robot));
+                Point p = getSupportPosition(robot);
+                keepLocation.act(robot, p);
+                std::cout << p.getX() << " " << p.getY() << std::endl;
+
             } catch (...) {
                 std::cout << "No support position found" << std::endl;
                 keepLocation.act(robot, Point(0, 0));

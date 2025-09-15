@@ -43,7 +43,7 @@ public:
     std::vector<int> getAlliesIdsAccordingToDistanceToBall();
     int findNearestAllyThatIsntTheGoalKeeper(int id, int goalkeeper_id);
     int getIdOfTheBallInterceptor();
-    bool isBallMovingIdDirection(int id);
+    bool isBallMovingIdDirection(int id, double tolerance = M_PI/2);
     bool isBallMovingRobotDirection(Robot robot, double tolerance = 3.1415/2);
     bool isBallReachable(bool includeOurArea);
     bool doInterceptAnyRobot(LineSegment l);

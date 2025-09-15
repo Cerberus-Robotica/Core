@@ -42,6 +42,8 @@ public:
         {Robot::marker, role_marker}
     };
 
+    double stop_distance_to_ball = 1000;
+    double stop_max_speed = 0.5;
 
     enum sides {
         left,

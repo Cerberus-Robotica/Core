@@ -13,13 +13,22 @@
 
 namespace skills {
     Vector2d SkillMoveTo::motion_planner(RobotController& robot, std::vector<Point> trajectory) {
-            Vector2d delta = {trajectory[1].getX() - robot.getPosition().getX(), trajectory[1].getY() - robot.getPosition().getY()};
-            double dist = delta.getNorm() / 1000.0; // metros
-            auto direction = delta.getNormalized(1);
+        Vector2d delta = {trajectory[1].getX() - robot.getPosition().getX(), trajectory[1].getY() - robot.getPosition().getY()};
+        double dist = delta.getNorm() / 1000.0; // metros
+        auto direction = delta.getNormalized(1);
 
-            double curve_safe_speed = robot.mVxy_min;
-            double v_target_magnitude = robot.mVxy_max;
-            if (trajectory.size() > 2) {
+        double curve_safe_speed = robot.mVxy_min;
+        double v_target_magnitude = robot.mVxy_max;
+
+        double max_speed = robot.mVxy_max;
+
+        if ((robot.mTeam->event == TeamInfo::stop or robot.mTeam->event == TeamInfo::timeout or robot.mTeam->event == TeamInfo::prepareOurKickOff
+            or robot.mTeam->event == TeamInfo::prepareTheirKickOff or robot.mTeam->event == TeamInfo::prepareOurPenalty or robot.mTeam->event == TeamInfo::prepareTheirPenalty
+            or robot.mTeam->event == TeamInfo::ourballPlacement or robot.mTeam->event == TeamInfo::theirballPlacement)) {
+            max_speed = robot.mTeam->stop_max_speed;
+            v_target_magnitude = robot.mTeam->stop_max_speed;
+        }
+        if (trajectory.size() > 2) {
                 Point p0 = robot.getPosition();
                 Point p1 = trajectory[1];
                 Point p2 = trajectory[2];
@@ -33,8 +42,8 @@ namespace skills {
 
                 double radius = chord_length / (2.0 * sin(std::max(angle_between/2, 1e-3)));
                 radius = std::max(radius, 0.05);
-                curve_safe_speed = sqrt(robot.mA_xy_max * radius)/4;
-                curve_safe_speed = std::clamp(curve_safe_speed, robot.mVxy_min, robot.mVxy_max);
+                curve_safe_speed = sqrt(max_speed * radius)/4;
+                curve_safe_speed = std::clamp(curve_safe_speed, robot.mVxy_min, max_speed);
 
                 if (angle_between > 70.0 * M_PI / 180.0) {
                     curve_safe_speed = robot.mVxy_min;
@@ -44,15 +53,15 @@ namespace skills {
 
             double current_speed = robot.getVelocity().getNorm();
 
-            double brake_distance = (robot.mVxy_max*robot.mVxy_max - curve_safe_speed * curve_safe_speed) / (2.0 * robot.mA_xy_brake);
+            double brake_distance = (max_speed*max_speed - curve_safe_speed * curve_safe_speed) / (2.0 * robot.mA_xy_brake);
             brake_distance = std::max(brake_distance, 0.0);
             if (dist <= brake_distance) {
                 v_target_magnitude = curve_safe_speed;
             } else {
-                v_target_magnitude = robot.mVxy_max;
+                v_target_magnitude = max_speed;
             }
 
-            v_target_magnitude = std::clamp(v_target_magnitude, -robot.mVxy_max, robot.mVxy_max);
+            v_target_magnitude = std::clamp(v_target_magnitude, -max_speed, max_speed);
             std::vector<double> v_target = {v_target_magnitude * direction.getX(), v_target_magnitude * direction.getY()};
             std::vector<double> error = {v_target[0] - robot.mlast_target_vel.getX(), v_target[1] - robot.mlast_target_vel.getY()};
             std::vector<double> acceleration = {0, 0};
@@ -71,8 +80,8 @@ namespace skills {
 
 
             Vector2d vel_cmd = {robot.mlast_target_vel.getX() + acceleration[0]*robot.mDelta_time, robot.mlast_target_vel.getY() + acceleration[1]*robot.mDelta_time};
-            if (vel_cmd.getNorm() > robot.mVxy_max) {
-                vel_cmd = vel_cmd.getNormalized(robot.mVxy_max);
+            if (vel_cmd.getNorm() > max_speed) {
+                vel_cmd = vel_cmd.getNormalized(max_speed);
             }
 
             if (std::isnan(vel_cmd.getX())) vel_cmd.setX(0);
@@ -88,9 +97,21 @@ namespace skills {
         }
 
 
-        std::vector<Point> SkillMoveTo::find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true) {
-            double minor[2] = {robot.mWorld.field.full_dimensions.getMinorPoint().getX(), robot.mWorld.field.full_dimensions.getMinorPoint().getY()};
-            double major[2] = {robot.mWorld.field.full_dimensions.getMajorPoint().getX(), robot.mWorld.field.full_dimensions.getMajorPoint().getY()};
+        std::vector<Point> SkillMoveTo::find_trajectory(RobotController& robot, Point start, Point goal, bool avoid_ball = true, bool full_field, bool ignore_stop) {
+            double minor[2];
+            double major[2];
+            if (full_field) {
+                minor[0] = robot.mWorld.field.full_dimensions.getMinorPoint().getX();
+                minor[1] = robot.mWorld.field.full_dimensions.getMinorPoint().getY();
+                major[0] = robot.mWorld.field.full_dimensions.getMajorPoint().getX();
+                major[1] = robot.mWorld.field.full_dimensions.getMajorPoint().getY();
+
+            } else {
+                minor[0] = robot.mWorld.field.inside_dimensions.getMinorPoint().getX();
+                minor[1] = robot.mWorld.field.inside_dimensions.getMinorPoint().getY();
+                major[0] = robot.mWorld.field.inside_dimensions.getMajorPoint().getX();
+                major[1] = robot.mWorld.field.inside_dimensions.getMajorPoint().getY();
+            }
             C_trajectory pf(false, false, 0, 100, 50, 0, minor, major);
 
             std::vector<Circle> obs_circular = {};
@@ -98,6 +119,13 @@ namespace skills {
             Rectangle r({0, 0}, {0, 0});
             //rectangle r = field.their_defense_area;
             //obs_rectangular.push_back(r);
+
+            if (!ignore_stop && (robot.mTeam->event == TeamInfo::stop or robot.mTeam->event == TeamInfo::timeout or robot.mTeam->event == TeamInfo::prepareOurKickOff
+                or robot.mTeam->event == TeamInfo::prepareTheirKickOff or robot.mTeam->event == TeamInfo::prepareOurPenalty or robot.mTeam->event == TeamInfo::prepareTheirPenalty
+                or robot.mTeam->event == TeamInfo::ourballPlacement or robot.mTeam->event == TeamInfo::theirballPlacement)) {
+                Circle c({robot.mWorld.ball.getPosition().getX(), robot.mWorld.ball.getPosition().getY()}, robot.mTeam->stop_distance_to_ball + robot.mRadius);
+                obs_circular.push_back(c);
+            }
 
             //add static ball to obstacles according to avoidance radius
             if (avoid_ball) {
@@ -141,6 +169,8 @@ namespace skills {
             r.major = {robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getX() - robot.mRadius, robot.mWorld.field.theirFisicalBarrier.getMajorPoint().getY() + robot.mRadius};
             obs_rectangular.push_back(r);
 
+            r.minor = {robot.mWorld.field.inside_dimensions.getMinorPoint().getX() - robot.mRadius, robot.mWorld.field.inside_dimensions.getMinorPoint().getY() + robot.mRadius};
+            r.major = {robot.mWorld.field.inside_dimensions.getMajorPoint().getX() - robot.mRadius, robot.mWorld.field.inside_dimensions.getMajorPoint().getY() + robot.mRadius};
 
             auto trajectory_vector = pf.path_find(start.getVector(), goal.getVector(), obs_circular, obs_rectangular);
             std::vector<Point> trajectory = {};
@@ -151,8 +181,8 @@ namespace skills {
         }
 
 
-    void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball) {
-        auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball);
+    void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball, bool full_field, bool ignore_stop) {
+        auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball, full_field, ignore_stop);
         if (robot.getPosition().getDistanceTo(trajectory[size(trajectory) - 1]) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
             robot.mtarget_vyaw = 0;
