@@ -92,9 +92,14 @@ void vision_master::recebe_dados_vision() {
                     my_vision_data.field.max_robot_radius = 90.0;
                     if(my_vision_data.field.field_length == 4500){ //div EL
                         my_vision_data.field.goal_center_to_penalty_mark = 3000.0;
+                        my_vision_data.field.defense_area_width = 1350.0;
+                        my_vision_data.field.defense_area_height = 500.0;
                     }
                     else if(my_vision_data.field.field_length == 12000){ //div A
                         my_vision_data.field.goal_center_to_penalty_mark = 8000.0;
+                        my_vision_data.field.defense_area_width = 3600.0;
+                        my_vision_data.field.defense_area_height = 1800.0;
+
                     }
 
                     
