@@ -12,6 +12,7 @@
 #include "plays/PlayDebug.h"
 #include "plays/PlayHalt.h"
 #include "plays/PlayOurKickOff.h"
+#include "plays/PlayDefense.h"
 
 class Leader {
 public:
@@ -28,8 +29,9 @@ public:
     PlayDebug debug;
     PlayHalt halt;
     PlayOurKickOff ourKickOff;
+    PlayDefense defense;
 
-    std::vector<PlayBase*> plays = {&attack, &debug, &halt, &ourKickOff};
+    std::vector<PlayBase*> plays = {&attack, &debug, &halt, &ourKickOff, &defense};
 
 
     WorldModel world;

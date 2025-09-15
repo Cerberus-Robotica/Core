@@ -50,7 +50,7 @@ public:
     Robot getClosestAllyToPoint(Point p);
     Robot getClosestEnemyToPoint(Point p);
     bool isBallHittingTheGoal();
-    Point getGoalPosition(Robot goalkeeper);
+    Point getGoalPosition(Robot goalkeeper = {0});
 };
 
 

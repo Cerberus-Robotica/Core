@@ -21,6 +21,7 @@ public:
         kickoff_kicker,
         kickoff_goal_keeper,
         kickoff_support,
+        marker,
         debug_circular_trajectory,
         debug_squared_trajectory
     };

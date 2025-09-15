@@ -14,6 +14,7 @@ private:
 	double distanceToMark = 400;
 public:
 	void act(RobotController& robot, Robot toMark);
+	Point findMarkPosition(RobotController& robot, Robot toMark);
 	void act(RobotController& robot);
 };
 

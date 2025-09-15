@@ -411,14 +411,27 @@ void Leader::inspect_enemy_team() {
     else {
         team.enemy_roles[han.new_GC.blue.goalkeeper_id] = Robot::goal_keeper;
     }
-    unsigned int closest_idx = 0;
+
+    int closest_idx = -1;
+    int second_closest_idx = -1;
     for (int idx = 0; idx < active_enemies_ids.size(); idx++) {
-        if (distances_enemies_from_ball[idx] < distances_enemies_from_ball[closest_idx]) {
-                closest_idx = idx;
-            }
+        if (team.enemy_roles[world.enemies[idx].getId()] == Robot::goal_keeper) continue;
+
+        if (closest_idx == -1 || distances_enemies_from_ball[idx] < distances_enemies_from_ball[closest_idx]) {
+            // Atualiza os dois
+            second_closest_idx = closest_idx;
+            closest_idx = idx;
+        } else if (second_closest_idx == -1 || distances_enemies_from_ball[idx] < distances_enemies_from_ball[second_closest_idx]) {
+            // Atualiza só o segundo
+            second_closest_idx = idx;
+        }
     }
+
     unsigned int id = world.enemies[closest_idx].getId();
     if (team.enemy_roles[id] != Robot::goal_keeper) team.enemy_roles[id] = Robot::striker;
+
+    id = world.enemies[second_closest_idx].getId();
+    if (team.enemy_roles[id] != Robot::goal_keeper) team.enemy_roles[id] = Robot::support;
 
 }
 

@@ -11,41 +11,49 @@
 
 namespace tactics {
 void TacticKeepXLine::act(RobotController& robot, LineSegment y_segment, double y_rest) {
-        std::vector<int> enemies_ids = {};
-        int enemy_stricker_id = 0;
+        bool hasEnemies = false;
+        for (Robot rob : robot.mWorld.enemies) if (rob.isDetected()) {hasEnemies = true; break;};
 
-        for (int i = 0; i < enemies_ids.size(); i++) {
-            if (robot.mTeam->enemy_roles[i] == Robot::striker) {
-                enemy_stricker_id = i;
-                break;
-            }
+        bool hasStriker = false;
+        int enemy_striker_id = -1;
+        Robot enemy_striker(0);
+        try {
+            enemy_striker = robot.mTeam->getEnemyofRole(Robot::striker, robot.mWorld.enemies);
+            enemy_striker_id = enemy_striker.getId();
+            hasStriker = true;
+        } catch (...) {
+            std::cout << "no enemy striker" << std::endl;
         }
 
         double a = 1000;
-        if (size(enemies_ids) != 0) {
-            if (robot.mWorld.ball.getVelocity().getNorm() > robot.mVxy_min) {
-                if (robot.mWorld.ball.getVelocity().getX() != 0) {
-                    a = (robot.mWorld.ball.getVelocity().getY()) / (robot.mWorld.ball.getVelocity().getX());
-                }
+        LineSegment line(Point(0, 0), Point(0, 0));
+        if (hasEnemies) {
+            if (robot.mWorld.ball.isMoving()) {
+                line = robot.mWorld.ball.getMovementLine();
             }
-            else if (robot.mWorld.ball.getPosition().getX() - robot.mWorld.enemies[enemy_stricker_id].getPosition().getX() != 0) {    //para bola parada
-                a = (robot.mWorld.ball.getPosition().getY() - robot.mWorld.enemies[enemy_stricker_id].getPosition().getY()) / (robot.mWorld.ball.getPosition().getX() - robot.mWorld.enemies[enemy_stricker_id].getPosition().getX());
-            }
-        }
-
-        double y_meet = a*(y_segment.getStart().getX()) + robot.mWorld.ball.getPosition().getY() -a*robot.mWorld.ball.getPosition().getX();
-        double y_max = y_segment.getStart().getY() - robot.mRadius;
-        double y_min = y_segment.getEnd().getY() + robot.mRadius;
-        y_meet = std::clamp(y_meet, y_min, y_max);
-        double x_meet = y_segment.getStart().getX() - (robot.mRadius)*y_segment.getStart().getX()/fabs(y_segment.getStart().getX());
-        Point meet = {x_meet, y_meet};
-
-        if (robot.mWorld.enemies.size() > 0) {
-            if (!robot.mWorld.isPointOnOurSide(robot.mWorld.ball.getPosition()) || (robot.mWorld.enemies[enemy_stricker_id].getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > 500 && robot.mWorld.ball.getVelocity().getNorm() == 0)) {
-                meet.setY(y_rest);
+            else if (robot.mWorld.ball.isStopped() && hasStriker) {    //para bola parada
+                line = LineSegment(enemy_striker.getPosition(), robot.mWorld.ball.getPosition()).getResized(10000);
+            } else {
+                line = LineSegment(robot.mWorld.ball.getPosition(), y_segment.getMiddle()).getResized(10000);
             }
         }
-        moveTo.act(robot, meet, false);
+        Point p = {y_segment.getStart().getX(), y_rest};
+        try {
+            p = line.intersection(y_segment);
+        } catch (...) {
+        }
+
+
+        double y_max = y_segment.getEnd().getY() - robot.mRadius;
+        double y_min = y_segment.getStart().getY() + robot.mRadius;
+        p.setY(std::clamp(p.getY(), y_min, y_max));
+
+        if (robot.mWorld.enemies.size() > 0 && hasStriker) {
+            if ((robot.mWorld.enemies[enemy_striker_id].getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > 500 && robot.mWorld.ball.isStopped())) {
+                p.setY(y_rest);
+            }
+        }
+        moveTo.act(robot, p, false);
         robot.mkicker_x = 0;
         turnTo.act(robot, robot.mWorld.ball.getPosition());
     }

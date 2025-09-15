@@ -59,6 +59,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
 
         src/team/plays/PlayAttack.cpp
         src/team/plays/PlayAttack.h
+        src/team/plays/PlayDefense.cpp
+        src/team/plays/PlayDefense.h
         src/team/plays/PlayDebug.cpp
         src/team/plays/PlayDebug.h
         src/team/skills/skills.h
@@ -70,6 +72,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayOurKickOff.h
         src/team/plays/PlayBase.cpp
         src/team/plays/PlayBase.h
+
+
         src/team/roles/RoleBase.cpp
         src/team/roles/RoleBase.h
         src/team/roles/RoleHalted.cpp
@@ -92,6 +96,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/RoleSquaredTrajectory.cpp
         src/team/roles/RoleCircularTrajectory.h
         src/team/roles/RoleCircularTrajectory.cpp
+        src/team/roles/RoleMarker.h
+        src/team/roles/RoleMarker.cpp
 
 
         src/team/tactics/TacticBase.h
@@ -106,6 +112,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/tactics/TacticFollowTrajectory.cpp
         src/team/tactics/TacticIntercept.h
         src/team/tactics/TacticIntercept.cpp
+        src/team/tactics/TacticMark.h
+        src/team/tactics/TacticMark.cpp
         src/team/tactics/tactics.h
 
         src/team/skills/SkillBase.h

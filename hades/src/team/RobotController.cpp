@@ -48,7 +48,11 @@ void RobotController::loop() {
         receive_vision();
         receive_field_geometry();
         check_connection();
-        select_behavior();
+        try {
+            select_behavior();
+        } catch (std::runtime_error& e) {
+            std::cout << "error" << e.what() << std::endl;
+        }
         //mTeam->role_map[support]->act(*this);
         publish();
         std::chrono::duration<double> delta = t1 - t0;
@@ -241,16 +245,16 @@ void RobotController::receive_field_geometry() {
         mWorld.field.theirFisicalBarrier = rightFisicalBarrier;
         //mWorld.field.ourGoal = leftGoal;
         //mWorld.field.theirGoal = rightGoal;
-        mWorld.field.ourDefenseArea = leftDefenseArea;
-        mWorld.field.theirDefenseArea = rightDefenseArea;
+        //mWorld.field.ourDefenseArea = leftDefenseArea;
+        //mWorld.field.theirDefenseArea = rightDefenseArea;
     }
     if (mTeam->our_side == TeamInfo::right) {
         mWorld.field.ourFisicalBarrier = rightFisicalBarrier;
         mWorld.field.theirFisicalBarrier = leftFisicalBarrier;
         //mWorld.field.ourGoal = rightGoal;
         //mWorld.field.theirGoal = leftGoal;
-        mWorld.field.ourDefenseArea = rightDefenseArea;
-        mWorld.field.theirDefenseArea = leftDefenseArea;
+        //mWorld.field.ourDefenseArea = rightDefenseArea;
+        //mWorld.field.theirDefenseArea = leftDefenseArea;
     }
 }
 

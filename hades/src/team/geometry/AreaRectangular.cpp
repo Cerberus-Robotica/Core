@@ -38,12 +38,12 @@ bool AreaRectangular::detectIfContains(Point p) {
             p.getY() >= minorPoint.getY() && p.getY() <= majorPoint.getY());
 }
 
-bool AreaRectangular::detectIfIntercepts(Point p1, Point p2) {
+bool AreaRectangular::detectIfIntercepts(Point p1, Point p2) const {
     LineSegment seg(p1, p2);
     return detectIfIntercepts(seg);
 }
 
-bool AreaRectangular::detectIfIntercepts(LineSegment l) {
+bool AreaRectangular::detectIfIntercepts(LineSegment l) const {
     Point rectPts[4] = {
         minorPoint,
         Point(majorPoint.getX(), minorPoint.getY()),
@@ -61,7 +61,7 @@ bool AreaRectangular::detectIfIntercepts(LineSegment l) {
     return false;
 }
 
-std::vector<Point> AreaRectangular::getInterceptionPoints(Point p1, Point p2) {
+std::vector<Point> AreaRectangular::getInterceptionPoints(Point p1, Point p2) const {
     LineSegment seg(p1, p2);
     return getInterceptionPoints(seg);
 }
@@ -75,7 +75,7 @@ void AreaRectangular::grow(double size) {
     if (p2.getY() > 0) p2.setY(p2.getY() + size); else p2.setY(p2.getY() - size);
 }
 
-std::vector<Point> AreaRectangular::getInterceptionPoints(LineSegment l) {
+std::vector<Point> AreaRectangular::getInterceptionPoints(LineSegment l) const {
     std::vector<Point> intersections;
     intersections.reserve(2); // A line can intersect a rectangle at most at 2 points
 

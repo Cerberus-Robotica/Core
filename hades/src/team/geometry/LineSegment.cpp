@@ -8,6 +8,8 @@
 #include "LineSegment.h"
 #include <cmath>
 #include <algorithm> // Para std::max e std::min
+#include <iostream>
+#include <ostream>
 
 Point LineSegment::getStart() const {
     return start;
@@ -109,4 +111,52 @@ LineSegment LineSegment::getResized(int new_size) {
     Vector2d vet = {end, start};
     vet = vet.getNormalized(new_size);
     return {start, Point(vet.getX() + start.getX(), vet.getY() + start.getY())};
+}
+
+Point LineSegment::intersection(const LineSegment& other) const {
+    // Representação paramétrica:
+    // getStart() + t*(getEnd()-getStart())
+    // other.getStart() + u*(other.getEnd()-other.getStart())
+
+    Vector2d r(
+        getEnd().getX() - getStart().getX(),
+        getEnd().getY() - getStart().getY()
+    );
+
+    Vector2d s(
+        other.getEnd().getX() - other.getStart().getX(),
+        other.getEnd().getY() - other.getStart().getY()
+    );
+
+    double denom = r.getX() * s.getY() - r.getY() * s.getX();
+    if (denom == 0) {
+        throw std::runtime_error("Segmentos paralelos ou colineares (sem interseção única).");
+    }
+
+    Vector2d qp(
+        other.getStart().getX() - getStart().getX(),
+        other.getStart().getY() - getStart().getY()
+    );
+
+    double t = (qp.getX() * s.getY() - qp.getY() * s.getX()) / denom;
+    double u = (qp.getX() * r.getY() - qp.getY() * r.getX()) / denom;
+
+    if (t < 0 || t > 1 || u < 0 || u > 1) {
+        throw std::runtime_error("Segmentos não se intersectam dentro dos comprimentos.");
+    }
+
+    Point p = Point(
+        getStart().getX() + t * r.getX(),
+        getStart().getY() + t * r.getY()
+    );
+    std::cout << p.getX() << " " << p.getY() << std::endl;
+    return p;
+}
+
+LineSegment LineSegment::getMovedOnX(int distance) {
+    return {Point(start.getX() + distance, start.getY()), Point(end.getX() + distance, end.getY())};
+}
+
+LineSegment LineSegment::getMovedOnY(int distance) {
+    return {Point(start.getX(), distance + start.getY()), Point(end.getX(), distance + end.getY())};
 }
