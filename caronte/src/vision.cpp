@@ -83,12 +83,41 @@ void vision_master::recebe_dados_vision() {
                 my_vision_data.field.goal_height = field.goal_height();
                 my_vision_data.field.ball_radius = field.ball_radius();
                 my_vision_data.field.max_robot_radius = field.max_robot_radius();
+
+                if(han.new_tartarus.ssl_vision == false){
+                    my_vision_data.field.center_circle_radius = 500.0;
+                    my_vision_data.field.line_thickness = 10.0; 
+                    my_vision_data.field.goal_height = 155.0;
+                    my_vision_data.field.ball_radius = 21.5;
+                    my_vision_data.field.max_robot_radius = 90.0;
+                    if(my_vision_data.field.field_length == 4500){ //div EL
+                        my_vision_data.field.goal_center_to_penalty_mark = 3000.0;
+                    }
+                    else if(my_vision_data.field.field_length == 12000){ //div A
+                        my_vision_data.field.goal_center_to_penalty_mark = 8000.0;
+                    }
+
+                    
+                }
             }
         }
     }
     my_vision_data.robots_yellow_size = vision_master_instance.yellow_ids.size();
     my_vision_data.robots_blue_size = vision_master_instance.blue_ids.size();
-
+    // Print field geometry values
+    //std::cout << "field.field_length: " << my_vision_data.field.field_length << '\n'
+    //          << "field.field_width: " << my_vision_data.field.field_width << '\n'
+    //          << "field.goal_width: " << my_vision_data.field.goal_width << '\n'
+    //          << "field.goal_depth: " << my_vision_data.field.goal_depth << '\n'
+    //          << "field.boundary_width: " << my_vision_data.field.boundary_width << '\n'
+    //          << "field.center_circle_radius: " << my_vision_data.field.center_circle_radius << '\n'
+    //          << "field.defense_area_width: " << my_vision_data.field.defense_area_width << '\n'
+    //          << "field.defense_area_height: " << my_vision_data.field.defense_area_height << '\n'
+    //          << "field.line_thickness: " << my_vision_data.field.line_thickness << '\n'
+    //          << "field.goal_center_to_penalty_mark: " << my_vision_data.field.goal_center_to_penalty_mark << '\n'
+    //          << "field.goal_height: " << my_vision_data.field.goal_height << '\n'
+    //          << "field.ball_radius: " << my_vision_data.field.ball_radius << '\n'
+    //          << "field.max_robot_radius: " << my_vision_data.field.max_robot_radius << '\n'<<std::endl;
     // Publica os dados no tópico "vision"
     //std::this_thread::sleep_for(std::chrono::milliseconds(16));
     //envia apenas dados de geometria de campo, alternando entre o sslvision e o grsim
