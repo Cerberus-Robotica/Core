@@ -185,7 +185,6 @@ void Leader::receive_field_geometry() {
 
     LineSegment leftGoal = {Point(-han.new_vision.field.field_width/2 , -han.new_vision.field.goal_height/2), Point(-han.new_vision.field.field_width/2 , han.new_vision.field.goal_height/2)};
     LineSegment rightGoal = {Point(han.new_vision.field.field_width/2 , -han.new_vision.field.goal_height/2), Point(han.new_vision.field.field_width/2 , han.new_vision.field.goal_height/2)};
-    std::cout << han.new_vision.field.defense_area_height << std::endl;
     if (team.our_side == TeamInfo::left) {
         world.field.ourGoal = leftGoal;
         world.field.theirGoal = rightGoal;
@@ -419,7 +418,7 @@ void Leader::inspect_enemy_team() {
             }
     }
     unsigned int id = world.enemies[closest_idx].getId();
-    team.enemy_roles[id] = Robot::striker;
+    if (team.enemy_roles[id] != Robot::goal_keeper) team.enemy_roles[id] = Robot::striker;
 
 }
 

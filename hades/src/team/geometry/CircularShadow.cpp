@@ -4,6 +4,7 @@
 
 #include "CircularShadow.h"
 #include <cmath>
+#include <iostream>
 
 CircularShadow::CircularShadow(Point lightCenter, AreaCircular area)
     : Shadow(), circular(area.getCenter(), area.getRadius()) {
@@ -14,8 +15,8 @@ void CircularShadow::setShadow(Point lightCenter, AreaCircular area) {
     circular = area;
 
     auto points = circular.getNormalPoints(lightCenter);
-    Vector2d vet1 = {lightCenter, points[0]};
-    Vector2d vet2 = {lightCenter, points[1]};
+    Vector2d vet1 = {points[0], lightCenter};
+    Vector2d vet2 = {points[1], lightCenter};
 
     line1 = LineSegment(points[0], vet1.getNormalized(100000));
     line2 = LineSegment(points[1], vet2.getNormalized(100000));
@@ -28,7 +29,6 @@ bool CircularShadow::isVisible(Point p) {
 bool CircularShadow::containsPoint(Point p) {
     bool inCircularArea = circular.detectIfContains(p);
     bool betweenLines = isPointBetweenLines(p);
-
     return inCircularArea || betweenLines;
 }
 

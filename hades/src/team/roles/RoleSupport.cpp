@@ -15,15 +15,22 @@ namespace roles {
         int k1 = 1;
         std::vector<Point> points;
         points.reserve(N);
-
         for (int i = 0; i < N; i++) {
             double angle = 2.0 * M_PI * i / N;
-            double x = robot.mWorld.ball.getPosition().getX() + robot.mTeam->getRobotofRole(Robot::striker).getKickDistance() * cos(angle);
-            double y = robot.mWorld.ball.getPosition().getY() + robot.mTeam->getRobotofRole(Robot::striker).getKickDistance() * sin(angle);
+            double x = 0;
+            double y = 0;
+            try {
+                x = robot.mWorld.ball.getPosition().getX() + robot.mTeam->getRobotofRole(Robot::striker).getKickDistance() * cos(angle);
+                y = robot.mWorld.ball.getPosition().getY() + robot.mTeam->getRobotofRole(Robot::striker).getKickDistance() * sin(angle);
+            } catch (...) { // no striker
+                x = robot.mWorld.ball.getPosition().getX() + robot.getKickDistance() * cos(angle);
+                y = robot.mWorld.ball.getPosition().getY() + robot.getKickDistance() * sin(angle);
+            }
             Point p(x, y);
             if (!robot.mWorld.ball.isVisible(p)) continue;
             points.push_back(p);
         }
+
 
         int best_idx = 0;
         for (int i = 1; i < points.size(); i++) {
@@ -55,6 +62,7 @@ namespace roles {
             try {
                 keepLocation.act(robot, getSupportPosition(robot));
             } catch (...) {
+                std::cout << "No support position found" << std::endl;
                 keepLocation.act(robot, Point(0, 0));
             }
         }

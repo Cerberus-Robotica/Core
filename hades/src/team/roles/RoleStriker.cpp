@@ -13,9 +13,12 @@
 namespace roles {
     void RoleStriker::act(RobotController& robot) {
         Point goal(0, 0);
+        bool hasGoalPosition = false;
         try {
             goal = robot.mWorld.getGoalPosition(robot.mTeam->getEnemyofRole(Robot::goal_keeper, robot.mWorld.enemies));
+            hasGoalPosition = true;
         } catch (...) {
+            std::cout << "no score position found" << std::endl;
             goal = robot.mWorld.field.theirGoal.getMiddle();
         }
         LineSegment robot_goal = {robot.mWorld.ball.getPosition(), goal};
@@ -25,8 +28,8 @@ namespace roles {
         else if (robot.mWorld.ball.isMoving() || robot.mWorld.isPointOnOurArea(robot.mWorld.ball.getPosition())) {
             stop.act(robot); //TODO implementar posicao de suporte
         }
-        else if (!robot.mWorld.doInterceptAnyRobot(robot_goal) && robot_goal.getLength() <= robot.getKickDistance()) {
-            positionAndKick.act(robot, goal); //TODO encontrar posicao do golasso
+        else if (hasGoalPosition && robot_goal.getLength() <= robot.getKickDistance()) {
+            positionAndKick.act(robot, goal);
         } else {
             try {
                 Robot support = robot.mTeam->getRobotofRole(Robot::support);

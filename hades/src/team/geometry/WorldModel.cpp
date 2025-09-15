@@ -202,15 +202,16 @@ Point WorldModel::getGoalPosition(Robot goalkeeper) {
     int k2 = 1;
     int k3 = 1;
 
-    for (int i = 0; i < num; i++) {
-        Point p = field.theirGoal.getResized(field.theirGoal.getLength()/num).getEnd();
+    for (int i = 1; i < num; i++) {
+        Point p = field.theirGoal.getResized(i*field.theirGoal.getLength()/num).getEnd();
         if (!ball.isVisible(p)) continue;
+
         points.push_back(p);
     }
 
     int best_idx = 0;
     for (int i = 1; i < points.size(); i++) {
-        if (points[best_idx].getDistanceTo(goalkeeper.getPosition())*k1 > points[i].getDistanceTo(goalkeeper.getPosition())*k1) { //TODO melhorar essa funcao
+        if (points[best_idx].getDistanceTo(goalkeeper.getPosition()) < points[i].getDistanceTo(goalkeeper.getPosition())) { //TODO melhorar essa funcao
             best_idx = i;
         }
     }

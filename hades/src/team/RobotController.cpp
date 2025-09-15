@@ -49,6 +49,7 @@ void RobotController::loop() {
         receive_field_geometry();
         check_connection();
         select_behavior();
+        //mTeam->role_map[support]->act(*this);
         publish();
         std::chrono::duration<double> delta = t1 - t0;
         t0 = std::chrono::steady_clock::now();
@@ -205,9 +206,9 @@ void RobotController::receive_vision() {
 
     mWorld.ball.setPosition({han.new_vision.balls.position_x, han.new_vision.balls.position_y});
     VisibilityGraph graph;
-    for (Robot ally : mWorld.allies) {
-        if (ally.getId() == getId()) continue;
-        graph.addShadow(CircularShadow(mWorld.ball.getPosition(), {ally.getPosition(), ally.getRadius()}));
+    for (Robot enemy : mWorld.enemies) {
+        if (!enemy.isDetected()) continue;
+        graph.addShadow(CircularShadow(mWorld.ball.getPosition(), {enemy.getPosition(), enemy.getRadius()}));
     }
     mWorld.ball.setVisibilityGraph(graph);
 
@@ -238,16 +239,16 @@ void RobotController::receive_field_geometry() {
     if (mTeam->our_side == TeamInfo::left) {
         mWorld.field.ourFisicalBarrier = leftFisicalBarrier;
         mWorld.field.theirFisicalBarrier = rightFisicalBarrier;
-        mWorld.field.ourGoal = leftGoal;
-        mWorld.field.theirGoal = rightGoal;
+        //mWorld.field.ourGoal = leftGoal;
+        //mWorld.field.theirGoal = rightGoal;
         mWorld.field.ourDefenseArea = leftDefenseArea;
         mWorld.field.theirDefenseArea = rightDefenseArea;
     }
     if (mTeam->our_side == TeamInfo::right) {
         mWorld.field.ourFisicalBarrier = rightFisicalBarrier;
         mWorld.field.theirFisicalBarrier = leftFisicalBarrier;
-        mWorld.field.ourGoal = rightGoal;
-        mWorld.field.theirGoal = leftGoal;
+        //mWorld.field.ourGoal = rightGoal;
+        //mWorld.field.theirGoal = leftGoal;
         mWorld.field.ourDefenseArea = rightDefenseArea;
         mWorld.field.theirDefenseArea = leftDefenseArea;
     }

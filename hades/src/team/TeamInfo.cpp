@@ -13,7 +13,7 @@ Robot TeamInfo::getRobotofRole(enum Robot::role role) {
 
 Robot TeamInfo::getEnemyofRole(enum Robot::role role, std::array<Robot, 16> enemies) {
 	for (Robot robot : enemies) {
-		if (robot.getRole() == role) return robot;
+		if (enemy_roles[robot.getId()] == role) return robot;
 	}
 	throw std::runtime_error("No robot of desired role");
 }

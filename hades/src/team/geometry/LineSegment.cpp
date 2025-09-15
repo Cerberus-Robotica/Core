@@ -106,7 +106,7 @@ bool LineSegment::intersects(const LineSegment& other) const {
 }
 
 LineSegment LineSegment::getResized(int new_size) {
-    Vector2d vet = {start, end};
+    Vector2d vet = {end, start};
     vet = vet.getNormalized(new_size);
     return {start, Point(vet.getX() + start.getX(), vet.getY() + start.getY())};
 }
