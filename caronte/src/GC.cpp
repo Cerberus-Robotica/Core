@@ -72,7 +72,7 @@ void recebe_dados_GC() {
                 my_gc_data.current_command = referee.command(); // enum command
             }
         }
-        else if(han.new_tartarus.iris_as_GC){
+        if(han.new_tartarus.iris_as_GC){
             if(han.updated_tartarus != updated){
                 updated = han.updated_tartarus;
                 
