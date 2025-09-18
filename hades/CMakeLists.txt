@@ -70,6 +70,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayHalt.h
         src/team/plays/PlayOurKickOff.cpp
         src/team/plays/PlayOurKickOff.h
+        src/team/plays/PlayTheirKickOff.cpp
+        src/team/plays/PlayTheirKickOff.h
         src/team/plays/PlayBase.cpp
         src/team/plays/PlayBase.h
 
@@ -98,6 +100,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/RoleCircularTrajectory.cpp
         src/team/roles/RoleMarker.h
         src/team/roles/RoleMarker.cpp
+        src/team/roles/RoleRetaker.h
+        src/team/roles/RoleRetaker.cpp
 
 
         src/team/tactics/TacticBase.h

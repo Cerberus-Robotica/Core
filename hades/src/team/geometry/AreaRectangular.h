@@ -26,6 +26,7 @@ public:
 	void setMinorPoint(Point p);
 	std::array<Point, 2> getNormalPoints(Point& start);
 	void grow(double size);
+	AreaRectangular getResized(double size);
 };
 
 

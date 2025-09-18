@@ -182,7 +182,9 @@ namespace skills {
 
 
     void SkillMoveTo::act(RobotController& robot, Point goal, bool avoid_ball, bool full_field, bool ignore_stop) {
+
         auto trajectory = find_trajectory(robot, robot.getPosition(), goal, avoid_ball, full_field, ignore_stop);
+
         if (robot.getPosition().getDistanceTo(trajectory[size(trajectory) - 1]) < robot.mStatic_position_tolarance) {
             robot.mtarget_vel = {0, 0};
             robot.mtarget_vyaw = 0;
@@ -196,6 +198,7 @@ namespace skills {
         std::size(trajectory) > 0 ? v_vet = motion_planner(robot, trajectory) : v_vet = {0, 0};
 
         v_vet = motion_control(v_vet, -robot.getYaw());
+
         robot.mtarget_vel = v_vet;
         robot.mkicker_x = 0;
     }

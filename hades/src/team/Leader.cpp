@@ -301,14 +301,14 @@ void Leader::event_FSM() {
 
     if (team.event == TeamInfo::ourKickOff or team.event == TeamInfo::theirKickOff) {
         GC_timer += delta_time;
-        if (world.ball.getVelocity().getNorm() > 0.2 or GC_timer > 10) {
+        if (team.current_command == TeamInfo::NORMAL_START && ((world.ball.isMoving() && world.ball.getPosition().getDistanceTo(Point(0, 0)) > 100) or GC_timer > 10)) {
             team.event = TeamInfo::run;
         }
     }
 
     if (team.event == TeamInfo::ourFreeKick or team.event == TeamInfo::theirFreeKick) {
         GC_timer += delta_time;
-        if (world.ball.getVelocity().getNorm() > 0.2 or GC_timer > 10) {
+        if (world.ball.isMoving() or GC_timer > 10) {
             team.event = TeamInfo::run;
         }
     }

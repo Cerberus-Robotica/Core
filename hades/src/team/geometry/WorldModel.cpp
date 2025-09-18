@@ -218,3 +218,25 @@ Point WorldModel::getGoalPosition(Robot goalkeeper) {
     if (points.size() == 0) throw std::runtime_error("No goals found");
     return points[best_idx];
 }
+
+
+bool WorldModel::isAllAlliesOnOurSide() {
+    for (Robot& r : allies) {
+        if (!isPointOnOurSide(r.getPosition())) return false;
+    }
+    return true;
+}
+
+bool WorldModel::isAllEnemiesOnTheirSide() {
+    for (Robot& r : enemies) {
+        if (isPointOnOurSide(r.getPosition())) return false;
+    }
+    return true;
+}
+
+bool WorldModel::isAllAlliesOnOurSideorOnCenterCircle() {
+    for (Robot& r : enemies) {
+        if (!isPointOnOurSide(r.getPosition()) && r.getPosition().getDistanceTo({0, 0}) > field.center_circle_radius) return false;
+    }
+    return true;
+}

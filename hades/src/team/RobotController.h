@@ -63,7 +63,7 @@ public:
 
 
     //extreme params
-    double mVxy_max = 1.5;
+    double mVxy_max = 0.8;
     double mVxy_min = 0.2;
     double mA_xy_max = 2;
     double mA_xy_brake = 2;

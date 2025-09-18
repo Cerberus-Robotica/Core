@@ -23,6 +23,7 @@ protected:
     tactics::TacticKeepXLine keepXLine;
     tactics::TacticIntercept intercept;
     tactics::TacticMark mark;
+    tactics::TacticBlockBall blockBall;
 public:
     virtual void act(RobotController& robot) = 0;
 };

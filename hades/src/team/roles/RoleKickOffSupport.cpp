@@ -8,7 +8,8 @@
 
 namespace roles {
     void RoleKickOffSupport::act(RobotController& robot) {
-        Point goal = {robot.mTeam->our_side_sign*robot.mRadius , 1000};
+        Point goal = {robot.mTeam->our_side_sign*robot.mRadius, 1000};
         moveTo.act(robot, goal, true);
+        turnTo.act(robot, robot.mWorld.ball.getPosition());
     }
 } // roles

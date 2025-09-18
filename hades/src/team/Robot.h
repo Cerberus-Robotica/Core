@@ -23,7 +23,8 @@ public:
         kickoff_support,
         marker,
         debug_circular_trajectory,
-        debug_squared_trajectory
+        debug_squared_trajectory,
+        retaker
     };
 
 protected:

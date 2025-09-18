@@ -28,7 +28,7 @@ namespace roles {
             }
             Point p(x, y);
             if (!robot.mWorld.ball.isVisible(p)) continue;
-            if (!robot.mWorld.field.inside_dimensions.detectIfContains(p)) continue;    ////TODO problema quando posicoes caem dentro da area de defesa
+            if (!robot.mWorld.field.inside_dimensions.getResized(distance_to_edge).detectIfContains(p)) continue;    ////TODO problema quando posicoes caem dentro da area de defesa
             points.push_back(p);
         }
 
@@ -41,31 +41,15 @@ namespace roles {
         }
         if (points.size() == 0) throw std::runtime_error("No support position found");
         return points[best_idx];
-
-        // try {
-        //     AreaCircular a1 = {robot.mWorld.field.theirGoal.getMiddle(), robot.mKick_distance};
-        //     AreaCircular a2 = {robot.mWorld.ball.getPosition(), robot.mKick_distance};
-        //     try {
-        //         return a1.getInterceptionPoints(a2)[0];
-        //     } catch (...) {
-        //         return a2.getInterceptionPoints(LineSegment(robot.mWorld.field.theirGoal.getMiddle(), robot.mWorld.ball.getPosition()))[0];
-        //     }
-        //
-        // } catch (...) {
-        //     return {0, 0};
-        // }
     }
     void RoleSupport::act(RobotController& robot) {
         //TODO continuar
         if (robot.mWorld.ball.isMoving() && robot.mWorld.isBallMovingRobotDirection(robot)) {
             intercept.act(robot);
-            std::cout << "b" << std::endl;
         } else {
             try {
                 Point p = getSupportPosition(robot);
                 keepLocation.act(robot, p);
-                std::cout << p.getX() << " " << p.getY() << std::endl;
-
             } catch (...) {
                 std::cout << "No support position found" << std::endl;
                 keepLocation.act(robot, Point(0, 0));

@@ -149,7 +149,6 @@ Point LineSegment::intersection(const LineSegment& other) const {
         getStart().getX() + t * r.getX(),
         getStart().getY() + t * r.getY()
     );
-    std::cout << p.getX() << " " << p.getY() << std::endl;
     return p;
 }
 

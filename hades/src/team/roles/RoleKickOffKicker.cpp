@@ -8,22 +8,28 @@
 
 namespace roles {
     void RoleKickOffKicker::act(RobotController& robot) {
-        bool all_positioned = true;
-        for (Robot r : robot.mWorld.allies) if (!r.positioned)  all_positioned = false;
+        bool others_positioned = true;
+        for (Robot r : robot.mWorld.allies) if (!r.positioned && !r.getId() != robot.getId()) others_positioned = false;
 
-    	if (all_positioned && robot.positioned && robot.mWorld.isPointOnOurSide(robot.getPosition()) && robot.mTeam->event == TeamInfo::ourKickOff) {
+    	if (others_positioned && robot.mWorld.isAllAlliesOnOurSideorOnCenterCircle() && robot.mTeam->event == TeamInfo::ourKickOff && robot.mWorld.ball.getPosition().getDistanceTo({0, 0}) < 100) {
     		try {	//TODO ALGO MUITO ERRADO
-    			Robot support = robot.mTeam->getRobotofRole(Robot::kickoff_support);
+    			Robot support(-1);
+    			try {
+    				support = robot.mTeam->getRobotofRole(Robot::kickoff_support);
+    			} catch (...) {
+    				support = robot.mTeam->getRobotofRole(Robot::support);
+    			}
     			positionAndKick.act(robot, support);
     		} catch (...) { //NO SUPPORT
     			Point p = robot.mWorld.getGoalPosition();
-    			positionAndKick.act(robot, Robot::kickoff_support);
+    			positionAndKick.act(robot, p);
     		}
     	} else {
-	        Point their_goal = {(robot.mWorld.field.theirGoal.getStart().getX() + robot.mWorld.field.theirGoal.getEnd().getX())/2, (robot.mWorld.field.theirGoal.getStart().getY() + robot.mWorld.field.theirGoal.getEnd().getY())/2};
-        	Point center = {0, 0};
-        	auto kickposition = robot.mWorld.getKickingPosition(center, their_goal, robot.mBall_avoidance_radius + robot.mRadius);
-        	moveTo.act(robot, kickposition, true);
+	        Point their_goal = robot.mWorld.field.theirGoal.getMiddle();
+    		Point center = {0, 0};
+        	auto kickposition = robot.mWorld.getKickingPosition(center, their_goal, robot.mBall_avoidance_radius + robot.mRadius + 10); //Nao sei, nao me pergunte
+    		moveTo.act(robot, kickposition, true);
+    		turnTo.act(robot, robot.mWorld.ball.getPosition());
         }
     }
 } // roles

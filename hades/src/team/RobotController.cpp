@@ -44,8 +44,6 @@ void RobotController::loop() {
         }
         auto t1 = std::chrono::steady_clock::now();
 
-        //if (mId == 1) std::cout << mWorld.getIdOfTheBallInterceptor() << std::endl;
-        if (getId() == 2) std::cout << getId() << " " << getRole() << std::endl;
         receive_vision();
         receive_field_geometry();
         check_connection();

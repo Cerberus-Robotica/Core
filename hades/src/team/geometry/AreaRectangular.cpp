@@ -75,6 +75,16 @@ void AreaRectangular::grow(double size) {
     if (p2.getY() > 0) p2.setY(p2.getY() + size); else p2.setY(p2.getY() - size);
 }
 
+AreaRectangular AreaRectangular::getResized(double size) {
+    Point p = majorPoint;
+    if (p.getX() > 0) p.setX(p.getX() + size); else p.setX(p.getX() - size);
+    if (p.getY() > 0) p.setY(p.getY() + size); else p.setY(p.getY() - size);
+    Point p2 = minorPoint;
+    if (p2.getX() > 0) p2.setX(p2.getX() + size); else p2.setX(p2.getX() - size);
+    if (p2.getY() > 0) p2.setY(p2.getY() + size); else p2.setY(p2.getY() - size);
+    return AreaRectangular(p2, p);
+}
+
 std::vector<Point> AreaRectangular::getInterceptionPoints(LineSegment l) const {
     std::vector<Point> intersections;
     intersections.reserve(2); // A line can intersect a rectangle at most at 2 points

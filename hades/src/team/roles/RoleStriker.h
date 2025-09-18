@@ -10,6 +10,7 @@ namespace roles {
 
 class RoleStriker : public RoleBase {
 public:
+    Point getSupportPosition(RobotController robot);
     void act(RobotController& robot);
 };
 

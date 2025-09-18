@@ -26,6 +26,7 @@ public:
     std::shared_ptr<roles::RoleCircularTrajectory> role_circular_trajectory = std::make_shared<roles::RoleCircularTrajectory>();
     std::shared_ptr<roles::RoleSquaredTrajectory> role_squared_trajectory = std::make_shared<roles::RoleSquaredTrajectory>();
     std::shared_ptr<roles::RoleMarker> role_marker = std::make_shared<roles::RoleMarker>();
+    std::shared_ptr<roles::RoleRetaker> role_retaker = std::make_shared<roles::RoleRetaker>();
 
     std::map<Robot::role, std::shared_ptr<roles::RoleBase>> role_map = {
         {Robot::unknown, role_halted},
@@ -39,7 +40,8 @@ public:
         {Robot::kickoff_goal_keeper, role_kick_off_goal_keeper},
         {Robot::debug_circular_trajectory, role_circular_trajectory},
         {Robot::debug_squared_trajectory, role_squared_trajectory},
-        {Robot::marker, role_marker}
+        {Robot::marker, role_marker},
+        {Robot::retaker, role_retaker}
     };
 
     double stop_distance_to_ball = 1000;

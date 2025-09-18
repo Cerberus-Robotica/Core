@@ -17,7 +17,8 @@ public:
 				theirDefenseArea({4200, -1750}, {6000, 1750}),
 				ourDefenseArea({-6000, -1750}, {-4200, 1750}),
 				theirFisicalBarrier({6000, -900}, {6800, 900}),
-				ourFisicalBarrier({-6800, -900}, {-6000, 900})
+				ourFisicalBarrier({-6800, -900}, {-6000, 900}),
+				center_circle_radius(1000)
 	{}
 
 	AreaRectangular full_dimensions;
@@ -28,6 +29,7 @@ public:
 	AreaRectangular ourDefenseArea;
 	AreaRectangular theirFisicalBarrier;
 	AreaRectangular ourFisicalBarrier;
+	double center_circle_radius;
 };
 
 

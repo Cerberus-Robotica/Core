@@ -18,5 +18,6 @@
 #include "RoleCircularTrajectory.h"
 #include "RoleSquaredTrajectory.h"
 #include "RoleMarker.h"
+#include "RoleRetaker.h"
 
 #endif //ROLES_H
