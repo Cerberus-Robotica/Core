@@ -14,7 +14,7 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
         return;
     }
 
-    if(han.data_tartarus_copy.team_blue == time_atual)
+    if(han.data_gc_copy.team_blue == time_atual)
     {
         for (int i = 0; i < han.data_ia_copy.robots_size; i++) {
             const data::robot * robot_ia = &han.data_ia_copy.robots[i];
@@ -34,7 +34,7 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
 
         }
         commands.set_timestamp(han.data_ia_copy.timestamp);
-        commands.set_isteamyellow(!han.data_tartarus_copy.team_blue); 
+        commands.set_isteamyellow(!han.data_gc_copy.team_blue);
     }
     else{
         //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -56,8 +56,8 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
 
         }
         commands.set_timestamp(han.data_ia_copy.timestamp);
-        commands.set_isteamyellow(han.data_tartarus_copy.team_blue);
-        time_atual = han.data_tartarus_copy.team_blue;
+        commands.set_isteamyellow(han.data_gc_copy.team_blue);
+        time_atual = han.data_gc_copy.team_blue;
     }
 
     packet_grsim.mutable_commands()->CopyFrom(commands);
