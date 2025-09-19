@@ -27,6 +27,9 @@ public:
     std::shared_ptr<roles::RoleSquaredTrajectory> role_squared_trajectory = std::make_shared<roles::RoleSquaredTrajectory>();
     std::shared_ptr<roles::RoleMarker> role_marker = std::make_shared<roles::RoleMarker>();
     std::shared_ptr<roles::RoleRetaker> role_retaker = std::make_shared<roles::RoleRetaker>();
+    std::shared_ptr<roles::RolePenaltier> role_penaltier = std::make_shared<roles::RolePenaltier>();
+    std::shared_ptr<roles::RoleWatcher> role_watcher = std::make_shared<roles::RoleWatcher>();
+    std::shared_ptr<roles::RoleFreeKicker> role_free_kicker = std::make_shared<roles::RoleFreeKicker>();
 
     std::map<Robot::role, std::shared_ptr<roles::RoleBase>> role_map = {
         {Robot::unknown, role_halted},
@@ -41,7 +44,10 @@ public:
         {Robot::debug_circular_trajectory, role_circular_trajectory},
         {Robot::debug_squared_trajectory, role_squared_trajectory},
         {Robot::marker, role_marker},
-        {Robot::retaker, role_retaker}
+        {Robot::retaker, role_retaker},
+        {Robot::penaltier, role_penaltier},
+        {Robot::freeKicker, role_free_kicker},
+        {Robot::watcher, role_watcher}
     };
 
     double stop_distance_to_ball = 1000;
@@ -73,6 +79,8 @@ public:
         theirFreeKick,
         ourPenalty,
         theirPenalty,
+        runningOurPenalty,
+        runningTheirPenalty,
         run
     };
 

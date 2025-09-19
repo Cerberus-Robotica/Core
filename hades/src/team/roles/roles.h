@@ -19,5 +19,8 @@
 #include "RoleSquaredTrajectory.h"
 #include "RoleMarker.h"
 #include "RoleRetaker.h"
+#include "RolePenaltier.h"
+#include "RoleWatcher.h"
+#include "RoleFreeKicker.h"
 
 #endif //ROLES_H

@@ -11,9 +11,9 @@
 #include "../../c_trajectory/C_trajectory.h"
 
 namespace tactics {
-	void TacticPositionAndKick::act(RobotController& robot, Point goal) {
+	void TacticPositionAndKick::act(RobotController& robot, Point goal, bool wait) {
 		Point kick_pos = robot.mWorld.getKickingPosition(robot.mWorld.ball.getPosition(), goal, robot.mBall_avoidance_radius + robot.mRadius);
-		if (!robot.positioned or !robot.oriented or !robot.mWorld.isBallReachable(robot.getRole() != Robot::goal_keeper) or robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distance_to_kick) {
+		if (wait or !robot.positioned or !robot.oriented or !robot.mWorld.isBallReachable(robot.getRole() != Robot::goal_keeper) or robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distance_to_kick) {
 			moveTo.act(robot, kick_pos, true);
 			turnTo.act(robot, goal);
 		} else {
@@ -21,10 +21,10 @@ namespace tactics {
 		}
 	}
 
-	void TacticPositionAndKick::act(RobotController &robot, Robot sup) {
+	void TacticPositionAndKick::act(RobotController &robot, Robot sup, bool wait) {
 		Point kick_pos = robot.mWorld.getKickingPosition(robot.mWorld.ball.getPosition(), sup.getPosition(), robot.mBall_avoidance_radius + robot.mRadius);
 
-		if (!robot.positioned or !robot.oriented or !sup.positioned or !robot.mWorld.isBallReachable(robot.getRole() != Robot::goal_keeper) or robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distance_to_kick) {
+		if (wait or !robot.positioned or !robot.oriented or !sup.positioned or !robot.mWorld.isBallReachable(robot.getRole() != Robot::goal_keeper) or robot.getPosition().getDistanceTo(robot.mWorld.ball.getPosition()) > distance_to_kick) {
 			moveTo.act(robot, kick_pos, true);
 			turnTo.act(robot, sup.getPosition());
 		} else {

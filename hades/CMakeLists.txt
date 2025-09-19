@@ -72,6 +72,12 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/plays/PlayOurKickOff.h
         src/team/plays/PlayTheirKickOff.cpp
         src/team/plays/PlayTheirKickOff.h
+        src/team/plays/PlayOurPenalty.cpp
+        src/team/plays/PlayOurPenalty.h
+        src/team/plays/PlayTheirPenalty.cpp
+        src/team/plays/PlayTheirPenalty.h
+        src/team/plays/PlayOurFreeKick.cpp
+        src/team/plays/PlayOurFreeKick.h
         src/team/plays/PlayBase.cpp
         src/team/plays/PlayBase.h
 
@@ -102,6 +108,12 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/team/roles/RoleMarker.cpp
         src/team/roles/RoleRetaker.h
         src/team/roles/RoleRetaker.cpp
+        src/team/roles/RolePenaltier.h
+        src/team/roles/RolePenaltier.cpp
+        src/team/roles/RoleWatcher.h
+        src/team/roles/RoleWatcher.cpp
+        src/team/roles/RoleFreeKicker.h
+        src/team/roles/RoleFreeKicker.cpp
 
 
         src/team/tactics/TacticBase.h

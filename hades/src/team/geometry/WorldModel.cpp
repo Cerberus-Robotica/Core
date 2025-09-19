@@ -235,7 +235,7 @@ bool WorldModel::isAllEnemiesOnTheirSide() {
 }
 
 bool WorldModel::isAllAlliesOnOurSideorOnCenterCircle() {
-    for (Robot& r : enemies) {
+    for (Robot& r : allies) {
         if (!isPointOnOurSide(r.getPosition()) && r.getPosition().getDistanceTo({0, 0}) > field.center_circle_radius) return false;
     }
     return true;

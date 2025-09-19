@@ -296,7 +296,14 @@ void Leader::event_FSM() {
 
     if (team.event == TeamInfo::ourPenalty or team.event == TeamInfo::theirPenalty) {
         GC_timer = 0;
+        if (team.current_command == TeamInfo::NORMAL_START && team.event == TeamInfo::runningTheirPenalty) team.event = TeamInfo::runningTheirPenalty;
+        if (team.current_command == TeamInfo::NORMAL_START && team.event == TeamInfo::ourPenalty) team.event = TeamInfo::runningOurPenalty;
         if (team.current_command == TeamInfo::STOP) team.event = TeamInfo::stop;
+    }
+
+    if (team.event == TeamInfo::runningOurPenalty || team.event == TeamInfo::runningTheirPenalty) {
+        GC_timer += delta_time;
+        if (GC_timer >= 10 or team.current_command == TeamInfo::STOP) team.event = TeamInfo::stop;
     }
 
     if (team.event == TeamInfo::ourKickOff or team.event == TeamInfo::theirKickOff) {

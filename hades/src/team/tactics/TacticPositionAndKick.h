@@ -14,8 +14,8 @@ class TacticPositionAndKick : public TacticBase {
 private:
 	double distance_to_kick = 300;
 public:
-	void act(RobotController& robot, Point goal);
-	void act(RobotController& robot, Robot sup);
+	void act(RobotController& robot, Point goal, bool wait = false);
+	void act(RobotController& robot, Robot sup, bool wait = false);
 	void act(RobotController& robot);
 };
 

@@ -24,7 +24,10 @@ public:
         marker,
         debug_circular_trajectory,
         debug_squared_trajectory,
-        retaker
+        retaker,
+        penaltier,
+        freeKicker,
+        watcher
     };
 
 protected:

@@ -41,7 +41,7 @@ std::array<Robot::role, 16> PlayHalt::role_assign(WorldModel& world, TeamInfo& t
             return roles;
         }
         roles[active_allies_ids[0]] = selected_role;
-        active_allies_ids.erase(active_allies_ids.begin() + team.goal_keeper_id);
+        active_allies_ids.erase(active_allies_ids.begin());
     }
 
     return roles;
