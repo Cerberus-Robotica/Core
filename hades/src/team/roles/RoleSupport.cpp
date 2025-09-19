@@ -28,7 +28,9 @@ namespace roles {
             }
             Point p(x, y);
             if (!robot.mWorld.ball.isVisible(p)) continue;
-            if (!robot.mWorld.field.inside_dimensions.getResized(distance_to_edge).detectIfContains(p)) continue;    ////TODO problema quando posicoes caem dentro da area de defesa
+            if (!robot.mWorld.field.inside_dimensions.getResized(-distance_to_edge).detectIfContains(p)) continue;    ////TODO problema quando posicoes caem dentro da area de defesa
+            if (robot.mWorld.field.theirDefenseArea.getResized(distance_to_edge).detectIfContains(p)) continue;
+            if (robot.mWorld.field.ourDefenseArea.getResized(distance_to_edge).detectIfContains(p)) continue;
             points.push_back(p);
         }
 

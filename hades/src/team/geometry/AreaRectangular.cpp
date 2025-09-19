@@ -1,5 +1,6 @@
 #include "AreaRectangular.h"
 #include <algorithm>
+#include <iostream>
 
 // Função auxiliar para checar se dois segmentos se interceptam
 static bool segmentsIntersect(Point p1, Point p2, Point q1, Point q2, Point& intersection) {
@@ -77,11 +78,11 @@ void AreaRectangular::grow(double size) {
 
 AreaRectangular AreaRectangular::getResized(double size) {
     Point p = majorPoint;
-    if (p.getX() > 0) p.setX(p.getX() + size); else p.setX(p.getX() - size);
-    if (p.getY() > 0) p.setY(p.getY() + size); else p.setY(p.getY() - size);
+    p.setX(p.getX() + size);
+    p.setY(p.getY() + size);
     Point p2 = minorPoint;
-    if (p2.getX() > 0) p2.setX(p2.getX() + size); else p2.setX(p2.getX() - size);
-    if (p2.getY() > 0) p2.setY(p2.getY() + size); else p2.setY(p2.getY() - size);
+    p2.setX(p2.getX() - size);
+    p2.setY(p2.getY() - size);
     return AreaRectangular(p2, p);
 }
 
