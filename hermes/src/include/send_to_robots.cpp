@@ -67,7 +67,7 @@ void robots_sender::send_to_grsim() { // function to send data to grSim
     packet_grsim.SerializeAsString();
     std::string serialized_packet = packet_grsim.SerializeAsString();
     sendto(sock_grsim, serialized_packet.c_str(), serialized_packet.size(), 0, (struct sockaddr*) &addr_grsim, sizeof(addr_grsim));
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(50));
     std::cout << "Sending to grSim..." << std::endl << std::endl;
 
 
